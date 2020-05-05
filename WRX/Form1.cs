@@ -29,6 +29,8 @@ namespace TransitServer
         TcpListener gTcpAskueServer;
         ImeiDictinary imeiDictinary = new ImeiDictinary();
         BackgroundWorker worker = new BackgroundWorker();
+        SongWMP song;
+        bool isArcive = false;
         public Form1()
         {
             InitializeComponent();
@@ -46,6 +48,7 @@ namespace TransitServer
             m_sqlCmd = new SQLiteCommand();
 
             dbFileName = "transitServer.sqlite";
+            song = new SongWMP("song.mp3");
             CreateDB();
             EventsFromDB(GetNotQuite());
         }
@@ -66,7 +69,7 @@ namespace TransitServer
                 }
                 Thread.Sleep(20);
                 string statusStr = string.Format("Клиентов модемов:{0}", gModemClients.Count);
-                //lvConsole.Invoke(new Action(() => lvConsole.Items.Add(statusStr)));
+                //lbConsole.Invoke(new Action(() => lbConsole.Items.Add(statusStr)));
 
                 statusString.Invoke(new Action(() => statusString.Items[0].Text = statusStr));
                 Thread.Sleep(20);
@@ -85,7 +88,7 @@ namespace TransitServer
             isUsed = false;
             byte[] auth = new byte[28] { 0xC0, 0x00, 0x06, 0x00, 0x14, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0xE7, 0x48, 0xC2 };    //команда авторизации
             ns.Write(auth, 0, auth.Length);     // отправляем сообщение 
-            lvConsole.Invoke(new Action(() => lvConsole.Items.Add("Запрос на авторизацию отправлен!")));
+            lbConsole.Invoke(new Action(() => lbConsole.Items.Add("Запрос на авторизацию отправлен!")));
             while (tcpClient.Connected && isWhile)  // пока клиент подключен, ждем приходящие сообщения
             {
                 byte[] msg = new byte[1024];     // готовим место для принятия сообщения
@@ -112,7 +115,7 @@ namespace TransitServer
                             {
                                 if (((byte)(msg[1] >> i) & 1) == 1)
                                 {
-                                    Event(imeiDictinary.getName(modemClient.IMEI), dateTime, ParameterName(arrParams[i]));
+                                    NewEvent(imeiDictinary.getName(modemClient.IMEI), dateTime, ParameterName(arrParams[i]));
                                 }
                             }
 
@@ -124,7 +127,7 @@ namespace TransitServer
                     }
 
                     string hexString = string.Format("{2}:receive {1} байт-> {0}", string.Join(" ", msg.Take(count).Select(r => string.Format("{0:X}", r))), count, dateTime.ToString());
-                    lvConsole.Invoke(new Action(() => lvConsole.Items.Add(hexString)));
+                    lbConsole.Invoke(new Action(() => lbConsole.Items.Add(hexString)));
                 }
                 catch (Exception ex)
                 {
@@ -147,35 +150,50 @@ namespace TransitServer
 
         public void Console(string str)
         {
-            lvConsole.Invoke(new Action(() => lvConsole.Items.Add(str)));
+            lbConsole.Invoke(new Action(() => lbConsole.Items.Add(str)));
         }
-        public void Event(string name, DateTime dateTime, string param)
-        {
-            string strTmp = dateTime.ToString() + "| " + name + ": " + param;
-            lbEvent.Invoke(new Action(() => lbEvent.Items.Add(strTmp)));
-            NewEvent(name, dateTime, param);
-        }
-        const string COLNAME = "colEvent1Name";
-        const string COLMESSAGE = "colEvent1Message";
-        const string COLDATE = "colEvent1Date";
+
+        const string COLNAME = "colEventName";
+        const string COLMESSAGE = "colEventMessage";
+        const string COLDATE = "colEventDate";
+        const string COLQUITE = "colEventQuite";
         public void EventsFromDB(List<dynamic> records)
         {
-            if (!records.Any()) return;
+            dgvEvent.Rows.Clear();
+            if (!records.Any())
+            {
+                song.Stop();
+                return;
+            }
             foreach(var rec in records)
             {
                 dgvEvent.Rows.Add();
                 dgvEvent.Rows[dgvEvent.RowCount - 1].Cells[COLNAME].Value = rec.name;
                 dgvEvent.Rows[dgvEvent.RowCount - 1].Cells[COLMESSAGE].Value = rec.message;
                 dgvEvent.Rows[dgvEvent.RowCount - 1].Cells[COLDATE].Value = rec.date;
+                var dic = (IDictionary<string, object>)rec;
+                if (dic.ContainsKey("quite") && rec.quite != null && rec.quite.ToString() != "")
+                {
+                    DataGridViewTextBoxCell tb = new DataGridViewTextBoxCell();
+                    tb.Value = rec.quite;
+                    dgvEvent.Rows[dgvEvent.RowCount - 1].Cells[COLQUITE] = tb;
+                }
+                else
+                {
+                    song.Play();
+                }
+
             }
         }
         public void NewEvent(string name, DateTime date, string message)
         {
+            tcDown.Invoke(new Action(() => tcDown.SelectedTab = tpEvent));
             InsertRow(name, date, message);
             dgvEvent.Invoke(new Action(() => dgvEvent.Rows.Add()));
             dgvEvent.Rows[dgvEvent.RowCount - 1].Cells[COLNAME].Value = name;
             dgvEvent.Rows[dgvEvent.RowCount - 1].Cells[COLMESSAGE].Value = message;
             dgvEvent.Rows[dgvEvent.RowCount - 1].Cells[COLDATE].Value = date.ToString();
+            song.Play();
         }
         public string ParameterName(byte param)
         {
@@ -267,9 +285,6 @@ namespace TransitServer
             {
                 gAskueServers[0].ns.Write(msg, 0, len);
             }
-
-
-
         }
 
         private void answerTeleofic(byte[] bytes, int len, IntPtr clientHandle)
@@ -292,7 +307,7 @@ namespace TransitServer
                     builder.Append(Encoding.UTF8.GetString(bytes, 6, 15));
                     IMEI = builder.ToString();
                     DateTime dateTime = DateTime.Now;
-                    lvConsole.Invoke(new Action(() => lvConsole.Items.Add($"{dateTime.ToString()}: Ответ на запрос авторизации получен! IMEI: {IMEI}"))); 
+                    lbConsole.Invoke(new Action(() => lbConsole.Items.Add($"{dateTime.ToString()}: Ответ на запрос авторизации получен! IMEI: {IMEI}"))); 
 
                     if (index >= 0)
                     {
@@ -343,7 +358,27 @@ namespace TransitServer
             {
                 QuiteRow(dgvEvent.Rows[e.RowIndex].Cells[COLNAME].Value.ToString(), dgvEvent.Rows[e.RowIndex].Cells[COLDATE].Value.ToString(), dgvEvent.Rows[e.RowIndex].Cells[COLMESSAGE].Value.ToString());
                 dgvEvent.Rows.RemoveAt(e.RowIndex);
+                if (dgvEvent.RowCount == 0) song.Stop();
             }
+        }
+        
+        private void btnSongMute_Click(object sender, EventArgs e)
+        {
+            song.Mute();
+            btnSongMute.Image = (song.IsMute()) ? Properties.Resources.sound_mute1 : Properties.Resources.sound1;
+        }
+
+        private void btnGetAllEvents_Click(object sender, EventArgs e)
+        {
+            if (isArcive)
+            {
+                EventsFromDB(GetNotQuite());
+            }
+            else
+            {
+                EventsFromDB(GetAll());
+            }
+            isArcive = !isArcive;
         }
     }
 }

@@ -48,7 +48,7 @@ namespace TransitServer
             {
                 cl.ns.Write(auth, 0, auth.Length);     // отправляем сообщение 
             }
-            lvConsole.Invoke(new Action(() => lvConsole.Items.Add("Отдельный запрос на авторизацию отправлен!")));
+            lbConsole.Invoke(new Action(() => lbConsole.Items.Add("Отдельный запрос на авторизацию отправлен!")));
         }
         private void cmbIMEI_SelectionChangeCommitted(object sender, EventArgs e)
         {
@@ -178,7 +178,7 @@ namespace TransitServer
 
         private void btnClear_Click(object sender, EventArgs e)
         {
-            lvConsole.Clear();
+            lbConsole.Items.Clear();
         }
     }
 }

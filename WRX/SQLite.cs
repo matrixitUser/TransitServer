@@ -28,7 +28,7 @@ namespace TransitServer
                 m_dbConn.Open();
                 m_sqlCmd.Connection = m_dbConn;
 
-                m_sqlCmd.CommandText = "CREATE TABLE IF NOT EXISTS dbEvents (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, date TEXT, message TEXT, quite VARCHAR(10))";
+                m_sqlCmd.CommandText = "CREATE TABLE IF NOT EXISTS dbEvents (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, date TEXT, message TEXT, quite TEXT)";
                 m_sqlCmd.ExecuteNonQuery();
                 
             }
@@ -66,6 +66,35 @@ namespace TransitServer
             }
             return records;
         }
+        public List<dynamic> GetAll()
+        {
+            // получаем данные их БД
+            // сделав запрос к БД мы получим множество строк в ответе, поэтому мы их записываем в массивы/List
+            List<dynamic> records = new List<dynamic>(); // изображение в байтах
+
+            using (SQLiteConnection Connect = new SQLiteConnection("Data Source=" + dbFileName + ";Version=3;"))
+            {
+                Connect.Open();
+                SQLiteCommand Command = new SQLiteCommand
+                {
+                    Connection = Connect,
+                    CommandText = @"SELECT * FROM [dbEvents]" // выборка записей с заполненной ячейкой формата изображения, можно другой запрос составить
+                };
+                SQLiteDataReader sqlReader = Command.ExecuteReader();
+
+                while (sqlReader.Read()) // считываем и вносим в лист все параметры
+                {
+                    dynamic record = new ExpandoObject();
+                    record.name = (string)sqlReader["name"];
+                    record.date = (string)sqlReader["date"];
+                    record.message = (string)sqlReader["message"];
+                    record.quite = sqlReader["quite"];
+                    records.Add(record);
+                }
+                Connect.Close();
+            }
+            return records;
+        }
         public void InsertRow(string name, DateTime date, string message)
         {
             // записываем информацию в базу данных
@@ -88,7 +117,7 @@ namespace TransitServer
             {
                 string commandText = "UPDATE [dbEvents] SET [quite] = @quite WHERE [name]=@name and [date]=@date and [message]=@message";
                 SQLiteCommand Command = new SQLiteCommand(commandText, Connect);
-                Command.Parameters.AddWithValue("@quite", "кв");
+                Command.Parameters.AddWithValue("@quite", DateTime.Now.ToString());
                 Command.Parameters.AddWithValue("@name", name);
                 Command.Parameters.AddWithValue("@date", date);
                 Command.Parameters.AddWithValue("@message", message);

@@ -60,7 +60,7 @@ namespace TransitServer
                     {
                         int count = ns.Read(msg, 0, msg.Length);   // читаем сообщение от клиента
                                                                    //ns.Write(msg, 0, msg.Length);
-                                                                   //lvConsole.Invoke(new Action(() => lvConsole.Items.Add))
+                                                                   //lbConsole.Invoke(new Action(() => lbConsole.Items.Add))
                         if (count == 0) { isWhileS = false; break; }
                         retransmit(msg, count, tcpclient.Client.Handle);
                     }

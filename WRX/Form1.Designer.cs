@@ -116,21 +116,26 @@
             this.label2 = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
             this.panel5 = new System.Windows.Forms.Panel();
-            this.btnClear = new System.Windows.Forms.Button();
-            this.tabControl2 = new System.Windows.Forms.TabControl();
+            this.tcDown = new System.Windows.Forms.TabControl();
             this.tpEvent = new System.Windows.Forms.TabPage();
-            this.lbEvent = new System.Windows.Forms.ListBox();
-            this.tabPage1 = new System.Windows.Forms.TabPage();
-            this.lvConsole = new System.Windows.Forms.ListView();
-            this.tabPage6 = new System.Windows.Forms.TabPage();
+            this.panel9 = new System.Windows.Forms.Panel();
             this.dgvEvent = new System.Windows.Forms.DataGridView();
-            this.colEvent1Name = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.colEvent1Date = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.colEvent1Message = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.colEvent1Quite = new System.Windows.Forms.DataGridViewButtonColumn();
+            this.panel8 = new System.Windows.Forms.Panel();
+            this.btnGetAllEvents = new System.Windows.Forms.Button();
+            this.btnSongMute = new System.Windows.Forms.Button();
+            this.tpConsole = new System.Windows.Forms.TabPage();
+            this.panel7 = new System.Windows.Forms.Panel();
+            this.lbConsole = new System.Windows.Forms.ListBox();
+            this.splitter1 = new System.Windows.Forms.Splitter();
+            this.panel6 = new System.Windows.Forms.Panel();
+            this.btnClear = new System.Windows.Forms.Button();
             this.statusString = new System.Windows.Forms.StatusStrip();
             this.button2 = new System.Windows.Forms.Button();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
+            this.colEventName = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colEventDate = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colEventMessage = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colEventQuite = new System.Windows.Forms.DataGridViewButtonColumn();
             this.tabControl1.SuspendLayout();
             this.tabPage5.SuspendLayout();
             this.WorkMode.SuspendLayout();
@@ -142,11 +147,14 @@
             this.tabPage4.SuspendLayout();
             this.panel1.SuspendLayout();
             this.panel5.SuspendLayout();
-            this.tabControl2.SuspendLayout();
+            this.tcDown.SuspendLayout();
             this.tpEvent.SuspendLayout();
-            this.tabPage1.SuspendLayout();
-            this.tabPage6.SuspendLayout();
+            this.panel9.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvEvent)).BeginInit();
+            this.panel8.SuspendLayout();
+            this.tpConsole.SuspendLayout();
+            this.panel7.SuspendLayout();
+            this.panel6.SuspendLayout();
             this.SuspendLayout();
             // 
             // tabControl1
@@ -958,136 +966,150 @@
             // 
             // panel5
             // 
-            this.panel5.Controls.Add(this.btnClear);
-            this.panel5.Controls.Add(this.tabControl2);
+            this.panel5.Controls.Add(this.tcDown);
             this.panel5.Location = new System.Drawing.Point(6, 481);
             this.panel5.Name = "panel5";
             this.panel5.Size = new System.Drawing.Size(1265, 199);
             this.panel5.TabIndex = 2;
             // 
-            // btnClear
+            // tcDown
             // 
-            this.btnClear.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.btnClear.Location = new System.Drawing.Point(1124, 26);
-            this.btnClear.Name = "btnClear";
-            this.btnClear.Size = new System.Drawing.Size(91, 46);
-            this.btnClear.TabIndex = 15;
-            this.btnClear.Text = "Очистить консоль";
-            this.btnClear.UseVisualStyleBackColor = true;
-            this.btnClear.Click += new System.EventHandler(this.btnClear_Click);
-            // 
-            // tabControl2
-            // 
-            this.tabControl2.Controls.Add(this.tpEvent);
-            this.tabControl2.Controls.Add(this.tabPage1);
-            this.tabControl2.Controls.Add(this.tabPage6);
-            this.tabControl2.Location = new System.Drawing.Point(7, 4);
-            this.tabControl2.Name = "tabControl2";
-            this.tabControl2.SelectedIndex = 0;
-            this.tabControl2.Size = new System.Drawing.Size(1106, 188);
-            this.tabControl2.TabIndex = 0;
+            this.tcDown.Controls.Add(this.tpEvent);
+            this.tcDown.Controls.Add(this.tpConsole);
+            this.tcDown.Location = new System.Drawing.Point(7, 4);
+            this.tcDown.Name = "tcDown";
+            this.tcDown.SelectedIndex = 0;
+            this.tcDown.Size = new System.Drawing.Size(1106, 188);
+            this.tcDown.TabIndex = 0;
             // 
             // tpEvent
             // 
-            this.tpEvent.Controls.Add(this.lbEvent);
+            this.tpEvent.Controls.Add(this.panel9);
+            this.tpEvent.Controls.Add(this.panel8);
             this.tpEvent.Location = new System.Drawing.Point(4, 22);
             this.tpEvent.Name = "tpEvent";
             this.tpEvent.Size = new System.Drawing.Size(1098, 162);
-            this.tpEvent.TabIndex = 1;
+            this.tpEvent.TabIndex = 2;
             this.tpEvent.Text = "События";
             this.tpEvent.UseVisualStyleBackColor = true;
             // 
-            // lbEvent
+            // panel9
             // 
-            this.lbEvent.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.lbEvent.FormattingEnabled = true;
-            this.lbEvent.Location = new System.Drawing.Point(0, 0);
-            this.lbEvent.Name = "lbEvent";
-            this.lbEvent.Size = new System.Drawing.Size(1098, 162);
-            this.lbEvent.TabIndex = 0;
+            this.panel9.Controls.Add(this.dgvEvent);
+            this.panel9.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.panel9.Location = new System.Drawing.Point(0, 0);
+            this.panel9.Name = "panel9";
+            this.panel9.Size = new System.Drawing.Size(1073, 162);
+            this.panel9.TabIndex = 2;
             // 
-            // tabPage1
-            // 
-            this.tabPage1.Controls.Add(this.lvConsole);
-            this.tabPage1.Location = new System.Drawing.Point(4, 22);
-            this.tabPage1.Name = "tabPage1";
-            this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage1.Size = new System.Drawing.Size(1098, 162);
-            this.tabPage1.TabIndex = 0;
-            this.tabPage1.Text = "Консоль";
-            this.tabPage1.UseVisualStyleBackColor = true;
-            // 
-            // lvConsole
-            // 
-            this.lvConsole.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.lvConsole.HideSelection = false;
-            this.lvConsole.Location = new System.Drawing.Point(3, 3);
-            this.lvConsole.Name = "lvConsole";
-            this.lvConsole.Size = new System.Drawing.Size(1092, 156);
-            this.lvConsole.TabIndex = 1;
-            this.lvConsole.UseCompatibleStateImageBehavior = false;
-            this.lvConsole.View = System.Windows.Forms.View.List;
-            // 
-            // tabPage6
-            // 
-            this.tabPage6.Controls.Add(this.dgvEvent);
-            this.tabPage6.Location = new System.Drawing.Point(4, 22);
-            this.tabPage6.Name = "tabPage6";
-            this.tabPage6.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage6.Size = new System.Drawing.Size(1098, 162);
-            this.tabPage6.TabIndex = 2;
-            this.tabPage6.Text = "События1";
-            this.tabPage6.UseVisualStyleBackColor = true;
-            // 
-            // dgvEvent1
+            // dgvEvent
             // 
             this.dgvEvent.AllowUserToAddRows = false;
             this.dgvEvent.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dgvEvent.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
-            this.colEvent1Name,
-            this.colEvent1Date,
-            this.colEvent1Message,
-            this.colEvent1Quite});
+            this.colEventName,
+            this.colEventDate,
+            this.colEventMessage,
+            this.colEventQuite});
             this.dgvEvent.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.dgvEvent.Location = new System.Drawing.Point(3, 3);
-            this.dgvEvent.Name = "dgvEvent1";
-            this.dgvEvent.Size = new System.Drawing.Size(1092, 156);
+            this.dgvEvent.Location = new System.Drawing.Point(0, 0);
+            this.dgvEvent.Name = "dgvEvent";
+            this.dgvEvent.RowHeadersWidth = 20;
+            this.dgvEvent.Size = new System.Drawing.Size(1073, 162);
             this.dgvEvent.TabIndex = 0;
             this.dgvEvent.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvEvent1_CellContentClick);
             // 
-            // colEvent1Name
+            // panel8
             // 
-            this.colEvent1Name.FillWeight = 150F;
-            this.colEvent1Name.HeaderText = "name";
-            this.colEvent1Name.Name = "colEvent1Name";
-            this.colEvent1Name.ReadOnly = true;
-            this.colEvent1Name.Width = 150;
+            this.panel8.Controls.Add(this.btnGetAllEvents);
+            this.panel8.Controls.Add(this.btnSongMute);
+            this.panel8.Dock = System.Windows.Forms.DockStyle.Right;
+            this.panel8.Location = new System.Drawing.Point(1073, 0);
+            this.panel8.Name = "panel8";
+            this.panel8.Size = new System.Drawing.Size(25, 162);
+            this.panel8.TabIndex = 1;
             // 
-            // colEvent1Date
+            // btnGetAllEvents
             // 
-            this.colEvent1Date.FillWeight = 200F;
-            this.colEvent1Date.HeaderText = "date";
-            this.colEvent1Date.Name = "colEvent1Date";
-            this.colEvent1Date.ReadOnly = true;
-            this.colEvent1Date.Width = 200;
+            this.btnGetAllEvents.Dock = System.Windows.Forms.DockStyle.Top;
+            this.btnGetAllEvents.Location = new System.Drawing.Point(0, 27);
+            this.btnGetAllEvents.Name = "btnGetAllEvents";
+            this.btnGetAllEvents.Size = new System.Drawing.Size(25, 27);
+            this.btnGetAllEvents.TabIndex = 2;
+            this.btnGetAllEvents.Text = "all";
+            this.btnGetAllEvents.UseVisualStyleBackColor = true;
+            this.btnGetAllEvents.Click += new System.EventHandler(this.btnGetAllEvents_Click);
             // 
-            // colEvent1Message
+            // btnSongMute
             // 
-            this.colEvent1Message.FillWeight = 300F;
-            this.colEvent1Message.HeaderText = "message";
-            this.colEvent1Message.Name = "colEvent1Message";
-            this.colEvent1Message.ReadOnly = true;
-            this.colEvent1Message.Width = 300;
+            this.btnSongMute.Dock = System.Windows.Forms.DockStyle.Top;
+            this.btnSongMute.Image = global::TransitServer.Properties.Resources.sound1;
+            this.btnSongMute.Location = new System.Drawing.Point(0, 0);
+            this.btnSongMute.Name = "btnSongMute";
+            this.btnSongMute.Size = new System.Drawing.Size(25, 27);
+            this.btnSongMute.TabIndex = 1;
+            this.btnSongMute.UseVisualStyleBackColor = true;
+            this.btnSongMute.Click += new System.EventHandler(this.btnSongMute_Click);
             // 
-            // colEvent1Quite
+            // tpConsole
             // 
-            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            dataGridViewCellStyle1.NullValue = "квитировать";
-            this.colEvent1Quite.DefaultCellStyle = dataGridViewCellStyle1;
-            this.colEvent1Quite.FillWeight = 80F;
-            this.colEvent1Quite.HeaderText = "quite";
-            this.colEvent1Quite.Name = "colEvent1Quite";
-            this.colEvent1Quite.Width = 80;
+            this.tpConsole.Controls.Add(this.panel7);
+            this.tpConsole.Controls.Add(this.splitter1);
+            this.tpConsole.Controls.Add(this.panel6);
+            this.tpConsole.Location = new System.Drawing.Point(4, 22);
+            this.tpConsole.Name = "tpConsole";
+            this.tpConsole.Size = new System.Drawing.Size(1098, 162);
+            this.tpConsole.TabIndex = 0;
+            this.tpConsole.Text = "Консоль";
+            this.tpConsole.UseVisualStyleBackColor = true;
+            // 
+            // panel7
+            // 
+            this.panel7.Controls.Add(this.lbConsole);
+            this.panel7.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.panel7.Location = new System.Drawing.Point(0, 0);
+            this.panel7.Name = "panel7";
+            this.panel7.Size = new System.Drawing.Size(1070, 162);
+            this.panel7.TabIndex = 3;
+            // 
+            // lbConsole
+            // 
+            this.lbConsole.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.lbConsole.FormattingEnabled = true;
+            this.lbConsole.Location = new System.Drawing.Point(0, 0);
+            this.lbConsole.Name = "lbConsole";
+            this.lbConsole.Size = new System.Drawing.Size(1070, 162);
+            this.lbConsole.TabIndex = 0;
+            // 
+            // splitter1
+            // 
+            this.splitter1.Dock = System.Windows.Forms.DockStyle.Right;
+            this.splitter1.Location = new System.Drawing.Point(1070, 0);
+            this.splitter1.Name = "splitter1";
+            this.splitter1.Size = new System.Drawing.Size(3, 162);
+            this.splitter1.TabIndex = 2;
+            this.splitter1.TabStop = false;
+            // 
+            // panel6
+            // 
+            this.panel6.Controls.Add(this.btnClear);
+            this.panel6.Dock = System.Windows.Forms.DockStyle.Right;
+            this.panel6.Location = new System.Drawing.Point(1073, 0);
+            this.panel6.Name = "panel6";
+            this.panel6.Size = new System.Drawing.Size(25, 162);
+            this.panel6.TabIndex = 1;
+            // 
+            // btnClear
+            // 
+            this.btnClear.Dock = System.Windows.Forms.DockStyle.Top;
+            this.btnClear.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.btnClear.Image = global::TransitServer.Properties.Resources.delete;
+            this.btnClear.Location = new System.Drawing.Point(0, 0);
+            this.btnClear.Name = "btnClear";
+            this.btnClear.Size = new System.Drawing.Size(25, 23);
+            this.btnClear.TabIndex = 15;
+            this.btnClear.UseVisualStyleBackColor = true;
+            this.btnClear.Click += new System.EventHandler(this.btnClear_Click);
             // 
             // statusString
             // 
@@ -1108,6 +1130,44 @@
             this.button2.Text = "Отправить";
             this.button2.UseVisualStyleBackColor = true;
             this.button2.Click += new System.EventHandler(this.button2_Click);
+            // 
+            // colEventName
+            // 
+            this.colEventName.FillWeight = 150F;
+            this.colEventName.Frozen = true;
+            this.colEventName.HeaderText = "name";
+            this.colEventName.Name = "colEventName";
+            this.colEventName.ReadOnly = true;
+            this.colEventName.Width = 150;
+            // 
+            // colEventDate
+            // 
+            this.colEventDate.FillWeight = 200F;
+            this.colEventDate.Frozen = true;
+            this.colEventDate.HeaderText = "date";
+            this.colEventDate.Name = "colEventDate";
+            this.colEventDate.ReadOnly = true;
+            this.colEventDate.Width = 200;
+            // 
+            // colEventMessage
+            // 
+            this.colEventMessage.FillWeight = 300F;
+            this.colEventMessage.Frozen = true;
+            this.colEventMessage.HeaderText = "message";
+            this.colEventMessage.Name = "colEventMessage";
+            this.colEventMessage.ReadOnly = true;
+            this.colEventMessage.Width = 300;
+            // 
+            // colEventQuite
+            // 
+            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewCellStyle1.NullValue = "квитировать";
+            this.colEventQuite.DefaultCellStyle = dataGridViewCellStyle1;
+            this.colEventQuite.FillWeight = 80F;
+            this.colEventQuite.HeaderText = "quite";
+            this.colEventQuite.Name = "colEventQuite";
+            this.colEventQuite.Resizable = System.Windows.Forms.DataGridViewTriState.True;
+            this.colEventQuite.Width = 120;
             // 
             // Form1
             // 
@@ -1143,11 +1203,14 @@
             this.panel1.ResumeLayout(false);
             this.panel1.PerformLayout();
             this.panel5.ResumeLayout(false);
-            this.tabControl2.ResumeLayout(false);
+            this.tcDown.ResumeLayout(false);
             this.tpEvent.ResumeLayout(false);
-            this.tabPage1.ResumeLayout(false);
-            this.tabPage6.ResumeLayout(false);
+            this.panel9.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.dgvEvent)).EndInit();
+            this.panel8.ResumeLayout(false);
+            this.tpConsole.ResumeLayout(false);
+            this.panel7.ResumeLayout(false);
+            this.panel6.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -1226,9 +1289,8 @@
         private System.Windows.Forms.TextBox textBox23;
         private System.Windows.Forms.Label label31;
         private System.Windows.Forms.Panel panel5;
-        private System.Windows.Forms.TabControl tabControl2;
-        private System.Windows.Forms.TabPage tabPage1;
-        private System.Windows.Forms.ListView lvConsole;
+        private System.Windows.Forms.TabControl tcDown;
+        private System.Windows.Forms.TabPage tpConsole;
         private System.Windows.Forms.StatusStrip statusString;
         private System.Windows.Forms.TabPage tabPage5;
         private System.Windows.Forms.ComboBox cmbIMEI;
@@ -1248,13 +1310,19 @@
         private System.Windows.Forms.ToolTip toolTip1;
         private System.Windows.Forms.Button btnClear;
         private System.Windows.Forms.TabPage tpEvent;
-        private System.Windows.Forms.ListBox lbEvent;
-        private System.Windows.Forms.TabPage tabPage6;
         private System.Windows.Forms.DataGridView dgvEvent;
-        private System.Windows.Forms.DataGridViewTextBoxColumn colEvent1Name;
-        private System.Windows.Forms.DataGridViewTextBoxColumn colEvent1Date;
-        private System.Windows.Forms.DataGridViewTextBoxColumn colEvent1Message;
-        private System.Windows.Forms.DataGridViewButtonColumn colEvent1Quite;
+        private System.Windows.Forms.ListBox lbConsole;
+        private System.Windows.Forms.Panel panel7;
+        private System.Windows.Forms.Splitter splitter1;
+        private System.Windows.Forms.Panel panel6;
+        private System.Windows.Forms.Panel panel9;
+        private System.Windows.Forms.Panel panel8;
+        private System.Windows.Forms.Button btnSongMute;
+        private System.Windows.Forms.Button btnGetAllEvents;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colEventName;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colEventDate;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colEventMessage;
+        private System.Windows.Forms.DataGridViewButtonColumn colEventQuite;
     }
 }
 
