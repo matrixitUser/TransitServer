@@ -57,5 +57,91 @@ namespace TransitServer
             return new byte[] { (byte)(crc >> 8), (byte)(crc & 0xFF) };
 
         }
+
+        public static bool Check(byte[] bytes)
+        {
+            if (bytes.Length < 3) return false; 
+            byte[] crc = CrcCalculate(bytes, 0, bytes.Length - 3);
+            if (crc[0] == bytes[bytes.Length - 2] && crc[1] == bytes[bytes.Length - 1]) return true;
+            return false;
+        }
+        public static bool CheckReverse(byte[] bytes)
+        {
+            if (bytes.Length < 3) return false;
+            byte[] crc = CrcCalculate(bytes, 0, bytes.Length - 3);
+            if (crc[1] == bytes[bytes.Length - 2] && crc[0] == bytes[bytes.Length - 1]) return true;
+            return false;
+        }
+
+        public byte[] CrcData { get; private set; }
+
+        public CRC(byte[] crcData)
+        {
+            this.CrcData = crcData;
+        }
+
+        public static CRC Calc(byte[] buffer, int offset, int length, ICrcCalculator calculator)
+        {
+            if (calculator != null && buffer.Length > offset && buffer.Length - offset >= length)
+            {
+                return calculator.Calculate(buffer, offset, length);
+            }
+            return new CRC(null);
+        }
+
+        public static CRC Calc(byte[] buffer, ICrcCalculator calculator)
+        {
+            return Calc(buffer, 0, buffer.Length, calculator);
+        }
+
+        public static bool Check(byte[] buffer, int offset, int length, ICrcCalculator calculator)
+        {
+            bool success = false;
+
+            if (calculator != null &&
+                buffer.Length > offset &&
+                buffer.Length - offset >= length &&
+                length > calculator.CrcDataLength)
+            {
+                var crc = Calc(buffer, offset, length - calculator.CrcDataLength, calculator);
+                success = crc.CrcData.Length == calculator.CrcDataLength;
+                for (int i = 0; i < calculator.CrcDataLength; i++)
+                {
+                    if (!success) break;
+                    success &= buffer[offset + length - calculator.CrcDataLength + i] == crc.CrcData[i];
+                }
+            }
+
+            return success;
+        }
+        public static bool CheckReverse(byte[] buffer, int offset, int length, ICrcCalculator calculator)
+        {
+            bool success = false;
+
+            if (calculator != null &&
+                buffer.Length > offset &&
+                buffer.Length - offset >= length &&
+                length > calculator.CrcDataLength)
+            {
+                var crc = Calc(buffer, offset, length - calculator.CrcDataLength, calculator);
+                success = crc.CrcData.Length == calculator.CrcDataLength;
+                for (int i = 0; i < calculator.CrcDataLength; i++)
+                {
+                    if (!success) break;
+                    success &= buffer[offset + length - calculator.CrcDataLength + i] == crc.CrcData.Reverse().ToArray()[i];
+                }
+            }
+
+            return success;
+        }
+        public static bool Check(byte[] buffer, ICrcCalculator calculator)
+        {
+            return Check(buffer, 0, buffer.Length, calculator);
+        }
+        public static bool CheckReverse(byte[] buffer, ICrcCalculator calculator)
+        {
+            return CheckReverse(buffer, 0, buffer.Length, calculator);
+        }
+
     }
 }

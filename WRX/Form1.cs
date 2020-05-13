@@ -2,27 +2,22 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
-using System.Net;      
-using System.Net.Sockets;    
-using System.Threading;
-using System.IO;
 using System.Dynamic;
-using System.Diagnostics;
-using System.Data.SQLite;
+using System.Linq;
+using System.Net;
+using System.Net.Sockets;
+using System.Text;
+using System.Threading;
+using System.Windows.Forms;
 
 namespace TransitServer
 {
     public partial class Form1 : Form
     {
         static object locker = new object();
-        bool isUsed = false; int count = 0;
+        bool isUsed = false;
         //public bool isWhileS = true;
-        int localPort = 10114;
+        int localPort = 7003;
         List<GPRSclient> gModemClients = new List<GPRSclient>();
         List<AskueServer>gAskueServers = new List<AskueServer>();
         TcpListener transitServer;
@@ -43,15 +38,13 @@ namespace TransitServer
             Sockets.IsBackground = true;
             //isWhileS = false;
             Sockets.Start();
-
-            m_dbConn = new SQLiteConnection();
-            m_sqlCmd = new SQLiteCommand();
-
-            dbFileName = "transitServer.sqlite";
             song = new SongWMP("song.mp3");
-            CreateDB();
-            EventsFromDB(GetNotQuite());
+            SQLite.Instance.CreateDB();
+            SQLite.Instance.CreateModemsTable();
+            ViewModems(SQLite.Instance.GetModems());
+            EventsFromDB(SQLite.Instance.GetNotQuite());
         }
+
         private void SocketsCreate()
         {
             statusString.Items.Add("Клиенты модемов: 0");
@@ -91,51 +84,94 @@ namespace TransitServer
             lbConsole.Invoke(new Action(() => lbConsole.Items.Add("Запрос на авторизацию отправлен!")));
             while (tcpClient.Connected && isWhile)  // пока клиент подключен, ждем приходящие сообщения
             {
-                byte[] msg = new byte[1024];     // готовим место для принятия сообщения
+                byte[] bytes = new byte[1024];     // готовим место для принятия сообщения
                 try
                 {
 
-                    int count = ns.Read(msg, 0, msg.Length);   // читаем сообщение от клиента
+                    int count = ns.Read(bytes, 0, bytes.Length);   // читаем сообщение от клиента
                     if (count == 0) { isWhile = false; break; }
-
+                    bytes = bytes.Take(count).ToArray();
                     DateTime dateTime = DateTime.Now;
                     if (count == 2)
                     {
-                        if (msg[0] + msg[1] == 0xFF)
+                        if (bytes[0] + bytes[1] == 0xFF)
                         {
-                            ns.Write(msg, 0, 2);
+                            ns.Write(bytes, 0, 2);
                         }
                     }
                     else if (count == 3)
                     {
-                        if ((byte)((msg[1] >> 4) | (msg[1] << 4)) == msg[2])
+                        if ((byte)((bytes[1] >> 4) | (bytes[1] << 4)) == bytes[2])
                         {
                             byte[] arrParams = new byte[] { 0x01, 0x02, 0x07, 0x08, 0x0A, 0x12 };//, 0x13 };
                             for (int i = 0; i < arrParams.Length; i++)
                             {
-                                if (((byte)(msg[1] >> i) & 1) == 1)
+                                if (((byte)(bytes[1] >> i) & 1) == 1)
                                 {
-                                    NewEvent(imeiDictinary.getName(modemClient.IMEI), dateTime, ParameterName(arrParams[i]));
+                                    NewEvent(imeiDictinary.GetNameSql(modemClient.IMEI), dateTime, ParameterName(arrParams[i]));
                                 }
                             }
-
                         }
                     }
                     else if (count > 3)
                     {
-                        answer(msg, count, tcpClient.Client.Handle);
+                        if (CRC.CheckReverse(bytes, new Crc16Modbus()))
+                        {
+                            Guid nullGuid = new Guid();
+                            DateTime dt1970 = new DateTime(1970, 1, 1, 0, 0, 0, 0);
+                            //tsConfig conf = setBytes(bytes);
+                            if (bytes[0] == 0xFB) //длинный СА
+                            {
+                                byte[] bytesCId = bytes.Skip(1).Take(12).ToArray();
+                                string strCId = BitConverter.ToString(bytesCId).Replace("-", "");
+                                byte func = bytes[13];
+                                byte[] bytesObjectId = bytes.Skip(14).Take(16).ToArray();
+                                Guid objectId = new Guid(bytesObjectId);
+                                byte networkAddress = bytes[30];
+                                byte[] byteTime = bytes.Skip(31).Take(4).ToArray();
+                                UInt32 uInt32Time = (UInt32)(byteTime[3] << 24) | (UInt32)(byteTime[2] << 16) | (UInt32)(byteTime[1] << 8) | byteTime[0];
+                                DateTime dtContollers = dt1970.AddSeconds(uInt32Time);
+                                UInt16 code = Helper.ToUInt16(bytes, 35);
+                                DateTime[] dtEvent = new DateTime[16];
+                                for (int i = 0; i < 16; i++)
+                                {
+                                    //byte[] byteTime1 = msg.Skip(37 + i*4 ).Take(4).ToArray();
+                                    //UInt32 uInt32Time1 = (UInt32)(byteTime1[3] << 24) | (UInt32)(byteTime1[2] << 16) | (UInt32)(byteTime1[1] << 8) | byteTime1[0];
+                                    //dtEvent[i] = dt1970.AddSeconds(uInt32Time1);
+                                    dtEvent[i] = u32ToBytes(bytes.Skip(37 + i * 4).Take(4).ToArray());
+                                }
+                                byte[] arrParams = new byte[] { 0x01, 0x02, 0x07, 0x08, 0x0A, 0x12 };//, 0x13 };
+                                for (int i = 0; i < arrParams.Length; i++)
+                                {
+                                    if (((byte)(code >> i) & 1) == 1)
+                                    {
+                                        NewEvent(imeiDictinary.GetNameSql(modemClient.IMEI), dtEvent[i], ParameterName(arrParams[i]));
+                                    }
+                                }
+                            }
+                        }
+                        else if (CRC.Check(bytes, new Crc16Modbus()))
+                        {
+
+                        }
+
+                        answer(bytes, count, tcpClient.Client.Handle);
+
                     }
 
-                    string hexString = string.Format("{2}:receive {1} байт-> {0}", string.Join(" ", msg.Take(count).Select(r => string.Format("{0:X}", r))), count, dateTime.ToString());
+                    string hexString = string.Format("{2}:receive {1} байт-> {0}", string.Join(" ", bytes.Take(count).Select(r => string.Format("{0:X}", r))), count, dateTime.ToString());
                     lbConsole.Invoke(new Action(() => lbConsole.Items.Add(hexString)));
                 }
                 catch (Exception ex)
                 {
                     isWhile = false;
+                    //MessageBox.Show(ex.Message);
                 }
             }  
             string imei = findClientImeibyHandle(tcpClient.Client.Handle);
             tcpClientRemove(tcpClient.Client.Handle);
+            Invoke(new Action(() => SQLite.Instance.UpdateActiveConnectionModemsbyImei(imei, 0))); // придаем статус модема = ПОДКЛЮЧЕН
+            Invoke(new Action(() => ViewModems(SQLite.Instance.GetModems())));  // обновляем таблицу
             tcpClient.Close();
 
             int indexServer = findServerIndexbyIMEI(imei);
@@ -152,8 +188,21 @@ namespace TransitServer
         {
             lbConsole.Invoke(new Action(() => lbConsole.Items.Add(str)));
         }
+        public DateTime u32ToBytes(byte[] bytes)
+        {
+            if (bytes[0] == 0xFF && bytes[1] == 0xFF && bytes[2] == 0xFF && bytes[3] == 0xFF) return DateTime.MinValue;
+            UInt32 u32Date = BitConverter.ToUInt32(bytes, 0);
+            int year = 2000 + (int)((u32Date >> 26) & 0x3F);//year 6
+            int month = (int)((u32Date >> 22) & 0x0F);//mon  4
+                                                      //u32Date = 1364791907;
+            int day = (int)((u32Date >> 17) & 0x1F);//day   5
+            int hour = (int)((u32Date >> 12) & 0x1F);//hour  5
+            int minute = (int)((u32Date >> 6) & 0x3F);//min	 6
+            int second = (int)((u32Date >> 0) & 0x3F);//sec	 6
+            return new DateTime(year, month, day, hour, minute, second);
+        }
 
-        const string COLNAME = "colEventName";
+        const string COLEVENTNAME = "colEventName";
         const string COLMESSAGE = "colEventMessage";
         const string COLDATE = "colEventDate";
         const string COLQUITE = "colEventQuite";
@@ -168,7 +217,7 @@ namespace TransitServer
             foreach(var rec in records)
             {
                 dgvEvent.Rows.Add();
-                dgvEvent.Rows[dgvEvent.RowCount - 1].Cells[COLNAME].Value = rec.name;
+                dgvEvent.Rows[dgvEvent.RowCount - 1].Cells[COLEVENTNAME].Value = rec.name;
                 dgvEvent.Rows[dgvEvent.RowCount - 1].Cells[COLMESSAGE].Value = rec.message;
                 dgvEvent.Rows[dgvEvent.RowCount - 1].Cells[COLDATE].Value = rec.date;
                 var dic = (IDictionary<string, object>)rec;
@@ -185,15 +234,60 @@ namespace TransitServer
 
             }
         }
+
+        const string MODEMSCOLID = "id";
+        const string MODEMSCOLIMEI = "imei";
+        const string MODEMSCOLPORT = "port";
+        const string MODEMSCOLNAME = "name";
+        const string MODEMSCOLLASTCONNECTION = "lastConnection";
+        const string MODEMSCOLACTIVECONNECTION = "activeConnection";
+        public void ViewModems(List<dynamic> records)
+        {
+            try
+            {
+                dgvModems.Rows.Clear();
+            }
+            catch(Exception e)
+            {
+                //MessageBox.Show(e.Message);
+            }
+            
+            if (!records.Any())
+            {
+                return;
+            }
+            foreach (var rec in records)
+            {
+                dgvModems.Rows.Add();
+                dgvModems.Rows[dgvModems.RowCount - 1].Cells[MODEMSCOLID].Value = rec.id;
+                dgvModems.Rows[dgvModems.RowCount - 1].Cells[MODEMSCOLIMEI].Value = rec.imei;
+                dgvModems.Rows[dgvModems.RowCount - 1].Cells[MODEMSCOLPORT].Value = rec.port;
+                dgvModems.Rows[dgvModems.RowCount - 1].Cells[MODEMSCOLNAME].Value = rec.name;
+                dgvModems.Rows[dgvModems.RowCount - 1].Cells[MODEMSCOLLASTCONNECTION].Value = rec.lastConnection;
+                dgvModems.Rows[dgvModems.RowCount - 1].Cells[MODEMSCOLACTIVECONNECTION].Value = rec.activeConnection;
+                if ((int)rec.activeConnection == 1)
+                    dgvModems.Rows[dgvModems.RowCount - 1].Cells[MODEMSCOLACTIVECONNECTION].Style.BackColor = System.Drawing.Color.Green;
+                else dgvModems.Rows[dgvModems.RowCount - 1].Cells[MODEMSCOLACTIVECONNECTION].Style.BackColor = System.Drawing.Color.White;
+            }
+        }
         public void NewEvent(string name, DateTime date, string message)
         {
-            tcDown.Invoke(new Action(() => tcDown.SelectedTab = tpEvent));
-            InsertRow(name, date, message);
-            dgvEvent.Invoke(new Action(() => dgvEvent.Rows.Add()));
-            dgvEvent.Rows[dgvEvent.RowCount - 1].Cells[COLNAME].Value = name;
-            dgvEvent.Rows[dgvEvent.RowCount - 1].Cells[COLMESSAGE].Value = message;
-            dgvEvent.Rows[dgvEvent.RowCount - 1].Cells[COLDATE].Value = date.ToString();
-            song.Play();
+            List<dynamic> tmp = SQLite.Instance.GetRowForCheck(name, date, message);
+            if (tmp.Count > 0)
+            {
+
+            }
+            else
+            {
+                tcDown.Invoke(new Action(() => tcDown.SelectedTab = tpEvent));
+                SQLite.Instance.InsertRow(name, date, message);
+                dgvEvent.Invoke(new Action(() => dgvEvent.Rows.Add()));
+                dgvEvent.Rows[dgvEvent.RowCount - 1].Cells[COLEVENTNAME].Value = name;
+                dgvEvent.Rows[dgvEvent.RowCount - 1].Cells[COLMESSAGE].Value = message;
+                dgvEvent.Rows[dgvEvent.RowCount - 1].Cells[COLDATE].Value = date.ToString();
+                song.Play();
+            }
+            
         }
         public string ParameterName(byte param)
         {
@@ -260,6 +354,7 @@ namespace TransitServer
                     gModemClients.RemoveAt(i);
             }
             catch { }
+
         }
 
         private void answer(byte[] msg, int len, IntPtr clientHandle)
@@ -307,14 +402,15 @@ namespace TransitServer
                     builder.Append(Encoding.UTF8.GetString(bytes, 6, 15));
                     IMEI = builder.ToString();
                     DateTime dateTime = DateTime.Now;
-                    lbConsole.Invoke(new Action(() => lbConsole.Items.Add($"{dateTime.ToString()}: Ответ на запрос авторизации получен! IMEI: {IMEI}"))); 
-
+                    Console($"{dateTime.ToString()}: Ответ на запрос авторизации получен! IMEI: {IMEI}");
                     if (index >= 0)
                     {
                         gModemClients[index].IMEI = IMEI;
-                        int port = imeiDictinary.getPort(IMEI);
-                        if (port == 0) port = imeiDictinary.setPort(IMEI);
+                        int port = imeiDictinary.GetPortSql(IMEI);
+                        imeiDictinary.SetPortSql(IMEI); // записываем модем в БД и задаем порт
+                        Invoke(new Action(() => SQLite.Instance.UpdateActiveConnectionModemsbyImei(IMEI, 1))); // придаем статус модема = ПОДКЛЮЧЕН
                         gModemClients[index].PORT = port;
+                        Invoke(new Action(() => ViewModems(SQLite.Instance.GetModems())));  // обновляем таблицу
 
                         int indexSever = findServerIndexbyIMEI(IMEI);
                         if (indexSever < 0) 
@@ -356,7 +452,7 @@ namespace TransitServer
         {
             if(e.ColumnIndex == 3)
             {
-                QuiteRow(dgvEvent.Rows[e.RowIndex].Cells[COLNAME].Value.ToString(), dgvEvent.Rows[e.RowIndex].Cells[COLDATE].Value.ToString(), dgvEvent.Rows[e.RowIndex].Cells[COLMESSAGE].Value.ToString());
+                SQLite.Instance.QuiteRow(dgvEvent.Rows[e.RowIndex].Cells[COLEVENTNAME].Value.ToString(), dgvEvent.Rows[e.RowIndex].Cells[COLDATE].Value.ToString(), dgvEvent.Rows[e.RowIndex].Cells[COLMESSAGE].Value.ToString());
                 dgvEvent.Rows.RemoveAt(e.RowIndex);
                 if (dgvEvent.RowCount == 0) song.Stop();
             }
@@ -372,13 +468,61 @@ namespace TransitServer
         {
             if (isArcive)
             {
-                EventsFromDB(GetNotQuite());
+                EventsFromDB(SQLite.Instance.GetNotQuite());
             }
             else
             {
-                EventsFromDB(GetAll());
+                EventsFromDB(SQLite.Instance.GetAll());
             }
             isArcive = !isArcive;
+        }
+
+        private void btn_AddModem_Click(object sender, EventArgs e)
+        {
+            FormAddModem formAddModem = new FormAddModem();
+            if (formAddModem.ShowDialog() == DialogResult.OK)
+            {
+                SQLite.Instance.InsertModems(formAddModem.imei, formAddModem.port, formAddModem.name);
+            }
+            ViewModems(SQLite.Instance.GetModems());
+        }
+
+        private void updateDgvModems_Click(object sender, EventArgs e)
+        {
+            ViewModems(SQLite.Instance.GetModems());
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            Thread SendAuth = new Thread(sendAuth);
+            SendAuth.IsBackground = true;
+            SendAuth.Start();
+        }
+        private void btnClear_Click(object sender, EventArgs e)
+        {
+            lbConsole.Items.Clear();
+        }
+        private DataGridViewCellEventArgs mouseLocation;
+        private void tsmiRedactorModema_Click(object sender, EventArgs e)
+        {
+            ActionModems redactorObj = new ActionModems();
+            redactorObj.Owner = this;
+            redactorObj.oldNameModem = dgvModems.Rows[mouseLocation.RowIndex].Cells[MODEMSCOLNAME].Value.ToString();
+            redactorObj.Show();
+            redactorObj.txtId.Text = dgvModems.Rows[mouseLocation.RowIndex].Cells[MODEMSCOLID].Value.ToString();
+            redactorObj.txtImei.Text = dgvModems.Rows[mouseLocation.RowIndex].Cells[MODEMSCOLIMEI].Value.ToString();
+            redactorObj.txtPort.Text = dgvModems.Rows[mouseLocation.RowIndex].Cells[MODEMSCOLPORT].Value.ToString();
+            redactorObj.txtName.Text = dgvModems.Rows[mouseLocation.RowIndex].Cells[MODEMSCOLNAME].Value.ToString();
+        }
+
+        private void dgvModems_CellMouseEnter(object sender, DataGridViewCellEventArgs e)
+        {
+            mouseLocation = e;
+        }
+
+        private void txtFinder_TextChanged(object sender, EventArgs e)
+        {
+
         }
     }
 }

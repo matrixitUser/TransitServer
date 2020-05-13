@@ -1,11 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
 using System.Net;      // потребуется
 using System.Net.Sockets;    // потребуется
+using System.Text;
 using System.Windows.Forms;
 
 
@@ -44,6 +40,7 @@ namespace TransitServer
                 catch (Exception e)
                 {
                     tcpclient.Close();
+                    //MessageBox.Show(e.Message);
                     break;  //TODO 
                 }
                 string statusStr = string.Format("Клиенты АСКУЭ:{0}", gAskueServers.Count);
