@@ -20,7 +20,7 @@ namespace TransitServer
 
         private void btnDeleteModem_Click(object sender, EventArgs e)
         {
-            SQLite.Instance.DeleteModems(txtId.Text);
+            //SQLite.Instance.DeleteModems(txtId.Text);
             ViewModems(SQLite.Instance.GetModems());
             Close();
         }
@@ -57,7 +57,7 @@ namespace TransitServer
 
         private void btnSaveChanges_Click(object sender, EventArgs e)
         {
-            SQLite.Instance.UpdateNameModemsbyImei(txtImei.Text, txtName.Text);
+            //SQLite.Instance.UpdateNameModemsbyImei(txtImei.Text, txtName.Text);
             MessageBox.Show("Изменения сохранены!");
         }
 

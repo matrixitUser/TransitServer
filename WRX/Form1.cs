@@ -17,7 +17,7 @@ namespace TransitServer
         static object locker = new object();
         bool isUsed = false;
         //public bool isWhileS = true;
-        int localPort = 7003;
+        int localPort = 10114;
         List<GPRSclient> gModemClients = new List<GPRSclient>();
         List<AskueServer>gAskueServers = new List<AskueServer>();
         TcpListener transitServer;
@@ -509,9 +509,9 @@ namespace TransitServer
             redactorObj.Owner = this;
             redactorObj.oldNameModem = dgvModems.Rows[mouseLocation.RowIndex].Cells[MODEMSCOLNAME].Value.ToString();
             redactorObj.Show();
-            redactorObj.txtId.Text = dgvModems.Rows[mouseLocation.RowIndex].Cells[MODEMSCOLID].Value.ToString();
-            redactorObj.txtImei.Text = dgvModems.Rows[mouseLocation.RowIndex].Cells[MODEMSCOLIMEI].Value.ToString();
-            redactorObj.txtPort.Text = dgvModems.Rows[mouseLocation.RowIndex].Cells[MODEMSCOLPORT].Value.ToString();
+            //redactorObj.txtId.Text = dgvModems.Rows[mouseLocation.RowIndex].Cells[MODEMSCOLID].Value.ToString();
+            //redactorObj.txtImei.Text = dgvModems.Rows[mouseLocation.RowIndex].Cells[MODEMSCOLIMEI].Value.ToString();
+            //redactorObj.txtPort.Text = dgvModems.Rows[mouseLocation.RowIndex].Cells[MODEMSCOLPORT].Value.ToString();
             redactorObj.txtName.Text = dgvModems.Rows[mouseLocation.RowIndex].Cells[MODEMSCOLNAME].Value.ToString();
         }
 
