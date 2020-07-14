@@ -40,13 +40,18 @@ namespace TransitServer
             {
                 m_dbConn = new SQLiteConnection("Data Source=" + dbFileName + ";Version=3;");
                 m_dbConn.Open();
-                m_sqlCmd.Connection = m_dbConn;
+                SQLiteCommand m_sqlCmd1 = new SQLiteCommand(m_dbConn);
+                SQLiteCommand m_sqlCmd2 = new SQLiteCommand(m_dbConn);
+                SQLiteCommand m_sqlCmd3 = new SQLiteCommand(m_dbConn);
 
-                m_sqlCmd.CommandText = "CREATE TABLE IF NOT EXISTS dbEvents (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, date TEXT, message TEXT, quite TEXT)";
-                //m_sqlCmd.CommandText = "CREATE TABLE IF NOT EXISTS modems (id INTEGER PRIMARY KEY AUTOINCREMENT, imei TEXT, port TEXT, name TEXT, quite TEXT)";
+                m_sqlCmd1.CommandText = "CREATE TABLE IF NOT EXISTS dbEvents (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, date TEXT, message TEXT, quite TEXT)";
+                m_sqlCmd2.CommandText = "CREATE TABLE IF NOT EXISTS modems (id INTEGER PRIMARY KEY AUTOINCREMENT, imei TEXT, port TEXT, name TEXT, lastConnection TEXT, activeConnection INTEGER)";
+                m_sqlCmd3.CommandText = "CREATE TABLE IF NOT EXISTS nodesTree (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, parent TEXT)";
 
-                m_sqlCmd.ExecuteNonQuery();
-                
+                m_sqlCmd1.ExecuteNonQuery();
+                m_sqlCmd2.ExecuteNonQuery();
+                m_sqlCmd3.ExecuteNonQuery();
+
             }
             catch (SQLiteException ex)
             {
@@ -54,25 +59,50 @@ namespace TransitServer
             }
         }
 
-        public void CreateModemsTable()
+        public void InsertNode(string nameNode, string parent)
         {
-            if (!File.Exists(dbFileName))
-                SQLiteConnection.CreateFile(dbFileName);
-
-            try
+            // записываем информацию в базу данных
+            using (SQLiteConnection Connect = new SQLiteConnection("Data Source=" + dbFileName + ";Version=3;"))
             {
-                m_dbConn = new SQLiteConnection("Data Source=" + dbFileName + ";Version=3;");
-                m_dbConn.Open();
-                m_sqlCmd.Connection = m_dbConn;
-
-                m_sqlCmd.CommandText = "CREATE TABLE IF NOT EXISTS modems (id INTEGER PRIMARY KEY AUTOINCREMENT, imei TEXT, port TEXT, name TEXT, lastConnection TEXT, activeConnection INTEGER)";
-                m_sqlCmd.ExecuteNonQuery();
-
+                string commandText = "INSERT INTO [nodesTree] ([name], [parent]) VALUES(@nameNode, @parent)";
+                SQLiteCommand Command = new SQLiteCommand(commandText, Connect);
+                Command.Parameters.AddWithValue("@nameNode", nameNode);
+                Command.Parameters.AddWithValue("@parent", parent);
+                Connect.Open();
+                Command.ExecuteNonQuery();
+                Connect.Close();
             }
-            catch (SQLiteException ex)
+        }
+
+        public List<dynamic> GetAllNodesTree()
+        {
+            List<dynamic> listNodesTree = new List<dynamic>();
+
+            using (SQLiteConnection Connect = new SQLiteConnection("Data Source=" + dbFileName + ";Version=3;"))
             {
-                MessageBox.Show("Error: " + ex.Message);
+                Connect.Open();
+                SQLiteCommand Command = new SQLiteCommand
+                {
+                    Connection = Connect,
+                    CommandText = @"SELECT * FROM [nodesTree]"
+                };
+                SQLiteDataReader sqlReader = Command.ExecuteReader();
+
+                while (sqlReader.Read()) // считываем и вносим в лист все параметры
+                {
+                    try
+                    {
+                        dynamic record = new ExpandoObject();
+                        record.id = sqlReader["id"];
+                        record.name = (string)sqlReader["name"];
+                        record.parent = (string)sqlReader["parent"];
+                        listNodesTree.Add(record);
+                    }
+                    catch { }
+                }
+                Connect.Close();
             }
+            return listNodesTree;
         }
 
         public void InsertModems(string imei, string port, string name)

@@ -102,6 +102,12 @@
     <Compile Include="FormAddModem.Designer.cs">
       <DependentUpon>FormAddModem.cs</DependentUpon>
     </Compile>
+    <Compile Include="FormAddNode.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormAddNode.Designer.cs">
+      <DependentUpon>FormAddNode.cs</DependentUpon>
+    </Compile>
     <Compile Include="GPRSclient.cs" />
     <Compile Include="Helper.cs" />
     <Compile Include="ICrcCalculator.cs" />
@@ -124,6 +130,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="FormAddModem.resx">
       <DependentUpon>FormAddModem.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FormAddNode.resx">
+      <DependentUpon>FormAddNode.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>

@@ -16,7 +16,6 @@ namespace TransitServer
     {
         static object locker = new object();
         bool isUsed = false;
-        //public bool isWhileS = true;
         int localPort = 10114;
         List<GPRSclient> gModemClients = new List<GPRSclient>();
         List<AskueServer>gAskueServers = new List<AskueServer>();
@@ -36,15 +35,46 @@ namespace TransitServer
             transitServer.Start();  // запускаем сервер
             Thread Sockets = new Thread(SocketsCreate);
             Sockets.IsBackground = true;
-            //isWhileS = false;
             Sockets.Start();
             song = new SongWMP("song.mp3");
             SQLite.Instance.CreateDB();
-            SQLite.Instance.CreateModemsTable();
             ViewModems(SQLite.Instance.GetModems());
             EventsFromDB(SQLite.Instance.GetNotQuite());
+            InitTree();
         }
 
+        private TreeNodeMouseClickEventArgs nodeLocation;
+        private void trView1_NodeMouseClick(object sender, TreeNodeMouseClickEventArgs e)
+        {
+            nodeLocation = e;
+        }
+        public void InitTree()
+        {
+            trView1.Nodes.Add("0", "Все");
+            List<dynamic> listNodesTree = SQLite.Instance.GetAllNodesTree();
+            AtChildrenToTree(listNodesTree, "Все", trView1.Nodes["0"]);
+            trView1.Nodes["0"].ExpandAll();
+        }
+        public void AtChildrenToTree(List<dynamic> listNodesTree, string parent, TreeNode selectedNode)
+        {
+            List<dynamic> listChildrens = listNodesTree.FindAll(x => x.parent == parent);
+            foreach(var child in listChildrens)
+            {
+                selectedNode.Nodes.Add(child.id.ToString(), child.name);
+                AtChildrenToTree(listNodesTree, child.name, selectedNode.Nodes[child.id.ToString()]);
+            }
+        }
+        private void ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            FormAddNode formAddNode = new FormAddNode();
+            if (formAddNode.ShowDialog() == DialogResult.OK)
+            {
+                TreeNode newNode = new TreeNode(formAddNode.txtNameGroup.Text);
+                nodeLocation.Node.Nodes.Add(newNode);
+                nodeLocation.Node.Expand();
+                SQLite.Instance.InsertNode(newNode.Text, newNode.Parent.Text);
+            }
+        }
         private void SocketsCreate()
         {
             statusString.Items.Add("Клиенты модемов: 0");
@@ -503,7 +533,7 @@ namespace TransitServer
             lbConsole.Items.Clear();
         }
         private DataGridViewCellEventArgs mouseLocation;
-        private void tsmiRedactorModema_Click(object sender, EventArgs e)
+        private void TsmiRedactorModema_Click(object sender, EventArgs e)
         {
             ActionModems redactorObj = new ActionModems();
             redactorObj.Owner = this;
@@ -521,6 +551,11 @@ namespace TransitServer
         }
 
         private void txtFinder_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void DelToolStripMenuItem_Click(object sender, EventArgs e)
         {
 
         }

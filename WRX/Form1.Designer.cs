@@ -57,7 +57,10 @@
             this.statusString = new System.Windows.Forms.StatusStrip();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
             this.panel11 = new System.Windows.Forms.Panel();
-            this.panel12 = new System.Windows.Forms.Panel();
+            this.trView1 = new System.Windows.Forms.TreeView();
+            this.contextMenuStrip2 = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.добавитьГруппуToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.удалитьГруппуToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.label22 = new System.Windows.Forms.Label();
             this.txtFinder = new System.Windows.Forms.TextBox();
             this.label23 = new System.Windows.Forms.Label();
@@ -80,6 +83,7 @@
             this.panel7.SuspendLayout();
             this.panel6.SuspendLayout();
             this.panel11.SuspendLayout();
+            this.contextMenuStrip2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvModems)).BeginInit();
             this.SuspendLayout();
             // 
@@ -115,7 +119,7 @@
             this.tsmiRedactorModema.Name = "tsmiRedactorModema";
             this.tsmiRedactorModema.Size = new System.Drawing.Size(171, 22);
             this.tsmiRedactorModema.Text = "Свойства модема";
-            this.tsmiRedactorModema.Click += new System.EventHandler(this.tsmiRedactorModema_Click);
+            this.tsmiRedactorModema.Click += new System.EventHandler(this.TsmiRedactorModema_Click);
             // 
             // panel5
             // 
@@ -327,20 +331,43 @@
             // panel11
             // 
             this.panel11.BackColor = System.Drawing.Color.White;
-            this.panel11.Controls.Add(this.panel12);
+            this.panel11.Controls.Add(this.trView1);
             this.panel11.Controls.Add(this.label22);
             this.panel11.Location = new System.Drawing.Point(6, 12);
             this.panel11.Name = "panel11";
             this.panel11.Size = new System.Drawing.Size(330, 460);
             this.panel11.TabIndex = 4;
             // 
-            // panel12
+            // trView1
             // 
-            this.panel12.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("panel12.BackgroundImage")));
-            this.panel12.Location = new System.Drawing.Point(11, 60);
-            this.panel12.Name = "panel12";
-            this.panel12.Size = new System.Drawing.Size(241, 366);
-            this.panel12.TabIndex = 1;
+            this.trView1.ContextMenuStrip = this.contextMenuStrip2;
+            this.trView1.Location = new System.Drawing.Point(6, 36);
+            this.trView1.Name = "trView1";
+            this.trView1.Size = new System.Drawing.Size(321, 421);
+            this.trView1.TabIndex = 1;
+            this.trView1.NodeMouseClick += new System.Windows.Forms.TreeNodeMouseClickEventHandler(this.trView1_NodeMouseClick);
+            // 
+            // contextMenuStrip2
+            // 
+            this.contextMenuStrip2.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.добавитьГруппуToolStripMenuItem,
+            this.удалитьГруппуToolStripMenuItem});
+            this.contextMenuStrip2.Name = "contextMenuStrip2";
+            this.contextMenuStrip2.Size = new System.Drawing.Size(168, 48);
+            // 
+            // добавитьГруппуToolStripMenuItem
+            // 
+            this.добавитьГруппуToolStripMenuItem.Name = "добавитьГруппуToolStripMenuItem";
+            this.добавитьГруппуToolStripMenuItem.Size = new System.Drawing.Size(167, 22);
+            this.добавитьГруппуToolStripMenuItem.Text = "Добавить группу";
+            this.добавитьГруппуToolStripMenuItem.Click += new System.EventHandler(this.ToolStripMenuItem_Click);
+            // 
+            // удалитьГруппуToolStripMenuItem
+            // 
+            this.удалитьГруппуToolStripMenuItem.Name = "удалитьГруппуToolStripMenuItem";
+            this.удалитьГруппуToolStripMenuItem.Size = new System.Drawing.Size(167, 22);
+            this.удалитьГруппуToolStripMenuItem.Text = "Удалить группу";
+            this.удалитьГруппуToolStripMenuItem.Click += new System.EventHandler(this.DelToolStripMenuItem_Click);
             // 
             // label22
             // 
@@ -467,6 +494,7 @@
             this.panel6.ResumeLayout(false);
             this.panel11.ResumeLayout(false);
             this.panel11.PerformLayout();
+            this.contextMenuStrip2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.dgvModems)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
@@ -497,7 +525,6 @@
         private System.Windows.Forms.DataGridViewButtonColumn colEventQuite;
         private System.Windows.Forms.Button btn_AddModem;
         private System.Windows.Forms.Panel panel11;
-        private System.Windows.Forms.Panel panel12;
         private System.Windows.Forms.Label label22;
         private System.Windows.Forms.Button updateDgvModems;
         private System.Windows.Forms.TextBox txtFinder;
@@ -512,6 +539,10 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn name;
         private System.Windows.Forms.DataGridViewTextBoxColumn lastConnection;
         private System.Windows.Forms.DataGridViewTextBoxColumn activeConnection;
+        private System.Windows.Forms.TreeView trView1;
+        private System.Windows.Forms.ContextMenuStrip contextMenuStrip2;
+        private System.Windows.Forms.ToolStripMenuItem добавитьГруппуToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem удалитьГруппуToolStripMenuItem;
     }
 }
 
