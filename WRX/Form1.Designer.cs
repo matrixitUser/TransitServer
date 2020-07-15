@@ -35,6 +35,7 @@
             this.btn_AddModem = new System.Windows.Forms.Button();
             this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.tsmiRedactorModema = new System.Windows.Forms.ToolStripMenuItem();
+            this.tsmiAddGroup = new System.Windows.Forms.ToolStripMenuItem();
             this.panel5 = new System.Windows.Forms.Panel();
             this.button2 = new System.Windows.Forms.Button();
             this.tcDown = new System.Windows.Forms.TabControl();
@@ -60,11 +61,10 @@
             this.trView1 = new System.Windows.Forms.TreeView();
             this.contextMenuStrip2 = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.добавитьГруппуToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.удалитьГруппуToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.tsmiDelNode = new System.Windows.Forms.ToolStripMenuItem();
             this.label22 = new System.Windows.Forms.Label();
             this.txtFinder = new System.Windows.Forms.TextBox();
             this.label23 = new System.Windows.Forms.Label();
-            this.dataGridViewImageColumn1 = new System.Windows.Forms.DataGridViewImageColumn();
             this.dgvModems = new System.Windows.Forms.DataGridView();
             this.id = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.imei = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -72,6 +72,8 @@
             this.name = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.lastConnection = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.activeConnection = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.btChangePort = new System.Windows.Forms.Button();
+            this.dataGridViewImageColumn1 = new System.Windows.Forms.DataGridViewImageColumn();
             this.contextMenuStrip1.SuspendLayout();
             this.panel5.SuspendLayout();
             this.tcDown.SuspendLayout();
@@ -110,16 +112,24 @@
             // contextMenuStrip1
             // 
             this.contextMenuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.tsmiRedactorModema});
+            this.tsmiRedactorModema,
+            this.tsmiAddGroup});
             this.contextMenuStrip1.Name = "contextMenuStrip1";
-            this.contextMenuStrip1.Size = new System.Drawing.Size(172, 26);
+            this.contextMenuStrip1.Size = new System.Drawing.Size(177, 48);
             // 
             // tsmiRedactorModema
             // 
             this.tsmiRedactorModema.Name = "tsmiRedactorModema";
-            this.tsmiRedactorModema.Size = new System.Drawing.Size(171, 22);
+            this.tsmiRedactorModema.Size = new System.Drawing.Size(176, 22);
             this.tsmiRedactorModema.Text = "Свойства модема";
             this.tsmiRedactorModema.Click += new System.EventHandler(this.TsmiRedactorModema_Click);
+            // 
+            // tsmiAddGroup
+            // 
+            this.tsmiAddGroup.Name = "tsmiAddGroup";
+            this.tsmiAddGroup.Size = new System.Drawing.Size(176, 22);
+            this.tsmiAddGroup.Text = "Добавить в группу";
+            this.tsmiAddGroup.Click += new System.EventHandler(this.TsmiAddGroup_Click);
             // 
             // panel5
             // 
@@ -351,7 +361,7 @@
             // 
             this.contextMenuStrip2.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.добавитьГруппуToolStripMenuItem,
-            this.удалитьГруппуToolStripMenuItem});
+            this.tsmiDelNode});
             this.contextMenuStrip2.Name = "contextMenuStrip2";
             this.contextMenuStrip2.Size = new System.Drawing.Size(168, 48);
             // 
@@ -362,12 +372,12 @@
             this.добавитьГруппуToolStripMenuItem.Text = "Добавить группу";
             this.добавитьГруппуToolStripMenuItem.Click += new System.EventHandler(this.ToolStripMenuItem_Click);
             // 
-            // удалитьГруппуToolStripMenuItem
+            // tsmiDelNode
             // 
-            this.удалитьГруппуToolStripMenuItem.Name = "удалитьГруппуToolStripMenuItem";
-            this.удалитьГруппуToolStripMenuItem.Size = new System.Drawing.Size(167, 22);
-            this.удалитьГруппуToolStripMenuItem.Text = "Удалить группу";
-            this.удалитьГруппуToolStripMenuItem.Click += new System.EventHandler(this.DelToolStripMenuItem_Click);
+            this.tsmiDelNode.Name = "tsmiDelNode";
+            this.tsmiDelNode.Size = new System.Drawing.Size(167, 22);
+            this.tsmiDelNode.Text = "Удалить группу";
+            this.tsmiDelNode.Click += new System.EventHandler(this.DelToolStripMenuItem_Click);
             // 
             // label22
             // 
@@ -386,7 +396,7 @@
             this.txtFinder.Name = "txtFinder";
             this.txtFinder.Size = new System.Drawing.Size(173, 26);
             this.txtFinder.TabIndex = 5;
-            this.txtFinder.TextChanged += new System.EventHandler(this.txtFinder_TextChanged);
+            this.txtFinder.TextChanged += new System.EventHandler(this.TxtFinder_TextChanged);
             // 
             // label23
             // 
@@ -397,15 +407,6 @@
             this.label23.Size = new System.Drawing.Size(54, 19);
             this.label23.TabIndex = 6;
             this.label23.Text = "Поиск:";
-            // 
-            // dataGridViewImageColumn1
-            // 
-            this.dataGridViewImageColumn1.HeaderText = " ";
-            this.dataGridViewImageColumn1.Image = ((System.Drawing.Image)(resources.GetObject("dataGridViewImageColumn1.Image")));
-            this.dataGridViewImageColumn1.Name = "dataGridViewImageColumn1";
-            this.dataGridViewImageColumn1.Resizable = System.Windows.Forms.DataGridViewTriState.True;
-            this.dataGridViewImageColumn1.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Automatic;
-            this.dataGridViewImageColumn1.Width = 20;
             // 
             // dgvModems
             // 
@@ -423,7 +424,7 @@
             this.dgvModems.GridColor = System.Drawing.SystemColors.Control;
             this.dgvModems.Location = new System.Drawing.Point(350, 62);
             this.dgvModems.Name = "dgvModems";
-            this.dgvModems.Size = new System.Drawing.Size(759, 360);
+            this.dgvModems.Size = new System.Drawing.Size(663, 360);
             this.dgvModems.TabIndex = 7;
             this.dgvModems.CellMouseEnter += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvModems_CellMouseEnter);
             // 
@@ -463,12 +464,34 @@
             this.activeConnection.Resizable = System.Windows.Forms.DataGridViewTriState.True;
             this.activeConnection.Width = 70;
             // 
+            // btChangePort
+            // 
+            this.btChangePort.BackColor = System.Drawing.Color.Aquamarine;
+            this.btChangePort.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("btChangePort.BackgroundImage")));
+            this.btChangePort.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
+            this.btChangePort.Location = new System.Drawing.Point(967, 12);
+            this.btChangePort.Name = "btChangePort";
+            this.btChangePort.Size = new System.Drawing.Size(46, 42);
+            this.btChangePort.TabIndex = 8;
+            this.btChangePort.UseVisualStyleBackColor = false;
+            this.btChangePort.Click += new System.EventHandler(this.BtChangePort_Click);
+            // 
+            // dataGridViewImageColumn1
+            // 
+            this.dataGridViewImageColumn1.HeaderText = " ";
+            this.dataGridViewImageColumn1.Image = ((System.Drawing.Image)(resources.GetObject("dataGridViewImageColumn1.Image")));
+            this.dataGridViewImageColumn1.Name = "dataGridViewImageColumn1";
+            this.dataGridViewImageColumn1.Resizable = System.Windows.Forms.DataGridViewTriState.True;
+            this.dataGridViewImageColumn1.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Automatic;
+            this.dataGridViewImageColumn1.Width = 20;
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.Azure;
             this.ClientSize = new System.Drawing.Size(1309, 728);
+            this.Controls.Add(this.btChangePort);
             this.Controls.Add(this.dgvModems);
             this.Controls.Add(this.btn_AddModem);
             this.Controls.Add(this.updateDgvModems);
@@ -542,7 +565,9 @@
         private System.Windows.Forms.TreeView trView1;
         private System.Windows.Forms.ContextMenuStrip contextMenuStrip2;
         private System.Windows.Forms.ToolStripMenuItem добавитьГруппуToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem удалитьГруппуToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem tsmiDelNode;
+        private System.Windows.Forms.ToolStripMenuItem tsmiAddGroup;
+        private System.Windows.Forms.Button btChangePort;
     }
 }
 

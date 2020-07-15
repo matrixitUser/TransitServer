@@ -9,6 +9,8 @@ using System.Net.Sockets;
 using System.Text;
 using System.Threading;
 using System.Windows.Forms;
+using System.Configuration;
+using System.Collections.Specialized;
 
 namespace TransitServer
 {
@@ -31,29 +33,78 @@ namespace TransitServer
         }
         private void Form1_Load(object sender, EventArgs e)
         {
-            transitServer = new TcpListener(IPAddress.Any, localPort);
-            transitServer.Start();  // запускаем сервер
-            Thread Sockets = new Thread(SocketsCreate);
-            Sockets.IsBackground = true;
-            Sockets.Start();
-            song = new SongWMP("song.mp3");
-            SQLite.Instance.CreateDB();
-            ViewModems(SQLite.Instance.GetModems());
-            EventsFromDB(SQLite.Instance.GetNotQuite());
-            InitTree();
+            try
+            {
+                transitServer = new TcpListener(IPAddress.Any, localPort);
+                transitServer.Start();  // запускаем сервер
+                Thread Sockets = new Thread(SocketsCreate);
+                Sockets.IsBackground = true;
+                Sockets.Start();
+                song = new SongWMP("song.mp3");
+                SQLite.Instance.CreateDB();
+                SQLite.Instance.ZeroingActiveConnection();
+                ViewModems(SQLite.Instance.GetModems());
+                EventsFromDB(SQLite.Instance.GetNotQuite());
+                InitTree(trView1);
+            }
+            catch(Exception exc)
+            {
+                MessageBox.Show(exc.Message);
+                Application.Exit();
+            }
+            
         }
 
         private TreeNodeMouseClickEventArgs nodeLocation;
         private void trView1_NodeMouseClick(object sender, TreeNodeMouseClickEventArgs e)
         {
             nodeLocation = e;
-        }
-        public void InitTree()
-        {
-            trView1.Nodes.Add("0", "Все");
+            List<string> tmp = SQLite.Instance.GetParentsNodeForCheck(e.Node.Text);
+            if (tmp.Count > 0) tsmiDelNode.Enabled = false;
+            else tsmiDelNode.Enabled = true;
+
+            List<dynamic> listModems = SQLite.Instance.GetModems();
+            List<dynamic> listViewModems = new List<dynamic>();
             List<dynamic> listNodesTree = SQLite.Instance.GetAllNodesTree();
-            AtChildrenToTree(listNodesTree, "Все", trView1.Nodes["0"]);
-            trView1.Nodes["0"].ExpandAll();
+            TreeNode selectedNode;
+            if (e.Node.Name == "0")
+            {
+                ViewModems(SQLite.Instance.GetModems());
+            }
+            else
+            {
+                selectedNode = e.Node;
+                foreach(var obj in listModems)
+                {
+                    if (selectedNode.Name == obj.group) listViewModems.Add(obj);
+                }
+                if (selectedNode.FirstNode!=null) listViewModems.AddRange(RoundOnNodeOut(listModems, selectedNode.FirstNode));
+                ViewModems(listViewModems);
+            }
+        }
+        public List<dynamic> RoundOnNodeOut(List<dynamic> listModems, TreeNode selectedNode)
+        {
+            List<dynamic> listViewModems = new List<dynamic>();
+            for (; ; )
+            {
+                foreach (var obj1 in listModems)
+                {
+                    if (selectedNode.Name == obj1.group) listViewModems.Add(obj1);
+                }
+
+                selectedNode = selectedNode.NextNode;
+                if (selectedNode == null) return listViewModems;
+                RoundOnNodeOut(listModems, selectedNode);
+            }
+        }
+
+        public void InitTree(TreeView treeView)
+        {
+            treeView.Nodes.Clear();
+            treeView.Nodes.Add("0", "Все");
+            List<dynamic> listNodesTree = SQLite.Instance.GetAllNodesTree();
+            AtChildrenToTree(listNodesTree, "Все", treeView.Nodes["0"]);
+            treeView.Nodes["0"].ExpandAll();
         }
         public void AtChildrenToTree(List<dynamic> listNodesTree, string parent, TreeNode selectedNode)
         {
@@ -64,7 +115,9 @@ namespace TransitServer
                 AtChildrenToTree(listNodesTree, child.name, selectedNode.Nodes[child.id.ToString()]);
             }
         }
-        private void ToolStripMenuItem_Click(object sender, EventArgs e)
+
+
+        private void ToolStripMenuItem_Click(object sender, EventArgs e) // добавить группу
         {
             FormAddNode formAddNode = new FormAddNode();
             if (formAddNode.ShowDialog() == DialogResult.OK)
@@ -294,7 +347,6 @@ namespace TransitServer
                 dgvModems.Rows[dgvModems.RowCount - 1].Cells[MODEMSCOLPORT].Value = rec.port;
                 dgvModems.Rows[dgvModems.RowCount - 1].Cells[MODEMSCOLNAME].Value = rec.name;
                 dgvModems.Rows[dgvModems.RowCount - 1].Cells[MODEMSCOLLASTCONNECTION].Value = rec.lastConnection;
-                dgvModems.Rows[dgvModems.RowCount - 1].Cells[MODEMSCOLACTIVECONNECTION].Value = rec.activeConnection;
                 if ((int)rec.activeConnection == 1)
                     dgvModems.Rows[dgvModems.RowCount - 1].Cells[MODEMSCOLACTIVECONNECTION].Style.BackColor = System.Drawing.Color.Green;
                 else dgvModems.Rows[dgvModems.RowCount - 1].Cells[MODEMSCOLACTIVECONNECTION].Style.BackColor = System.Drawing.Color.White;
@@ -550,14 +602,43 @@ namespace TransitServer
             mouseLocation = e;
         }
 
-        private void txtFinder_TextChanged(object sender, EventArgs e)
+        private void TxtFinder_TextChanged(object sender, EventArgs e)
         {
 
         }
 
         private void DelToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            SQLite.Instance.DeleteNode(nodeLocation.Node.Name);
+            InitTree(trView1);
+        }
 
+        private void TsmiAddGroup_Click(object sender, EventArgs e)
+        {
+            FormAddInGroup formAddInGroup = new FormAddInGroup();
+            formAddInGroup.labNameModem.Text = dgvModems.Rows[mouseLocation.RowIndex].Cells[MODEMSCOLNAME].Value.ToString();
+            formAddInGroup.labImei.Text = dgvModems.Rows[mouseLocation.RowIndex].Cells[MODEMSCOLIMEI].Value.ToString();
+            formAddInGroup.labLastConnection.Text = dgvModems.Rows[mouseLocation.RowIndex].Cells[MODEMSCOLLASTCONNECTION].Value.ToString();
+            InitTree(formAddInGroup.treeViewAdd);
+            if (formAddInGroup.ShowDialog() == DialogResult.OK)
+            {
+                Console($"Объект {formAddInGroup.labNameModem.Text} был успешно добавлен в группу {formAddInGroup.nameNode}");
+            }
+        }
+
+        private void BtChangePort_Click(object sender, EventArgs e)
+        {
+            var config = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
+
+            FormChangePort formChangePort = new FormChangePort();
+            formChangePort.txtPort.Text = ConfigurationManager.AppSettings.Get("port");
+            if (formChangePort.ShowDialog() == DialogResult.OK)
+            {
+                config.AppSettings.Settings["port"].Value = formChangePort.txtPort.Text;
+                config.Save();
+                ConfigurationManager.RefreshSection("appSettings");
+                Application.Restart();
+            }
         }
     }
 }

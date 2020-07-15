@@ -45,7 +45,7 @@ namespace TransitServer
                 SQLiteCommand m_sqlCmd3 = new SQLiteCommand(m_dbConn);
 
                 m_sqlCmd1.CommandText = "CREATE TABLE IF NOT EXISTS dbEvents (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, date TEXT, message TEXT, quite TEXT)";
-                m_sqlCmd2.CommandText = "CREATE TABLE IF NOT EXISTS modems (id INTEGER PRIMARY KEY AUTOINCREMENT, imei TEXT, port TEXT, name TEXT, lastConnection TEXT, activeConnection INTEGER)";
+                m_sqlCmd2.CommandText = "CREATE TABLE IF NOT EXISTS modems (id INTEGER PRIMARY KEY AUTOINCREMENT, imei TEXT, port TEXT, name TEXT, lastConnection TEXT, activeConnection INTEGER, groups TEXT DEFAULT '0')";
                 m_sqlCmd3.CommandText = "CREATE TABLE IF NOT EXISTS nodesTree (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, parent TEXT)";
 
                 m_sqlCmd1.ExecuteNonQuery();
@@ -56,6 +56,19 @@ namespace TransitServer
             catch (SQLiteException ex)
             {
                 MessageBox.Show("Error: " + ex.Message);
+            }
+        }
+
+        public void DeleteNode(string id)
+        {
+            using (SQLiteConnection Connect = new SQLiteConnection("Data Source=" + dbFileName + ";Version=3;"))
+            {
+                string commandText = "DELETE FROM [nodesTree] WHERE [id]=@id";
+                SQLiteCommand Command = new SQLiteCommand(commandText, Connect);
+                Command.Parameters.AddWithValue("@id", id);
+                Connect.Open();
+                Command.ExecuteNonQuery();
+                Connect.Close();
             }
         }
 
@@ -105,12 +118,55 @@ namespace TransitServer
             return listNodesTree;
         }
 
+        public void UpdateGroupModems(string imei, string groups)
+        {
+            using (SQLiteConnection Connect = new SQLiteConnection("Data Source=" + dbFileName + ";Version=3;"))
+            {
+                string commandText = "UPDATE modems SET groups = @groups WHERE imei = @imei;";
+                SQLiteCommand Command = new SQLiteCommand(commandText, Connect);
+                Command.Parameters.AddWithValue("@imei", imei);
+                Command.Parameters.AddWithValue("@groups", groups);
+                Connect.Open();
+                Command.ExecuteNonQuery();
+                Connect.Close();
+            }
+        }
+
+        public List<string> GetParentsNodeForCheck(string textNode)
+        {
+            List<string> listNodesTree = new List<string>();
+
+            using (SQLiteConnection Connect = new SQLiteConnection("Data Source=" + dbFileName + ";Version=3;"))
+            {
+                Connect.Open();
+                SQLiteCommand Command = new SQLiteCommand
+                {
+                    Connection = Connect,
+                    CommandText = @"SELECT * FROM [nodesTree]  WHERE [parent]=@textNode"
+                };
+                Command.Parameters.AddWithValue("@textNode", textNode);
+                SQLiteDataReader sqlReader = Command.ExecuteReader();
+
+                while (sqlReader.Read()) // считываем и вносим в лист все параметры
+                {
+                    try
+                    {
+                        string name = (string)sqlReader["name"];
+                        listNodesTree.Add(name);
+                    }
+                    catch { }
+                }
+                Connect.Close();
+            }
+            return listNodesTree;
+        }
+
         public void InsertModems(string imei, string port, string name)
         {
             // записываем информацию в базу данных
             using (SQLiteConnection Connect = new SQLiteConnection("Data Source=" + dbFileName + ";Version=3;"))
             {
-                string commandText = "INSERT INTO [modems] ([imei], [port], [name]) VALUES(@imei, @port, @name, @activeConnection)";
+                string commandText = "INSERT INTO [modems] ([imei], [port], [name], [activeConnection]) VALUES(@imei, @port, @name, @activeConnection)";
                 SQLiteCommand Command = new SQLiteCommand(commandText, Connect);
                 Command.Parameters.AddWithValue("@imei", imei);
                 Command.Parameters.AddWithValue("@port", port);
@@ -130,7 +186,7 @@ namespace TransitServer
                 SQLiteCommand Command = new SQLiteCommand(commandText, Connect);
                 Command.Parameters.AddWithValue("@imei", imei);
                 Command.Parameters.AddWithValue("@port", port);
-                Command.Parameters.AddWithValue("@name", "Not name");
+                Command.Parameters.AddWithValue("@name", "Новый объект");
                 Command.Parameters.AddWithValue("@activeConnection", 0);
                 Connect.Open();
                 Command.ExecuteNonQuery();
@@ -229,12 +285,27 @@ namespace TransitServer
                     record.name= (string)sqlReader["name"];
                     record.lastConnection = sqlReader["lastConnection"];
                     record.activeConnection = sqlReader["activeConnection"];
+                    record.group = sqlReader["groups"];
                     records.Add(record);
                 }
                 Connect.Close();
             }
             return records;
         }
+
+        public void ZeroingActiveConnection()
+        {
+            using (SQLiteConnection Connect = new SQLiteConnection("Data Source=" + dbFileName + ";Version=3;"))
+            {
+                string commandText = "UPDATE modems SET activeConnection = @activeConnection";
+                SQLiteCommand Command = new SQLiteCommand(commandText, Connect);
+                Command.Parameters.AddWithValue("@activeConnection", 0);
+                Connect.Open();
+                Command.ExecuteNonQuery();
+                Connect.Close();
+            }
+        }
+
         public List<int> GetModemsPort()
         {
             List<int> ports = new List<int>();
