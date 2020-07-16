@@ -71,7 +71,7 @@
             this.port = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.name = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.lastConnection = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.activeConnection = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.activeConnection = new System.Windows.Forms.DataGridViewImageColumn();
             this.btChangePort = new System.Windows.Forms.Button();
             this.dataGridViewImageColumn1 = new System.Windows.Forms.DataGridViewImageColumn();
             this.contextMenuStrip1.SuspendLayout();
@@ -97,7 +97,7 @@
             this.updateDgvModems.TabIndex = 2;
             this.updateDgvModems.Text = "Обновить";
             this.updateDgvModems.UseVisualStyleBackColor = true;
-            this.updateDgvModems.Click += new System.EventHandler(this.updateDgvModems_Click);
+            this.updateDgvModems.Click += new System.EventHandler(this.UpdateDgvModems_Click);
             // 
             // btn_AddModem
             // 
@@ -107,7 +107,7 @@
             this.btn_AddModem.TabIndex = 1;
             this.btn_AddModem.Text = "Добавить модем";
             this.btn_AddModem.UseVisualStyleBackColor = true;
-            this.btn_AddModem.Click += new System.EventHandler(this.btn_AddModem_Click);
+            this.btn_AddModem.Click += new System.EventHandler(this.Btn_AddModem_Click);
             // 
             // contextMenuStrip1
             // 
@@ -149,7 +149,7 @@
             this.button2.TabIndex = 4;
             this.button2.Text = "Отправить";
             this.button2.UseVisualStyleBackColor = true;
-            this.button2.Click += new System.EventHandler(this.button2_Click);
+            this.button2.Click += new System.EventHandler(this.BtSendAuth_Click);
             // 
             // tcDown
             // 
@@ -197,7 +197,7 @@
             this.dgvEvent.RowHeadersWidth = 20;
             this.dgvEvent.Size = new System.Drawing.Size(1066, 162);
             this.dgvEvent.TabIndex = 0;
-            this.dgvEvent.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvEvent1_CellContentClick);
+            this.dgvEvent.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.DgvEvent1_CellContentClick);
             // 
             // colEventName
             // 
@@ -256,7 +256,7 @@
             this.btnGetAllEvents.TabIndex = 2;
             this.btnGetAllEvents.Text = "all";
             this.btnGetAllEvents.UseVisualStyleBackColor = true;
-            this.btnGetAllEvents.Click += new System.EventHandler(this.btnGetAllEvents_Click);
+            this.btnGetAllEvents.Click += new System.EventHandler(this.BtnGetAllEvents_Click);
             // 
             // btnSongMute
             // 
@@ -267,7 +267,7 @@
             this.btnSongMute.Size = new System.Drawing.Size(32, 27);
             this.btnSongMute.TabIndex = 1;
             this.btnSongMute.UseVisualStyleBackColor = true;
-            this.btnSongMute.Click += new System.EventHandler(this.btnSongMute_Click);
+            this.btnSongMute.Click += new System.EventHandler(this.BtnSongMute_Click);
             // 
             // tpConsole
             // 
@@ -327,7 +327,7 @@
             this.btnClear.Size = new System.Drawing.Size(25, 23);
             this.btnClear.TabIndex = 15;
             this.btnClear.UseVisualStyleBackColor = true;
-            this.btnClear.Click += new System.EventHandler(this.btnClear_Click);
+            this.btnClear.Click += new System.EventHandler(this.BtnClear_Click);
             // 
             // statusString
             // 
@@ -355,7 +355,7 @@
             this.trView1.Name = "trView1";
             this.trView1.Size = new System.Drawing.Size(321, 421);
             this.trView1.TabIndex = 1;
-            this.trView1.NodeMouseClick += new System.Windows.Forms.TreeNodeMouseClickEventHandler(this.trView1_NodeMouseClick);
+            this.trView1.NodeMouseClick += new System.Windows.Forms.TreeNodeMouseClickEventHandler(this.TrView1_NodeMouseClick);
             // 
             // contextMenuStrip2
             // 
@@ -424,7 +424,7 @@
             this.dgvModems.GridColor = System.Drawing.SystemColors.Control;
             this.dgvModems.Location = new System.Drawing.Point(350, 62);
             this.dgvModems.Name = "dgvModems";
-            this.dgvModems.Size = new System.Drawing.Size(663, 360);
+            this.dgvModems.Size = new System.Drawing.Size(649, 360);
             this.dgvModems.TabIndex = 7;
             this.dgvModems.CellMouseEnter += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvModems_CellMouseEnter);
             // 
@@ -456,20 +456,23 @@
             // 
             this.lastConnection.HeaderText = "Последнее подключение";
             this.lastConnection.Name = "lastConnection";
+            this.lastConnection.Width = 120;
             // 
             // activeConnection
             // 
-            this.activeConnection.HeaderText = " Активность";
+            this.activeConnection.HeaderText = "";
             this.activeConnection.Name = "activeConnection";
             this.activeConnection.Resizable = System.Windows.Forms.DataGridViewTriState.True;
-            this.activeConnection.Width = 70;
+            this.activeConnection.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Automatic;
+            this.activeConnection.ToolTipText = "Статус подключения модема";
+            this.activeConnection.Width = 35;
             // 
             // btChangePort
             // 
             this.btChangePort.BackColor = System.Drawing.Color.Aquamarine;
             this.btChangePort.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("btChangePort.BackgroundImage")));
             this.btChangePort.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
-            this.btChangePort.Location = new System.Drawing.Point(967, 12);
+            this.btChangePort.Location = new System.Drawing.Point(953, 12);
             this.btChangePort.Name = "btChangePort";
             this.btChangePort.Size = new System.Drawing.Size(46, 42);
             this.btChangePort.TabIndex = 8;
@@ -503,6 +506,7 @@
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.Fixed3D;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "Form1";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Server";
             this.Load += new System.EventHandler(this.Form1_Load);
             this.contextMenuStrip1.ResumeLayout(false);
@@ -556,18 +560,18 @@
         private System.Windows.Forms.ToolStripMenuItem tsmiRedactorModema;
         private System.Windows.Forms.DataGridViewImageColumn dataGridViewImageColumn1;
         public System.Windows.Forms.DataGridView dgvModems;
-        private System.Windows.Forms.DataGridViewTextBoxColumn id;
-        private System.Windows.Forms.DataGridViewTextBoxColumn imei;
-        private System.Windows.Forms.DataGridViewTextBoxColumn port;
-        private System.Windows.Forms.DataGridViewTextBoxColumn name;
-        private System.Windows.Forms.DataGridViewTextBoxColumn lastConnection;
-        private System.Windows.Forms.DataGridViewTextBoxColumn activeConnection;
         private System.Windows.Forms.TreeView trView1;
         private System.Windows.Forms.ContextMenuStrip contextMenuStrip2;
         private System.Windows.Forms.ToolStripMenuItem добавитьГруппуToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem tsmiDelNode;
         private System.Windows.Forms.ToolStripMenuItem tsmiAddGroup;
         private System.Windows.Forms.Button btChangePort;
+        private System.Windows.Forms.DataGridViewTextBoxColumn id;
+        private System.Windows.Forms.DataGridViewTextBoxColumn imei;
+        private System.Windows.Forms.DataGridViewTextBoxColumn port;
+        private System.Windows.Forms.DataGridViewTextBoxColumn name;
+        private System.Windows.Forms.DataGridViewTextBoxColumn lastConnection;
+        private System.Windows.Forms.DataGridViewImageColumn activeConnection;
     }
 }
 

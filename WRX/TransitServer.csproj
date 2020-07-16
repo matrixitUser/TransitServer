@@ -82,11 +82,17 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ActionModems.cs">
+    <Compile Include="DialogFormOk.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="ActionModems.Designer.cs">
-      <DependentUpon>ActionModems.cs</DependentUpon>
+    <Compile Include="DialogFormOk.Designer.cs">
+      <DependentUpon>DialogFormOk.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FormRedactorModems.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormRedactorModems.Designer.cs">
+      <DependentUpon>FormRedactorModems.cs</DependentUpon>
     </Compile>
     <Compile Include="AskueServer.cs" />
     <Compile Include="CRC.cs" />
@@ -135,8 +141,11 @@
     </Compile>
     <Compile Include="Song.cs" />
     <Compile Include="SQLite.cs" />
-    <EmbeddedResource Include="ActionModems.resx">
-      <DependentUpon>ActionModems.cs</DependentUpon>
+    <EmbeddedResource Include="DialogFormOk.resx">
+      <DependentUpon>DialogFormOk.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FormRedactorModems.resx">
+      <DependentUpon>FormRedactorModems.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Form1.resx">
       <DependentUpon>Form1.cs</DependentUpon>
@@ -214,6 +223,12 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="bin\Debug\img\16\delete.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="bin\Debug\img\16\tick.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="bin\Debug\img\16\cross.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

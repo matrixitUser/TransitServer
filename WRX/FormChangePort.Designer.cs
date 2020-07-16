@@ -73,6 +73,7 @@
             this.Controls.Add(this.txtPort);
             this.Controls.Add(this.label1);
             this.Name = "FormChangePort";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Load += new System.EventHandler(this.FormChangePort_Load);
             this.ResumeLayout(false);
             this.PerformLayout();
