@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Windows.Forms;
 
 namespace TransitServer
@@ -8,6 +9,7 @@ namespace TransitServer
     public partial class FormRedactorModems : Form
     {
         public string idModem;
+        public tsConfig config;
         public FormRedactorModems()
         {
             InitializeComponent();
@@ -69,6 +71,22 @@ namespace TransitServer
 
         private void FormRedactorModems_Load(object sender, EventArgs e)
         {
+            txtNetworkAdres.Text = config.u8NetworkAddress.ToString();
+            txtMode.Text = config.u8Mode.ToString();
+            txtRelease.Text = config.u32ReleaseTs.ToString();
+            txtFlashVer.Text = config.u16FlashVer.ToString();
+            cbBaudRate1.SelectedItem = (UInt32)config.sUart1.u32BaudRate;
+            cbBaudRate2.SelectedItem = (UInt32)config.sUart2.u32BaudRate;
+            cbBaudRate3.SelectedItem = (UInt32)config.sUart3.u32BaudRate;
+            txtWordLen1.Text = config.sUart1.u8WordLen.ToString();
+            txtWordLen2.Text = config.sUart2.u8WordLen.ToString();
+            txtWordLen3.Text = config.sUart3.u8WordLen.ToString();
+            txtStopBits1.Text = config.sUart1.u8StopBits.ToString();
+            txtStopBits2.Text = config.sUart2.u8StopBits.ToString();
+            txtStopBits3.Text = config.sUart3.u8StopBits.ToString();
+            txtParity1.Text = config.sUart1.u8Parity.ToString();
+            txtParity2.Text = config.sUart2.u8Parity.ToString();
+            txtParity3.Text = config.sUart3.u8Parity.ToString();
             btnSaveChanges.Enabled = false;
             cbBaudRate1.Items.AddRange(new object[] {600,1200,2400,4800,9600,14400,19200,28800,38400,56000});
             cbBaudRate1.SelectedItem = 4800;

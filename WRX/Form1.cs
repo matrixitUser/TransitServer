@@ -91,7 +91,8 @@ namespace TransitServer
             isUsed = false;
             byte[] auth = new byte[28] { 0xC0, 0x00, 0x06, 0x00, 0x14, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0xE7, 0x48, 0xC2 };    //команда авторизации
             ns.Write(auth, 0, auth.Length);     // отправляем сообщение 
-            lbConsole.Invoke(new Action(() => lbConsole.Items.Add("Запрос на авторизацию отправлен!")));
+            Console("Запрос на авторизацию отправлен!");
+            //lbConsole.Invoke(new Action(() => lbConsole.Items.Add("Запрос на авторизацию отправлен!")));
             while (tcpClient.Connected && isWhile)  // пока клиент подключен, ждем приходящие сообщения
             {
                 byte[] bytes = new byte[1024];     // готовим место для принятия сообщения
@@ -127,7 +128,6 @@ namespace TransitServer
                     {
                         if (CRC.CheckReverse(bytes, new Crc16Modbus()))
                         {
-                            Guid nullGuid = new Guid();
                             DateTime dt1970 = new DateTime(1970, 1, 1, 0, 0, 0, 0);
                             //tsConfig conf = setBytes(bytes);
                             if (bytes[0] == 0xFB) //длинный СА
@@ -159,6 +159,12 @@ namespace TransitServer
                                     }
                                 }
                             }
+                            if (bytes[0] == 0xFB) //считываем конфиг
+                            {
+                                tsConfig conf = setBytes(bytes);
+                                FormRedactorModems formRedactorModems = new FormRedactorModems();
+                                formRedactorModems.config = conf;
+                            }
                         }
                         else if (CRC.Check(bytes, new Crc16Modbus()))
                         {
@@ -169,8 +175,8 @@ namespace TransitServer
 
                     }
 
-                    string hexString = string.Format("{2}:receive {1} байт-> {0}", string.Join(" ", bytes.Take(count).Select(r => string.Format("{0:X}", r))), count, dateTime.ToString());
-                    lbConsole.Invoke(new Action(() => lbConsole.Items.Add(hexString)));
+                    string hexString = string.Format("получено {1} байт-> {0}", string.Join(" ", bytes.Take(count).Select(r => string.Format("{0:X}", r))), count);
+                    Console(hexString);
                 }
                 catch (Exception ex)
                 {
@@ -239,7 +245,7 @@ namespace TransitServer
                     builder.Append(Encoding.UTF8.GetString(bytes, 6, 15));
                     IMEI = builder.ToString();
                     DateTime dateTime = DateTime.Now;
-                    Console($"{dateTime.ToString()}: Ответ на запрос авторизации получен! IMEI: {IMEI}");
+                    Console($"Ответ на запрос авторизации получен! IMEI: {IMEI}");
                     if (index >= 0)
                     {
                         gModemClients[index].IMEI = IMEI;
@@ -610,7 +616,7 @@ namespace TransitServer
         }
         #endregion
 
-        #region ButtonsForm1
+        #region ButtonsAndFunccionForm1
         private void BtSendAuth_Click(object sender, EventArgs e)
         {
             Thread SendAuth = new Thread(sendAuth);
@@ -641,7 +647,8 @@ namespace TransitServer
         }
         public void Console(string str)
         {
-            lbConsole.Invoke(new Action(() => lbConsole.Items.Add(str)));
+            string textConsole = $"{DateTime.Now}: {str}";
+            lbConsole.Invoke(new Action(() => lbConsole.Items.Add(textConsole)));
         }
 
         #endregion

@@ -423,6 +423,27 @@ namespace TransitServer
             }
             return name;
         }
+        public string GetModemsLastConnectionByImei(string imei)
+        {
+            string lastConnection = "---";
+            using (SQLiteConnection Connect = new SQLiteConnection("Data Source=" + dbFileName + ";Version=3;"))
+            {
+                Connect.Open();
+                SQLiteCommand Command = new SQLiteCommand
+                {
+                    Connection = Connect,
+                    CommandText = @"SELECT * FROM [modems] WHERE [imei]=@imei"
+                };
+                Command.Parameters.AddWithValue("@imei", imei);
+                SQLiteDataReader sqlReader = Command.ExecuteReader();
+                while (sqlReader.Read())
+                {
+                    lastConnection = (string)sqlReader["lastConnection"];
+                }
+                Connect.Close();
+            }
+            return lastConnection;
+        }
         #endregion
 
         #region dbEvents

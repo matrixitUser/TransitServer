@@ -82,6 +82,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Config.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="DialogFormOk.cs">
       <SubType>Form</SubType>
     </Compile>

@@ -14,7 +14,7 @@ namespace TransitServer
             {
                 cl.ns.Write(auth, 0, auth.Length);     // отправляем сообщение 
             }
-            lbConsole.Invoke(new Action(() => lbConsole.Items.Add("Отдельный запрос на авторизацию отправлен!")));
+            Console("Отдельный запрос на авторизацию отправлен!");
         }
         private void statusString_MouseMove(object sender, MouseEventArgs e)
         {
@@ -32,16 +32,16 @@ namespace TransitServer
                     string tmpImei = i.IMEI;
                     string tmpPort = imeiDictinary.GetPortSql(i.IMEI).ToString();
                     string tmpName = imeiDictinary.GetNameSql(i.IMEI);
-                    //string tmpLastCon = imeiDictinary.getLastConnection(i.IMEI).ToString();
+                    string tmpLastCon = SQLite.Instance.GetModemsLastConnectionByImei(i.IMEI);
 
                     if (tmpImei == "000000000000000") tmpImei = "...............";
                     if (tmpPort == "0") tmpPort = ".....";
                     if (tmpName == "") tmpName = ".....";
-                    //if (tmpLastCon == DateTime.MinValue.ToString()) tmpName = "..........";
+                    if (tmpLastCon == String.Empty) tmpName = "..........";
                     string tmp = $"Imei: {tmpImei}\n" +
                                     $"Порт: {tmpPort}\n" +
                                     $"Имя объекта: {tmpName}\n" +
-                                    $"Последнее соединение: ----\n" +
+                                    $"Последнее соединение: {tmpLastCon}\n" +
                                     "------------------------------\n";
                     statusBar += tmp;
                 }
