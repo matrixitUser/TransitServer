@@ -38,6 +38,8 @@
             this.labNameModem = new System.Windows.Forms.Label();
             this.labImei = new System.Windows.Forms.Label();
             this.labLastConnection = new System.Windows.Forms.Label();
+            this.label5 = new System.Windows.Forms.Label();
+            this.labCurrentGroup = new System.Windows.Forms.Label();
             this.panel1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -51,6 +53,7 @@
             // 
             // treeViewAdd
             // 
+            this.treeViewAdd.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.treeViewAdd.Location = new System.Drawing.Point(3, 3);
             this.treeViewAdd.Name = "treeViewAdd";
             this.treeViewAdd.Size = new System.Drawing.Size(309, 426);
@@ -141,11 +144,33 @@
             this.labLastConnection.TabIndex = 11;
             this.labLastConnection.Text = "Последнее подключение";
             // 
+            // label5
+            // 
+            this.label5.AutoSize = true;
+            this.label5.Font = new System.Drawing.Font("Times New Roman", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.label5.Location = new System.Drawing.Point(333, 171);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(116, 19);
+            this.label5.TabIndex = 12;
+            this.label5.Text = "Текущая группа:";
+            // 
+            // labCurrentGroup
+            // 
+            this.labCurrentGroup.AutoSize = true;
+            this.labCurrentGroup.Font = new System.Drawing.Font("Times New Roman", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.labCurrentGroup.Location = new System.Drawing.Point(466, 171);
+            this.labCurrentGroup.Name = "labCurrentGroup";
+            this.labCurrentGroup.Size = new System.Drawing.Size(113, 19);
+            this.labCurrentGroup.TabIndex = 13;
+            this.labCurrentGroup.Text = "Текущая группа";
+            // 
             // FormAddInGroup
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(708, 456);
+            this.Controls.Add(this.labCurrentGroup);
+            this.Controls.Add(this.label5);
             this.Controls.Add(this.labLastConnection);
             this.Controls.Add(this.labImei);
             this.Controls.Add(this.labNameModem);
@@ -175,5 +200,7 @@
         public System.Windows.Forms.Label labNameModem;
         public System.Windows.Forms.Label labImei;
         public System.Windows.Forms.Label labLastConnection;
+        private System.Windows.Forms.Label label5;
+        public System.Windows.Forms.Label labCurrentGroup;
     }
 }

@@ -43,44 +43,45 @@ namespace TransitServer
         public byte reserved;
     }
 
-    public struct tsLigthtChannel
+    public struct tsConfig  //200 байт
     {
-        public byte u8ControlMode;
-        public byte u8beforeSunRise;
-        public byte u8afterSunSet;
-        public byte reserved;
-        public UInt32 on1;
-        public UInt32 off1;
-        public UInt32 on2;
-        public UInt32 off2;
+        public UInt16 u16FlashVer;          //2 
+        public byte u8NetworkAddress;       //3
+        public byte u8Mode;                 //4
+        public UInt32 u32ReleaseTs;         //8
+
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 3)]
+        public tsProfiles[] profile;   //3  //3*48 = 144 байта 8+144=152
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 2)]
+        public tsApnName[] apnName;
+
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 3)]
+        public tsUartConfig[] sUart;         //160
+
+        public UInt16 PeriodEvent;      // Период опроса нештатных ситуации //178
+        public byte apnCount;         // Количесвто симок
+        public byte profileCount;       // Количество профилей   = 4 байта      //180
+
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 4)]
+        public UInt32[] u32CounterNA;     //Сетевые адреса счетчиков  	= 16 байтов   //196
+
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 4)]
+        public byte[] u8CounterType;      //Типы счетчиков   = 4 байта              //200
+
+    }
+    //// CSDtoGPRS
+
+    [StructLayout(LayoutKind.Sequential, Pack = 1, CharSet = CharSet.Unicode)]
+    public struct tsProfiles
+    {
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 24)]
+        public byte[] ip_port; // 24
     }
 
-    public struct tsConfig
+    [StructLayout(LayoutKind.Sequential, Pack = 1, CharSet = CharSet.Unicode)]
+    public struct tsApnName
     {
-        public UInt16 u16FlashVer;
-        public byte u8NetworkAddress;
-        public byte u8Mode;
-
-        public tsUartConfig sUart1;
-        public tsUartConfig sUart2;
-        public tsUartConfig sUart3;
-
-        public UInt32 u32ReleaseTs;
-
-        public UInt16 u16TimeOut;
-        public byte u8IsRtcError;
-        public byte u8timeDiff;//+
-
-        public UInt32 u32lat;//+
-        public UInt32 u32lon; //+
-
-        public tsLigthtChannel ligthtChannels1;//+
-        public tsLigthtChannel ligthtChannels2;//+
-        public tsLigthtChannel ligthtChannels3;//+
-        public tsLigthtChannel ligthtChannels4;//+
-
-        public byte u8hardware;
-        public byte u8reserved;
-        public UInt16 u16reserved;
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 24)]
+        public byte[] APN; // 24
     }
 }

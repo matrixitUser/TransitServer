@@ -61,7 +61,7 @@
             this.txtFlashVer = new System.Windows.Forms.TextBox();
             this.txtRelease = new System.Windows.Forms.TextBox();
             this.txtMode = new System.Windows.Forms.TextBox();
-            this.textBox5 = new System.Windows.Forms.TextBox();
+            this.txtPeriodEvent = new System.Windows.Forms.TextBox();
             this.txtImei = new System.Windows.Forms.TextBox();
             this.textBox7 = new System.Windows.Forms.TextBox();
             this.textBox8 = new System.Windows.Forms.TextBox();
@@ -71,8 +71,8 @@
             this.textBox12 = new System.Windows.Forms.TextBox();
             this.textBox13 = new System.Windows.Forms.TextBox();
             this.textBox14 = new System.Windows.Forms.TextBox();
-            this.textBox15 = new System.Windows.Forms.TextBox();
-            this.textBox16 = new System.Windows.Forms.TextBox();
+            this.txtApn2 = new System.Windows.Forms.TextBox();
+            this.txtApn1 = new System.Windows.Forms.TextBox();
             this.txtLastConnection = new System.Windows.Forms.TextBox();
             this.txtNetworkAdres = new System.Windows.Forms.TextBox();
             this.label23 = new System.Windows.Forms.Label();
@@ -80,9 +80,9 @@
             this.label44 = new System.Windows.Forms.Label();
             this.txtNameModem = new System.Windows.Forms.TextBox();
             this.panel2 = new System.Windows.Forms.Panel();
-            this.comboBox2 = new System.Windows.Forms.ComboBox();
-            this.comboBox3 = new System.Windows.Forms.ComboBox();
-            this.comboBox1 = new System.Windows.Forms.ComboBox();
+            this.cbChannel3 = new System.Windows.Forms.ComboBox();
+            this.cbChannel2 = new System.Windows.Forms.ComboBox();
+            this.cbChannel1 = new System.Windows.Forms.ComboBox();
             this.label25 = new System.Windows.Forms.Label();
             this.label24 = new System.Windows.Forms.Label();
             this.txtPort1 = new System.Windows.Forms.TextBox();
@@ -93,16 +93,16 @@
             this.txtIp3 = new System.Windows.Forms.TextBox();
             this.panel3 = new System.Windows.Forms.Panel();
             this.panel4 = new System.Windows.Forms.Panel();
-            this.comboBox7 = new System.Windows.Forms.ComboBox();
-            this.textBox32 = new System.Windows.Forms.TextBox();
-            this.comboBox4 = new System.Windows.Forms.ComboBox();
-            this.comboBox5 = new System.Windows.Forms.ComboBox();
+            this.cbType4 = new System.Windows.Forms.ComboBox();
+            this.txtCounterNa4 = new System.Windows.Forms.TextBox();
+            this.cbType3 = new System.Windows.Forms.ComboBox();
+            this.cbType2 = new System.Windows.Forms.ComboBox();
             this.label27 = new System.Windows.Forms.Label();
-            this.comboBox6 = new System.Windows.Forms.ComboBox();
-            this.textBox28 = new System.Windows.Forms.TextBox();
-            this.textBox29 = new System.Windows.Forms.TextBox();
+            this.cbType1 = new System.Windows.Forms.ComboBox();
+            this.txtCounterNa1 = new System.Windows.Forms.TextBox();
+            this.txtCounterNa2 = new System.Windows.Forms.TextBox();
             this.label28 = new System.Windows.Forms.Label();
-            this.textBox30 = new System.Windows.Forms.TextBox();
+            this.txtCounterNa3 = new System.Windows.Forms.TextBox();
             this.panel5 = new System.Windows.Forms.Panel();
             this.txtParity3 = new System.Windows.Forms.TextBox();
             this.txtStopBits3 = new System.Windows.Forms.TextBox();
@@ -142,7 +142,7 @@
             // btnSaveChanges
             // 
             this.btnSaveChanges.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(255)))), ((int)(((byte)(255)))));
-            this.btnSaveChanges.Location = new System.Drawing.Point(773, 697);
+            this.btnSaveChanges.Location = new System.Drawing.Point(784, 616);
             this.btnSaveChanges.Name = "btnSaveChanges";
             this.btnSaveChanges.Size = new System.Drawing.Size(98, 35);
             this.btnSaveChanges.TabIndex = 0;
@@ -190,7 +190,7 @@
             // btnExit
             // 
             this.btnExit.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(255)))), ((int)(((byte)(255)))));
-            this.btnExit.Location = new System.Drawing.Point(999, 697);
+            this.btnExit.Location = new System.Drawing.Point(1010, 616);
             this.btnExit.Name = "btnExit";
             this.btnExit.Size = new System.Drawing.Size(75, 35);
             this.btnExit.TabIndex = 9;
@@ -201,7 +201,7 @@
             // btnDeleteModem
             // 
             this.btnDeleteModem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(192)))), ((int)(((byte)(192)))));
-            this.btnDeleteModem.Location = new System.Drawing.Point(918, 697);
+            this.btnDeleteModem.Location = new System.Drawing.Point(929, 616);
             this.btnDeleteModem.Name = "btnDeleteModem";
             this.btnDeleteModem.Size = new System.Drawing.Size(75, 35);
             this.btnDeleteModem.TabIndex = 10;
@@ -212,7 +212,7 @@
             // button1
             // 
             this.button1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(255)))), ((int)(((byte)(255)))));
-            this.button1.Location = new System.Drawing.Point(692, 697);
+            this.button1.Location = new System.Drawing.Point(703, 616);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(75, 35);
             this.button1.TabIndex = 13;
@@ -222,7 +222,7 @@
             // button2
             // 
             this.button2.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(255)))), ((int)(((byte)(255)))));
-            this.button2.Location = new System.Drawing.Point(583, 697);
+            this.button2.Location = new System.Drawing.Point(594, 616);
             this.button2.Name = "button2";
             this.button2.Size = new System.Drawing.Size(103, 35);
             this.button2.TabIndex = 14;
@@ -458,22 +458,24 @@
             // 
             // txtMode
             // 
+            this.txtMode.Enabled = false;
             this.txtMode.Font = new System.Drawing.Font("Times New Roman", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.txtMode.Location = new System.Drawing.Point(219, 124);
             this.txtMode.Name = "txtMode";
             this.txtMode.Size = new System.Drawing.Size(145, 23);
             this.txtMode.TabIndex = 37;
             // 
-            // textBox5
+            // txtPeriodEvent
             // 
-            this.textBox5.Font = new System.Drawing.Font("Times New Roman", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.textBox5.Location = new System.Drawing.Point(219, 174);
-            this.textBox5.Name = "textBox5";
-            this.textBox5.Size = new System.Drawing.Size(145, 23);
-            this.textBox5.TabIndex = 42;
+            this.txtPeriodEvent.Font = new System.Drawing.Font("Times New Roman", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.txtPeriodEvent.Location = new System.Drawing.Point(219, 174);
+            this.txtPeriodEvent.Name = "txtPeriodEvent";
+            this.txtPeriodEvent.Size = new System.Drawing.Size(145, 23);
+            this.txtPeriodEvent.TabIndex = 42;
             // 
             // txtImei
             // 
+            this.txtImei.Enabled = false;
             this.txtImei.Font = new System.Drawing.Font("Times New Roman", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.txtImei.Location = new System.Drawing.Point(219, 224);
             this.txtImei.Name = "txtImei";
@@ -482,6 +484,7 @@
             // 
             // textBox7
             // 
+            this.textBox7.Enabled = false;
             this.textBox7.Font = new System.Drawing.Font("Times New Roman", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.textBox7.Location = new System.Drawing.Point(219, 199);
             this.textBox7.Name = "textBox7";
@@ -490,6 +493,7 @@
             // 
             // textBox8
             // 
+            this.textBox8.Enabled = false;
             this.textBox8.Font = new System.Drawing.Font("Times New Roman", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.textBox8.Location = new System.Drawing.Point(219, 249);
             this.textBox8.Name = "textBox8";
@@ -507,6 +511,7 @@
             // 
             // textBox10
             // 
+            this.textBox10.Enabled = false;
             this.textBox10.Font = new System.Drawing.Font("Times New Roman", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.textBox10.Location = new System.Drawing.Point(219, 274);
             this.textBox10.Name = "textBox10";
@@ -515,6 +520,7 @@
             // 
             // textBox11
             // 
+            this.textBox11.Enabled = false;
             this.textBox11.Font = new System.Drawing.Font("Times New Roman", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.textBox11.Location = new System.Drawing.Point(219, 325);
             this.textBox11.Name = "textBox11";
@@ -523,6 +529,7 @@
             // 
             // textBox12
             // 
+            this.textBox12.Enabled = false;
             this.textBox12.Font = new System.Drawing.Font("Times New Roman", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.textBox12.Location = new System.Drawing.Point(219, 375);
             this.textBox12.Name = "textBox12";
@@ -531,6 +538,7 @@
             // 
             // textBox13
             // 
+            this.textBox13.Enabled = false;
             this.textBox13.Font = new System.Drawing.Font("Times New Roman", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.textBox13.Location = new System.Drawing.Point(219, 350);
             this.textBox13.Name = "textBox13";
@@ -539,27 +547,28 @@
             // 
             // textBox14
             // 
+            this.textBox14.Enabled = false;
             this.textBox14.Font = new System.Drawing.Font("Times New Roman", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.textBox14.Location = new System.Drawing.Point(219, 399);
             this.textBox14.Name = "textBox14";
             this.textBox14.Size = new System.Drawing.Size(145, 23);
             this.textBox14.TabIndex = 51;
             // 
-            // textBox15
+            // txtApn2
             // 
-            this.textBox15.Font = new System.Drawing.Font("Times New Roman", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.textBox15.Location = new System.Drawing.Point(219, 447);
-            this.textBox15.Name = "textBox15";
-            this.textBox15.Size = new System.Drawing.Size(145, 23);
-            this.textBox15.TabIndex = 50;
+            this.txtApn2.Font = new System.Drawing.Font("Times New Roman", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.txtApn2.Location = new System.Drawing.Point(219, 447);
+            this.txtApn2.Name = "txtApn2";
+            this.txtApn2.Size = new System.Drawing.Size(145, 23);
+            this.txtApn2.TabIndex = 50;
             // 
-            // textBox16
+            // txtApn1
             // 
-            this.textBox16.Font = new System.Drawing.Font("Times New Roman", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.textBox16.Location = new System.Drawing.Point(219, 423);
-            this.textBox16.Name = "textBox16";
-            this.textBox16.Size = new System.Drawing.Size(145, 23);
-            this.textBox16.TabIndex = 49;
+            this.txtApn1.Font = new System.Drawing.Font("Times New Roman", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.txtApn1.Location = new System.Drawing.Point(219, 423);
+            this.txtApn1.Name = "txtApn1";
+            this.txtApn1.Size = new System.Drawing.Size(145, 23);
+            this.txtApn1.TabIndex = 49;
             // 
             // txtLastConnection
             // 
@@ -572,6 +581,7 @@
             // 
             // txtNetworkAdres
             // 
+            this.txtNetworkAdres.Enabled = false;
             this.txtNetworkAdres.Font = new System.Drawing.Font("Times New Roman", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.txtNetworkAdres.Location = new System.Drawing.Point(219, 75);
             this.txtNetworkAdres.Name = "txtNetworkAdres";
@@ -600,9 +610,9 @@
             this.panel1.Controls.Add(this.label7);
             this.panel1.Controls.Add(this.textBox14);
             this.panel1.Controls.Add(this.label6);
-            this.panel1.Controls.Add(this.textBox15);
+            this.panel1.Controls.Add(this.txtApn2);
             this.panel1.Controls.Add(this.label14);
-            this.panel1.Controls.Add(this.textBox16);
+            this.panel1.Controls.Add(this.txtApn1);
             this.panel1.Controls.Add(this.label13);
             this.panel1.Controls.Add(this.textBox11);
             this.panel1.Controls.Add(this.label12);
@@ -616,7 +626,7 @@
             this.panel1.Controls.Add(this.label19);
             this.panel1.Controls.Add(this.textBox10);
             this.panel1.Controls.Add(this.label18);
-            this.panel1.Controls.Add(this.textBox5);
+            this.panel1.Controls.Add(this.txtPeriodEvent);
             this.panel1.Controls.Add(this.label17);
             this.panel1.Controls.Add(this.txtImei);
             this.panel1.Controls.Add(this.label15);
@@ -654,9 +664,9 @@
             // 
             // panel2
             // 
-            this.panel2.Controls.Add(this.comboBox2);
-            this.panel2.Controls.Add(this.comboBox3);
-            this.panel2.Controls.Add(this.comboBox1);
+            this.panel2.Controls.Add(this.cbChannel3);
+            this.panel2.Controls.Add(this.cbChannel2);
+            this.panel2.Controls.Add(this.cbChannel1);
             this.panel2.Controls.Add(this.label25);
             this.panel2.Controls.Add(this.label24);
             this.panel2.Controls.Add(this.txtPort1);
@@ -672,29 +682,36 @@
             this.panel2.Size = new System.Drawing.Size(487, 145);
             this.panel2.TabIndex = 56;
             // 
-            // comboBox2
+            // cbChannel3
             // 
-            this.comboBox2.FormattingEnabled = true;
-            this.comboBox2.Location = new System.Drawing.Point(52, 106);
-            this.comboBox2.Name = "comboBox2";
-            this.comboBox2.Size = new System.Drawing.Size(121, 22);
-            this.comboBox2.TabIndex = 65;
+            this.cbChannel3.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawVariable;
+            this.cbChannel3.Font = new System.Drawing.Font("Times New Roman", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.cbChannel3.FormattingEnabled = true;
+            this.cbChannel3.Location = new System.Drawing.Point(52, 106);
+            this.cbChannel3.Name = "cbChannel3";
+            this.cbChannel3.Size = new System.Drawing.Size(121, 24);
+            this.cbChannel3.TabIndex = 65;
             // 
-            // comboBox3
+            // cbChannel2
             // 
-            this.comboBox3.FormattingEnabled = true;
-            this.comboBox3.Location = new System.Drawing.Point(52, 78);
-            this.comboBox3.Name = "comboBox3";
-            this.comboBox3.Size = new System.Drawing.Size(121, 22);
-            this.comboBox3.TabIndex = 66;
+            this.cbChannel2.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawVariable;
+            this.cbChannel2.Font = new System.Drawing.Font("Times New Roman", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.cbChannel2.FormattingEnabled = true;
+            this.cbChannel2.Location = new System.Drawing.Point(52, 78);
+            this.cbChannel2.Name = "cbChannel2";
+            this.cbChannel2.Size = new System.Drawing.Size(121, 24);
+            this.cbChannel2.TabIndex = 66;
             // 
-            // comboBox1
+            // cbChannel1
             // 
-            this.comboBox1.FormattingEnabled = true;
-            this.comboBox1.Location = new System.Drawing.Point(52, 50);
-            this.comboBox1.Name = "comboBox1";
-            this.comboBox1.Size = new System.Drawing.Size(121, 22);
-            this.comboBox1.TabIndex = 64;
+            this.cbChannel1.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawVariable;
+            this.cbChannel1.FlatStyle = System.Windows.Forms.FlatStyle.System;
+            this.cbChannel1.Font = new System.Drawing.Font("Times New Roman", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.cbChannel1.FormattingEnabled = true;
+            this.cbChannel1.Location = new System.Drawing.Point(52, 50);
+            this.cbChannel1.Name = "cbChannel1";
+            this.cbChannel1.Size = new System.Drawing.Size(121, 24);
+            this.cbChannel1.TabIndex = 64;
             // 
             // label25
             // 
@@ -712,50 +729,56 @@
             this.label24.Font = new System.Drawing.Font("Times New Roman", 12F);
             this.label24.Location = new System.Drawing.Point(236, 27);
             this.label24.Name = "label24";
-            this.label24.Size = new System.Drawing.Size(22, 19);
+            this.label24.Size = new System.Drawing.Size(23, 19);
             this.label24.TabIndex = 58;
-            this.label24.Text = "Ip";
+            this.label24.Text = "IP";
             // 
             // txtPort1
             // 
+            this.txtPort1.Font = new System.Drawing.Font("Times New Roman", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.txtPort1.Location = new System.Drawing.Point(359, 50);
             this.txtPort1.Name = "txtPort1";
-            this.txtPort1.Size = new System.Drawing.Size(112, 20);
+            this.txtPort1.Size = new System.Drawing.Size(112, 23);
             this.txtPort1.TabIndex = 63;
             // 
             // txtPort2
             // 
+            this.txtPort2.Font = new System.Drawing.Font("Times New Roman", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.txtPort2.Location = new System.Drawing.Point(359, 79);
             this.txtPort2.Name = "txtPort2";
-            this.txtPort2.Size = new System.Drawing.Size(112, 20);
+            this.txtPort2.Size = new System.Drawing.Size(112, 23);
             this.txtPort2.TabIndex = 62;
             // 
             // txtPort3
             // 
+            this.txtPort3.Font = new System.Drawing.Font("Times New Roman", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.txtPort3.Location = new System.Drawing.Point(359, 106);
             this.txtPort3.Name = "txtPort3";
-            this.txtPort3.Size = new System.Drawing.Size(112, 20);
+            this.txtPort3.Size = new System.Drawing.Size(112, 23);
             this.txtPort3.TabIndex = 61;
             // 
             // txtIp1
             // 
+            this.txtIp1.Font = new System.Drawing.Font("Times New Roman", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.txtIp1.Location = new System.Drawing.Point(197, 50);
             this.txtIp1.Name = "txtIp1";
-            this.txtIp1.Size = new System.Drawing.Size(145, 20);
+            this.txtIp1.Size = new System.Drawing.Size(145, 23);
             this.txtIp1.TabIndex = 60;
             // 
             // txtIp2
             // 
+            this.txtIp2.Font = new System.Drawing.Font("Times New Roman", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.txtIp2.Location = new System.Drawing.Point(197, 79);
             this.txtIp2.Name = "txtIp2";
-            this.txtIp2.Size = new System.Drawing.Size(145, 20);
+            this.txtIp2.Size = new System.Drawing.Size(145, 23);
             this.txtIp2.TabIndex = 59;
             // 
             // txtIp3
             // 
+            this.txtIp3.Font = new System.Drawing.Font("Times New Roman", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.txtIp3.Location = new System.Drawing.Point(197, 106);
             this.txtIp3.Name = "txtIp3";
-            this.txtIp3.Size = new System.Drawing.Size(145, 20);
+            this.txtIp3.Size = new System.Drawing.Size(145, 23);
             this.txtIp3.TabIndex = 58;
             // 
             // panel3
@@ -768,59 +791,66 @@
             this.panel3.Controls.Add(this.label2);
             this.panel3.Controls.Add(this.txtLastCon);
             this.panel3.Font = new System.Drawing.Font("Times New Roman", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.panel3.Location = new System.Drawing.Point(12, 531);
+            this.panel3.Location = new System.Drawing.Point(12, 513);
             this.panel3.Name = "panel3";
             this.panel3.Size = new System.Drawing.Size(370, 131);
             this.panel3.TabIndex = 57;
             // 
             // panel4
             // 
-            this.panel4.Controls.Add(this.comboBox7);
-            this.panel4.Controls.Add(this.textBox32);
-            this.panel4.Controls.Add(this.comboBox4);
-            this.panel4.Controls.Add(this.comboBox5);
+            this.panel4.Controls.Add(this.cbType4);
+            this.panel4.Controls.Add(this.txtCounterNa4);
+            this.panel4.Controls.Add(this.cbType3);
+            this.panel4.Controls.Add(this.cbType2);
             this.panel4.Controls.Add(this.label27);
-            this.panel4.Controls.Add(this.comboBox6);
-            this.panel4.Controls.Add(this.textBox28);
-            this.panel4.Controls.Add(this.textBox29);
+            this.panel4.Controls.Add(this.cbType1);
+            this.panel4.Controls.Add(this.txtCounterNa1);
+            this.panel4.Controls.Add(this.txtCounterNa2);
             this.panel4.Controls.Add(this.label28);
-            this.panel4.Controls.Add(this.textBox30);
+            this.panel4.Controls.Add(this.txtCounterNa3);
             this.panel4.Font = new System.Drawing.Font("Times New Roman", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.panel4.Location = new System.Drawing.Point(416, 185);
+            this.panel4.Location = new System.Drawing.Point(416, 176);
             this.panel4.Name = "panel4";
             this.panel4.Size = new System.Drawing.Size(383, 196);
             this.panel4.TabIndex = 58;
             // 
-            // comboBox7
+            // cbType4
             // 
-            this.comboBox7.FormattingEnabled = true;
-            this.comboBox7.Location = new System.Drawing.Point(36, 133);
-            this.comboBox7.Name = "comboBox7";
-            this.comboBox7.Size = new System.Drawing.Size(121, 22);
-            this.comboBox7.TabIndex = 72;
+            this.cbType4.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawFixed;
+            this.cbType4.Font = new System.Drawing.Font("Times New Roman", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.cbType4.FormattingEnabled = true;
+            this.cbType4.Location = new System.Drawing.Point(36, 135);
+            this.cbType4.Name = "cbType4";
+            this.cbType4.Size = new System.Drawing.Size(121, 24);
+            this.cbType4.TabIndex = 72;
             // 
-            // textBox32
+            // txtCounterNa4
             // 
-            this.textBox32.Location = new System.Drawing.Point(199, 135);
-            this.textBox32.Name = "textBox32";
-            this.textBox32.Size = new System.Drawing.Size(145, 20);
-            this.textBox32.TabIndex = 70;
+            this.txtCounterNa4.Font = new System.Drawing.Font("Times New Roman", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.txtCounterNa4.Location = new System.Drawing.Point(199, 135);
+            this.txtCounterNa4.Name = "txtCounterNa4";
+            this.txtCounterNa4.Size = new System.Drawing.Size(145, 23);
+            this.txtCounterNa4.TabIndex = 70;
             // 
-            // comboBox4
+            // cbType3
             // 
-            this.comboBox4.FormattingEnabled = true;
-            this.comboBox4.Location = new System.Drawing.Point(36, 105);
-            this.comboBox4.Name = "comboBox4";
-            this.comboBox4.Size = new System.Drawing.Size(121, 22);
-            this.comboBox4.TabIndex = 68;
+            this.cbType3.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawVariable;
+            this.cbType3.Font = new System.Drawing.Font("Times New Roman", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.cbType3.FormattingEnabled = true;
+            this.cbType3.Location = new System.Drawing.Point(36, 107);
+            this.cbType3.Name = "cbType3";
+            this.cbType3.Size = new System.Drawing.Size(121, 24);
+            this.cbType3.TabIndex = 68;
             // 
-            // comboBox5
+            // cbType2
             // 
-            this.comboBox5.FormattingEnabled = true;
-            this.comboBox5.Location = new System.Drawing.Point(36, 77);
-            this.comboBox5.Name = "comboBox5";
-            this.comboBox5.Size = new System.Drawing.Size(121, 22);
-            this.comboBox5.TabIndex = 69;
+            this.cbType2.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawVariable;
+            this.cbType2.Font = new System.Drawing.Font("Times New Roman", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.cbType2.FormattingEnabled = true;
+            this.cbType2.Location = new System.Drawing.Point(36, 79);
+            this.cbType2.Name = "cbType2";
+            this.cbType2.Size = new System.Drawing.Size(121, 24);
+            this.cbType2.TabIndex = 69;
             // 
             // label27
             // 
@@ -832,27 +862,34 @@
             this.label27.TabIndex = 58;
             this.label27.Text = "Сетевой адрес:";
             // 
-            // comboBox6
+            // cbType1
             // 
-            this.comboBox6.FormattingEnabled = true;
-            this.comboBox6.Location = new System.Drawing.Point(36, 49);
-            this.comboBox6.Name = "comboBox6";
-            this.comboBox6.Size = new System.Drawing.Size(121, 22);
-            this.comboBox6.TabIndex = 67;
+            this.cbType1.AutoCompleteCustomSource.AddRange(new string[] {
+            "Апельсин",
+            "Яблоко\t\t"});
+            this.cbType1.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawVariable;
+            this.cbType1.Font = new System.Drawing.Font("Times New Roman", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.cbType1.FormattingEnabled = true;
+            this.cbType1.Location = new System.Drawing.Point(36, 51);
+            this.cbType1.Name = "cbType1";
+            this.cbType1.Size = new System.Drawing.Size(121, 24);
+            this.cbType1.TabIndex = 67;
             // 
-            // textBox28
+            // txtCounterNa1
             // 
-            this.textBox28.Location = new System.Drawing.Point(199, 51);
-            this.textBox28.Name = "textBox28";
-            this.textBox28.Size = new System.Drawing.Size(145, 20);
-            this.textBox28.TabIndex = 60;
+            this.txtCounterNa1.Font = new System.Drawing.Font("Times New Roman", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.txtCounterNa1.Location = new System.Drawing.Point(199, 51);
+            this.txtCounterNa1.Name = "txtCounterNa1";
+            this.txtCounterNa1.Size = new System.Drawing.Size(145, 23);
+            this.txtCounterNa1.TabIndex = 60;
             // 
-            // textBox29
+            // txtCounterNa2
             // 
-            this.textBox29.Location = new System.Drawing.Point(199, 79);
-            this.textBox29.Name = "textBox29";
-            this.textBox29.Size = new System.Drawing.Size(145, 20);
-            this.textBox29.TabIndex = 59;
+            this.txtCounterNa2.Font = new System.Drawing.Font("Times New Roman", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.txtCounterNa2.Location = new System.Drawing.Point(199, 79);
+            this.txtCounterNa2.Name = "txtCounterNa2";
+            this.txtCounterNa2.Size = new System.Drawing.Size(145, 23);
+            this.txtCounterNa2.TabIndex = 59;
             // 
             // label28
             // 
@@ -864,12 +901,13 @@
             this.label28.TabIndex = 54;
             this.label28.Text = "Приборы учета:";
             // 
-            // textBox30
+            // txtCounterNa3
             // 
-            this.textBox30.Location = new System.Drawing.Point(199, 107);
-            this.textBox30.Name = "textBox30";
-            this.textBox30.Size = new System.Drawing.Size(145, 20);
-            this.textBox30.TabIndex = 58;
+            this.txtCounterNa3.Font = new System.Drawing.Font("Times New Roman", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.txtCounterNa3.Location = new System.Drawing.Point(199, 107);
+            this.txtCounterNa3.Name = "txtCounterNa3";
+            this.txtCounterNa3.Size = new System.Drawing.Size(145, 23);
+            this.txtCounterNa3.TabIndex = 58;
             // 
             // panel5
             // 
@@ -901,7 +939,7 @@
             this.panel5.Controls.Add(this.cbBaudRate1);
             this.panel5.Controls.Add(this.label29);
             this.panel5.Controls.Add(this.label26);
-            this.panel5.Location = new System.Drawing.Point(423, 460);
+            this.panel5.Location = new System.Drawing.Point(415, 391);
             this.panel5.Name = "panel5";
             this.panel5.Size = new System.Drawing.Size(670, 202);
             this.panel5.TabIndex = 59;
@@ -1181,7 +1219,8 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1097, 740);
+            this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(210)))), ((int)(((byte)(255)))), ((int)(((byte)(250)))));
+            this.ClientSize = new System.Drawing.Size(1097, 668);
             this.Controls.Add(this.panel5);
             this.Controls.Add(this.panel4);
             this.Controls.Add(this.panel3);
@@ -1244,7 +1283,7 @@
         public System.Windows.Forms.TextBox txtFlashVer;
         public System.Windows.Forms.TextBox txtRelease;
         public System.Windows.Forms.TextBox txtMode;
-        public System.Windows.Forms.TextBox textBox5;
+        public System.Windows.Forms.TextBox txtPeriodEvent;
         public System.Windows.Forms.TextBox txtImei;
         public System.Windows.Forms.TextBox textBox7;
         public System.Windows.Forms.TextBox textBox8;
@@ -1254,16 +1293,16 @@
         public System.Windows.Forms.TextBox textBox12;
         public System.Windows.Forms.TextBox textBox13;
         public System.Windows.Forms.TextBox textBox14;
-        public System.Windows.Forms.TextBox textBox15;
-        public System.Windows.Forms.TextBox textBox16;
+        public System.Windows.Forms.TextBox txtApn2;
+        public System.Windows.Forms.TextBox txtApn1;
         public System.Windows.Forms.TextBox txtLastConnection;
         public System.Windows.Forms.TextBox txtNetworkAdres;
         private System.Windows.Forms.Label label23;
         private System.Windows.Forms.Panel panel1;
         private System.Windows.Forms.Panel panel2;
-        private System.Windows.Forms.ComboBox comboBox2;
-        private System.Windows.Forms.ComboBox comboBox3;
-        private System.Windows.Forms.ComboBox comboBox1;
+        private System.Windows.Forms.ComboBox cbChannel3;
+        private System.Windows.Forms.ComboBox cbChannel2;
+        private System.Windows.Forms.ComboBox cbChannel1;
         private System.Windows.Forms.Label label25;
         private System.Windows.Forms.Label label24;
         public System.Windows.Forms.TextBox txtPort1;
@@ -1274,16 +1313,16 @@
         public System.Windows.Forms.TextBox txtIp3;
         private System.Windows.Forms.Panel panel3;
         private System.Windows.Forms.Panel panel4;
-        private System.Windows.Forms.ComboBox comboBox7;
-        public System.Windows.Forms.TextBox textBox32;
-        private System.Windows.Forms.ComboBox comboBox4;
-        private System.Windows.Forms.ComboBox comboBox5;
+        private System.Windows.Forms.ComboBox cbType4;
+        public System.Windows.Forms.TextBox txtCounterNa4;
+        private System.Windows.Forms.ComboBox cbType3;
+        private System.Windows.Forms.ComboBox cbType2;
         private System.Windows.Forms.Label label27;
-        private System.Windows.Forms.ComboBox comboBox6;
-        public System.Windows.Forms.TextBox textBox28;
-        public System.Windows.Forms.TextBox textBox29;
+        private System.Windows.Forms.ComboBox cbType1;
+        public System.Windows.Forms.TextBox txtCounterNa1;
+        public System.Windows.Forms.TextBox txtCounterNa2;
         private System.Windows.Forms.Label label28;
-        public System.Windows.Forms.TextBox textBox30;
+        public System.Windows.Forms.TextBox txtCounterNa3;
         private System.Windows.Forms.Panel panel5;
         public System.Windows.Forms.TextBox txtParity3;
         public System.Windows.Forms.TextBox txtStopBits3;

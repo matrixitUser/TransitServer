@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
+using System.Drawing.Drawing2D;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
@@ -71,24 +73,111 @@ namespace TransitServer
 
         private void FormRedactorModems_Load(object sender, EventArgs e)
         {
-            txtNetworkAdres.Text = config.u8NetworkAddress.ToString();
-            txtMode.Text = config.u8Mode.ToString();
-            txtRelease.Text = config.u32ReleaseTs.ToString();
-            txtFlashVer.Text = config.u16FlashVer.ToString();
-            cbBaudRate1.SelectedItem = (UInt32)config.sUart1.u32BaudRate;
-            cbBaudRate2.SelectedItem = (UInt32)config.sUart2.u32BaudRate;
-            cbBaudRate3.SelectedItem = (UInt32)config.sUart3.u32BaudRate;
-            txtWordLen1.Text = config.sUart1.u8WordLen.ToString();
-            txtWordLen2.Text = config.sUart2.u8WordLen.ToString();
-            txtWordLen3.Text = config.sUart3.u8WordLen.ToString();
-            txtStopBits1.Text = config.sUart1.u8StopBits.ToString();
-            txtStopBits2.Text = config.sUart2.u8StopBits.ToString();
-            txtStopBits3.Text = config.sUart3.u8StopBits.ToString();
-            txtParity1.Text = config.sUart1.u8Parity.ToString();
-            txtParity2.Text = config.sUart2.u8Parity.ToString();
-            txtParity3.Text = config.sUart3.u8Parity.ToString();
+            tsConfig tmpConfig = config;
+            cbChannel1.Items.AddRange(new object[] { "server", "listener", "not use" });
+            cbChannel2.Items.AddRange(new object[] { "server", "listener", "not use" });
+            cbChannel3.Items.AddRange(new object[] { "server", "listener", "not use" });
+            cbChannel1.DropDownStyle = ComboBoxStyle.DropDownList;
+            cbChannel2.DropDownStyle = ComboBoxStyle.DropDownList;
+            cbChannel3.DropDownStyle = ComboBoxStyle.DropDownList;
+
+            if (tmpConfig.profile != null)
+            {
+                if (Encoding.UTF8.GetString(tmpConfig.profile[0].ip_port).Contains(':'))
+                {
+                    txtIp1.Text = Encoding.UTF8.GetString(tmpConfig.profile[0].ip_port).Split(':')[0];
+                    txtPort1.Text = Encoding.UTF8.GetString(tmpConfig.profile[0].ip_port).Split(':')[1];
+                    cbChannel1.SelectedItem = "server";
+                }
+                if (Encoding.UTF8.GetString(tmpConfig.profile[1].ip_port).Contains(':'))
+                {
+                    txtIp2.Text = Encoding.UTF8.GetString(tmpConfig.profile[1].ip_port).Split(':')[0];
+                    txtPort2.Text = Encoding.UTF8.GetString(tmpConfig.profile[1].ip_port).Split(':')[1];
+                }
+                if (Encoding.UTF8.GetString(tmpConfig.profile[2].ip_port).Contains(':'))
+                {
+                    txtIp3.Text = Encoding.UTF8.GetString(tmpConfig.profile[2].ip_port).Split(':')[0];
+                    txtPort3.Text = Encoding.UTF8.GetString(tmpConfig.profile[2].ip_port).Split(':')[1];
+                }
+            }
+
+            if(tmpConfig.profileCount == 0)
+            {
+                cbChannel1.SelectedItem = "not use";
+                cbChannel2.SelectedItem = "not use";
+                cbChannel3.SelectedItem = "not use";
+                cbChannel1.Enabled = false;
+                cbChannel2.Enabled = false;
+                txtIp1.Enabled = false;
+                txtIp2.Enabled = false;
+                txtPort1.Enabled = false;
+                txtPort2.Enabled = false;
+                cbChannel3.Enabled = false;
+                txtIp3.Enabled = false;
+                txtPort3.Enabled = false;
+            }
+            if (tmpConfig.profileCount == 1)
+            {
+                cbChannel2.SelectedItem = "not use";
+                cbChannel3.SelectedItem = "not use";
+                cbChannel2.Enabled = false;
+                txtIp2.Enabled = false;
+                txtPort2.Enabled = false;
+                cbChannel3.Enabled = false;
+                txtIp3.Enabled = false;
+                txtPort3.Enabled = false;
+            }
+            if (tmpConfig.profileCount == 2)
+            {
+                cbChannel3.SelectedItem = "not use";
+                cbChannel3.Enabled = false;
+                txtIp3.Enabled = false;
+                txtPort3.Enabled = false;
+            }
+
+            if(tmpConfig.apnName != null)
+            {
+                txtApn1.Text = Encoding.UTF8.GetString(tmpConfig.apnName[0].APN);
+                if (tmpConfig.apnCount > 1)
+                    txtApn2.Text = Encoding.UTF8.GetString(tmpConfig.apnName[1].APN);
+                else txtApn2.Enabled = false;
+            }
+
+            cbType1.DropDownStyle = ComboBoxStyle.DropDownList;
+            cbType2.DropDownStyle = ComboBoxStyle.DropDownList;
+            cbType3.DropDownStyle = ComboBoxStyle.DropDownList;
+            cbType4.DropDownStyle = ComboBoxStyle.DropDownList;
+
+            if (tmpConfig.u32CounterNA != null)
+            {
+                txtCounterNa1.Text = tmpConfig.u32CounterNA[0].ToString();
+                txtCounterNa2.Text = tmpConfig.u32CounterNA[1].ToString();
+                txtCounterNa3.Text = tmpConfig.u32CounterNA[2].ToString();
+                txtCounterNa4.Text = tmpConfig.u32CounterNA[3].ToString();
+            }
+            
+            txtPeriodEvent.Text = tmpConfig.PeriodEvent.ToString();
+            txtNetworkAdres.Text = tmpConfig.u8NetworkAddress.ToString();
+            txtMode.Text = tmpConfig.u8Mode.ToString();
+            txtRelease.Text = tmpConfig.u32ReleaseTs.ToString();
+            txtFlashVer.Text = tmpConfig.u16FlashVer.ToString();
+            if(tmpConfig.sUart != null)
+            {
+                cbBaudRate1.SelectedItem = (UInt32)tmpConfig.sUart[0].u32BaudRate;
+                cbBaudRate2.SelectedItem = (UInt32)tmpConfig.sUart[1].u32BaudRate;
+                cbBaudRate3.SelectedItem = (UInt32)tmpConfig.sUart[3].u32BaudRate;
+                txtWordLen1.Text = tmpConfig.sUart[0].u8WordLen.ToString();
+                txtWordLen2.Text = tmpConfig.sUart[1].u8WordLen.ToString();
+                txtWordLen3.Text = tmpConfig.sUart[2].u8WordLen.ToString();
+                txtStopBits1.Text = tmpConfig.sUart[0].u8StopBits.ToString();
+                txtStopBits2.Text = tmpConfig.sUart[1].u8StopBits.ToString();
+                txtStopBits3.Text = tmpConfig.sUart[2].u8StopBits.ToString();
+                txtParity1.Text = tmpConfig.sUart[0].u8Parity.ToString();
+                txtParity2.Text = tmpConfig.sUart[1].u8Parity.ToString();
+                txtParity3.Text = tmpConfig.sUart[2].u8Parity.ToString();
+            }
             btnSaveChanges.Enabled = false;
-            cbBaudRate1.Items.AddRange(new object[] {600,1200,2400,4800,9600,14400,19200,28800,38400,56000});
+            cbBaudRate1.Items.AddRange(new object[] { 600, 1200, 2400, 4800, 9600, 14400, 19200, 28800, 38400, 56000 });
             cbBaudRate1.SelectedItem = 4800;
             cbBaudRate2.Items.AddRange(new object[] { 600, 1200, 2400, 4800, 9600, 14400, 19200, 28800, 38400, 56000 });
             cbBaudRate2.SelectedItem = 4800;

@@ -146,6 +146,60 @@ namespace TransitServer
             }
             return listNodesTree;
         }
+
+        public string GetIdGroup(string imei)
+        {
+            string id = "";
+
+            using (SQLiteConnection Connect = new SQLiteConnection("Data Source=" + dbFileName + ";Version=3;"))
+            {
+                Connect.Open();
+                SQLiteCommand Command = new SQLiteCommand
+                {
+                    Connection = Connect,
+                    CommandText = @"SELECT * FROM [modems]  WHERE [imei]=@imei"
+                };
+                Command.Parameters.AddWithValue("@imei", imei);
+                SQLiteDataReader sqlReader = Command.ExecuteReader();
+
+                while (sqlReader.Read()) // считываем и вносим в лист все параметры
+                {
+                    try
+                    {
+                        id = (string)sqlReader["groups"];
+                    }
+                    catch(Exception e) { MessageBox.Show(e.Message); }
+                }
+                Connect.Close();
+            }
+            return id;
+        }
+        public string GetCurrentGroup(string id)
+        {
+            string nameGroup = String.Empty;
+            using (SQLiteConnection Connect = new SQLiteConnection("Data Source=" + dbFileName + ";Version=3;"))
+            {
+                Connect.Open();
+                SQLiteCommand Command = new SQLiteCommand
+                {
+                    Connection = Connect,
+                    CommandText = @"SELECT * FROM [nodesTree] WHERE [id]=@id"
+                };
+                Command.Parameters.AddWithValue("@id", id);
+                SQLiteDataReader sqlReader = Command.ExecuteReader();
+
+                while (sqlReader.Read()) // считываем и вносим в лист все параметры
+                {
+                    try
+                    {
+                        nameGroup = (string)sqlReader["name"];
+                    }
+                    catch { }
+                }
+                Connect.Close();
+            }
+            return nameGroup;
+        }
         #endregion
 
         #region ModemsWork

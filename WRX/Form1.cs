@@ -608,6 +608,9 @@ namespace TransitServer
             formAddInGroup.labNameModem.Text = dgvModems.Rows[mouseLocation.RowIndex].Cells[MODEMSCOLNAME].Value.ToString();
             formAddInGroup.labImei.Text = dgvModems.Rows[mouseLocation.RowIndex].Cells[MODEMSCOLIMEI].Value.ToString();
             formAddInGroup.labLastConnection.Text = dgvModems.Rows[mouseLocation.RowIndex].Cells[MODEMSCOLLASTCONNECTION].Value.ToString();
+            string idGroup = SQLite.Instance.GetIdGroup(formAddInGroup.labImei.Text);
+            if (idGroup == "0") formAddInGroup.labCurrentGroup.Text = "Все";
+            else formAddInGroup.labCurrentGroup.Text = SQLite.Instance.GetCurrentGroup(idGroup);
             InitTree(formAddInGroup.treeViewAdd);
             if (formAddInGroup.ShowDialog() == DialogResult.OK)
             {
