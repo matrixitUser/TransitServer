@@ -336,7 +336,7 @@
             this.statusString.Size = new System.Drawing.Size(1309, 22);
             this.statusString.TabIndex = 3;
             this.statusString.Text = "statusStrip1";
-            this.statusString.MouseMove += new System.Windows.Forms.MouseEventHandler(this.statusString_MouseMove);
+            this.statusString.MouseMove += new System.Windows.Forms.MouseEventHandler(this.StatusString_MouseMove);
             // 
             // panel11
             // 

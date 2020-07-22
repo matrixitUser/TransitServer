@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             this.btnSaveChanges = new System.Windows.Forms.Button();
             this.label3 = new System.Windows.Forms.Label();
             this.label4 = new System.Windows.Forms.Label();
@@ -80,8 +81,10 @@
             this.label44 = new System.Windows.Forms.Label();
             this.txtNameModem = new System.Windows.Forms.TextBox();
             this.panel2 = new System.Windows.Forms.Panel();
+            this.txtTestPort = new System.Windows.Forms.TextBox();
             this.cbChannel3 = new System.Windows.Forms.ComboBox();
             this.cbChannel2 = new System.Windows.Forms.ComboBox();
+            this.txtTestIp = new System.Windows.Forms.TextBox();
             this.cbChannel1 = new System.Windows.Forms.ComboBox();
             this.label25 = new System.Windows.Forms.Label();
             this.label24 = new System.Windows.Forms.Label();
@@ -93,6 +96,7 @@
             this.txtIp3 = new System.Windows.Forms.TextBox();
             this.panel3 = new System.Windows.Forms.Panel();
             this.panel4 = new System.Windows.Forms.Panel();
+            this.txtTestNA = new System.Windows.Forms.TextBox();
             this.cbType4 = new System.Windows.Forms.ComboBox();
             this.txtCounterNa4 = new System.Windows.Forms.TextBox();
             this.cbType3 = new System.Windows.Forms.ComboBox();
@@ -132,6 +136,7 @@
             this.cbBaudRate1 = new System.Windows.Forms.ComboBox();
             this.label29 = new System.Windows.Forms.Label();
             this.label26 = new System.Windows.Forms.Label();
+            this.toolTipInput = new System.Windows.Forms.ToolTip(this.components);
             this.panel1.SuspendLayout();
             this.panel2.SuspendLayout();
             this.panel3.SuspendLayout();
@@ -275,9 +280,9 @@
             this.label9.Font = new System.Drawing.Font("Times New Roman", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.label9.Location = new System.Drawing.Point(6, 73);
             this.label9.Name = "label9";
-            this.label9.Size = new System.Drawing.Size(107, 19);
+            this.label9.Size = new System.Drawing.Size(104, 19);
             this.label9.TabIndex = 15;
-            this.label9.Text = "NetWorkAdres:";
+            this.label9.Text = "NetworkAdres:";
             // 
             // label10
             // 
@@ -561,6 +566,7 @@
             this.txtApn2.Name = "txtApn2";
             this.txtApn2.Size = new System.Drawing.Size(145, 23);
             this.txtApn2.TabIndex = 50;
+            this.txtApn2.TextChanged += new System.EventHandler(this.TxtApn2_TextChanged);
             // 
             // txtApn1
             // 
@@ -569,6 +575,7 @@
             this.txtApn1.Name = "txtApn1";
             this.txtApn1.Size = new System.Drawing.Size(145, 23);
             this.txtApn1.TabIndex = 49;
+            this.txtApn1.TextChanged += new System.EventHandler(this.TxtApn1_TextChanged);
             // 
             // txtLastConnection
             // 
@@ -664,8 +671,10 @@
             // 
             // panel2
             // 
+            this.panel2.Controls.Add(this.txtTestPort);
             this.panel2.Controls.Add(this.cbChannel3);
             this.panel2.Controls.Add(this.cbChannel2);
+            this.panel2.Controls.Add(this.txtTestIp);
             this.panel2.Controls.Add(this.cbChannel1);
             this.panel2.Controls.Add(this.label25);
             this.panel2.Controls.Add(this.label24);
@@ -682,6 +691,14 @@
             this.panel2.Size = new System.Drawing.Size(487, 145);
             this.panel2.TabIndex = 56;
             // 
+            // txtTestPort
+            // 
+            this.txtTestPort.Location = new System.Drawing.Point(366, 9);
+            this.txtTestPort.Name = "txtTestPort";
+            this.txtTestPort.Size = new System.Drawing.Size(100, 20);
+            this.txtTestPort.TabIndex = 62;
+            this.txtTestPort.TextChanged += new System.EventHandler(this.TxtTesPort_TextChanged);
+            // 
             // cbChannel3
             // 
             this.cbChannel3.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawVariable;
@@ -691,6 +708,7 @@
             this.cbChannel3.Name = "cbChannel3";
             this.cbChannel3.Size = new System.Drawing.Size(121, 24);
             this.cbChannel3.TabIndex = 65;
+            this.cbChannel3.SelectedIndexChanged += new System.EventHandler(this.cbChannel3_SelectedIndexChanged);
             // 
             // cbChannel2
             // 
@@ -701,6 +719,15 @@
             this.cbChannel2.Name = "cbChannel2";
             this.cbChannel2.Size = new System.Drawing.Size(121, 24);
             this.cbChannel2.TabIndex = 66;
+            this.cbChannel2.SelectedIndexChanged += new System.EventHandler(this.CbChannel2_SelectedIndexChanged);
+            // 
+            // txtTestIp
+            // 
+            this.txtTestIp.Location = new System.Drawing.Point(208, 8);
+            this.txtTestIp.Name = "txtTestIp";
+            this.txtTestIp.Size = new System.Drawing.Size(100, 20);
+            this.txtTestIp.TabIndex = 60;
+            this.txtTestIp.TextChanged += new System.EventHandler(this.TxtTestIp_TextChanged);
             // 
             // cbChannel1
             // 
@@ -712,6 +739,7 @@
             this.cbChannel1.Name = "cbChannel1";
             this.cbChannel1.Size = new System.Drawing.Size(121, 24);
             this.cbChannel1.TabIndex = 64;
+            this.cbChannel1.SelectedIndexChanged += new System.EventHandler(this.CbChannel1_SelectedIndexChanged);
             // 
             // label25
             // 
@@ -740,6 +768,7 @@
             this.txtPort1.Name = "txtPort1";
             this.txtPort1.Size = new System.Drawing.Size(112, 23);
             this.txtPort1.TabIndex = 63;
+            this.txtPort1.TextChanged += new System.EventHandler(this.TxtPort1_TextChanged);
             // 
             // txtPort2
             // 
@@ -748,6 +777,7 @@
             this.txtPort2.Name = "txtPort2";
             this.txtPort2.Size = new System.Drawing.Size(112, 23);
             this.txtPort2.TabIndex = 62;
+            this.txtPort2.TextChanged += new System.EventHandler(this.TxtPort2_TextChanged);
             // 
             // txtPort3
             // 
@@ -756,6 +786,7 @@
             this.txtPort3.Name = "txtPort3";
             this.txtPort3.Size = new System.Drawing.Size(112, 23);
             this.txtPort3.TabIndex = 61;
+            this.txtPort3.TextChanged += new System.EventHandler(this.TxtPort3_TextChanged);
             // 
             // txtIp1
             // 
@@ -764,6 +795,7 @@
             this.txtIp1.Name = "txtIp1";
             this.txtIp1.Size = new System.Drawing.Size(145, 23);
             this.txtIp1.TabIndex = 60;
+            this.txtIp1.TextChanged += new System.EventHandler(this.TxtIp1_TextChanged);
             // 
             // txtIp2
             // 
@@ -772,6 +804,7 @@
             this.txtIp2.Name = "txtIp2";
             this.txtIp2.Size = new System.Drawing.Size(145, 23);
             this.txtIp2.TabIndex = 59;
+            this.txtIp2.TextChanged += new System.EventHandler(this.TxtIp2_TextChanged);
             // 
             // txtIp3
             // 
@@ -780,6 +813,7 @@
             this.txtIp3.Name = "txtIp3";
             this.txtIp3.Size = new System.Drawing.Size(145, 23);
             this.txtIp3.TabIndex = 58;
+            this.txtIp3.TextChanged += new System.EventHandler(this.TxtIp3_TextChanged);
             // 
             // panel3
             // 
@@ -798,6 +832,7 @@
             // 
             // panel4
             // 
+            this.panel4.Controls.Add(this.txtTestNA);
             this.panel4.Controls.Add(this.cbType4);
             this.panel4.Controls.Add(this.txtCounterNa4);
             this.panel4.Controls.Add(this.cbType3);
@@ -813,6 +848,14 @@
             this.panel4.Name = "panel4";
             this.panel4.Size = new System.Drawing.Size(383, 196);
             this.panel4.TabIndex = 58;
+            // 
+            // txtTestNA
+            // 
+            this.txtTestNA.Location = new System.Drawing.Point(218, 164);
+            this.txtTestNA.Name = "txtTestNA";
+            this.txtTestNA.Size = new System.Drawing.Size(100, 20);
+            this.txtTestNA.TabIndex = 61;
+            this.txtTestNA.TextChanged += new System.EventHandler(this.TxtTestNA_TextChanged);
             // 
             // cbType4
             // 
@@ -831,6 +874,7 @@
             this.txtCounterNa4.Name = "txtCounterNa4";
             this.txtCounterNa4.Size = new System.Drawing.Size(145, 23);
             this.txtCounterNa4.TabIndex = 70;
+            this.txtCounterNa4.TextChanged += new System.EventHandler(this.TxtCounterNa4_TextChanged);
             // 
             // cbType3
             // 
@@ -882,6 +926,7 @@
             this.txtCounterNa1.Name = "txtCounterNa1";
             this.txtCounterNa1.Size = new System.Drawing.Size(145, 23);
             this.txtCounterNa1.TabIndex = 60;
+            this.txtCounterNa1.TextChanged += new System.EventHandler(this.TxtCounterNa1_TextChanged);
             // 
             // txtCounterNa2
             // 
@@ -890,6 +935,7 @@
             this.txtCounterNa2.Name = "txtCounterNa2";
             this.txtCounterNa2.Size = new System.Drawing.Size(145, 23);
             this.txtCounterNa2.TabIndex = 59;
+            this.txtCounterNa2.TextChanged += new System.EventHandler(this.TxtCounterNa2_TextChanged);
             // 
             // label28
             // 
@@ -908,6 +954,7 @@
             this.txtCounterNa3.Name = "txtCounterNa3";
             this.txtCounterNa3.Size = new System.Drawing.Size(145, 23);
             this.txtCounterNa3.TabIndex = 58;
+            this.txtCounterNa3.TextChanged += new System.EventHandler(this.TxtCounterNa3_TextChanged);
             // 
             // panel5
             // 
@@ -1354,5 +1401,9 @@
         private System.Windows.Forms.Label label26;
         private System.Windows.Forms.Label label44;
         public System.Windows.Forms.TextBox txtNameModem;
+        private System.Windows.Forms.TextBox txtTestPort;
+        private System.Windows.Forms.TextBox txtTestIp;
+        private System.Windows.Forms.TextBox txtTestNA;
+        private System.Windows.Forms.ToolTip toolTipInput;
     }
 }

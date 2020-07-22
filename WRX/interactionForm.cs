@@ -16,7 +16,7 @@ namespace TransitServer
             }
             Console("Отдельный запрос на авторизацию отправлен!");
         }
-        private void statusString_MouseMove(object sender, MouseEventArgs e)
+        private void StatusString_MouseMove(object sender, MouseEventArgs e)
         {
             var localPosition = this.PointToClient(Cursor.Position);
             int ow = localPosition.X;

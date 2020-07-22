@@ -4,6 +4,7 @@ using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Windows.Forms;
 
 namespace TransitServer
@@ -73,10 +74,32 @@ namespace TransitServer
 
         private void FormRedactorModems_Load(object sender, EventArgs e)
         {
+            toolTipInput.AutoPopDelay = 5000;
+            toolTipInput.InitialDelay = 100;
+            toolTipInput.ReshowDelay = 500;
+            toolTipInput.ShowAlways = true;
+            string textIpToolTip = "Правильная форма записи IP-адреса является запись\n в виде четырёх десятичных чисел значением от 0 до 255,\n разделённых точками, например, 192.168.0.3";
+            toolTipInput.SetToolTip(txtTestIp, textIpToolTip);
+            toolTipInput.SetToolTip(txtIp1, textIpToolTip);
+            toolTipInput.SetToolTip(txtIp2, textIpToolTip);
+            toolTipInput.SetToolTip(txtIp3, textIpToolTip);
+            string textPortToolTip = "Правильная форма записи порта является запись\n в виде пяти целых чисел, например 12345";
+            toolTipInput.SetToolTip(txtTestPort, textPortToolTip);
+            toolTipInput.SetToolTip(txtPort1, textPortToolTip);
+            toolTipInput.SetToolTip(txtPort2, textPortToolTip);
+            toolTipInput.SetToolTip(txtPort3, textPortToolTip);
+            string textNetworkAdressToolTip = "Правильная форма записи сетевого адреса счетчика\n является запись в виде любых целых чисел, например 48";
+            toolTipInput.SetToolTip(txtTestNA, textNetworkAdressToolTip);
+            toolTipInput.SetToolTip(txtCounterNa1, textPortToolTip);
+            toolTipInput.SetToolTip(txtCounterNa2, textPortToolTip);
+            toolTipInput.SetToolTip(txtCounterNa3, textPortToolTip);
+            toolTipInput.SetToolTip(txtCounterNa4, textPortToolTip);
+
             tsConfig tmpConfig = config;
-            cbChannel1.Items.AddRange(new object[] { "server", "listener", "not use" });
-            cbChannel2.Items.AddRange(new object[] { "server", "listener", "not use" });
-            cbChannel3.Items.AddRange(new object[] { "server", "listener", "not use" });
+            object[] dropList = new object[] { "server", "listener", "not use" };
+            cbChannel1.Items.AddRange(dropList);
+            cbChannel2.Items.AddRange(dropList);
+            cbChannel3.Items.AddRange(dropList);
             cbChannel1.DropDownStyle = ComboBoxStyle.DropDownList;
             cbChannel2.DropDownStyle = ComboBoxStyle.DropDownList;
             cbChannel3.DropDownStyle = ComboBoxStyle.DropDownList;
@@ -87,7 +110,7 @@ namespace TransitServer
                 {
                     txtIp1.Text = Encoding.UTF8.GetString(tmpConfig.profile[0].ip_port).Split(':')[0];
                     txtPort1.Text = Encoding.UTF8.GetString(tmpConfig.profile[0].ip_port).Split(':')[1];
-                    cbChannel1.SelectedItem = "server";
+                    cbChannel1.SelectedItem = dropList[0];
                 }
                 if (Encoding.UTF8.GetString(tmpConfig.profile[1].ip_port).Contains(':'))
                 {
@@ -103,9 +126,9 @@ namespace TransitServer
 
             if(tmpConfig.profileCount == 0)
             {
-                cbChannel1.SelectedItem = "not use";
-                cbChannel2.SelectedItem = "not use";
-                cbChannel3.SelectedItem = "not use";
+                cbChannel1.SelectedItem = dropList[2];
+                cbChannel2.SelectedItem = dropList[2];
+                cbChannel3.SelectedItem = dropList[2];
                 cbChannel1.Enabled = false;
                 cbChannel2.Enabled = false;
                 txtIp1.Enabled = false;
@@ -118,8 +141,8 @@ namespace TransitServer
             }
             if (tmpConfig.profileCount == 1)
             {
-                cbChannel2.SelectedItem = "not use";
-                cbChannel3.SelectedItem = "not use";
+                cbChannel2.SelectedItem = dropList[2];
+                cbChannel3.SelectedItem = dropList[2];
                 cbChannel2.Enabled = false;
                 txtIp2.Enabled = false;
                 txtPort2.Enabled = false;
@@ -129,7 +152,7 @@ namespace TransitServer
             }
             if (tmpConfig.profileCount == 2)
             {
-                cbChannel3.SelectedItem = "not use";
+                cbChannel3.SelectedItem = dropList[2];
                 cbChannel3.Enabled = false;
                 txtIp3.Enabled = false;
                 txtPort3.Enabled = false;
@@ -141,6 +164,10 @@ namespace TransitServer
                 if (tmpConfig.apnCount > 1)
                     txtApn2.Text = Encoding.UTF8.GetString(tmpConfig.apnName[1].APN);
                 else txtApn2.Enabled = false;
+            }
+            else
+            {
+                txtApn1.Enabled = false; txtApn2.Enabled = false;
             }
 
             cbType1.DropDownStyle = ComboBoxStyle.DropDownList;
@@ -154,6 +181,13 @@ namespace TransitServer
                 txtCounterNa2.Text = tmpConfig.u32CounterNA[1].ToString();
                 txtCounterNa3.Text = tmpConfig.u32CounterNA[2].ToString();
                 txtCounterNa4.Text = tmpConfig.u32CounterNA[3].ToString();
+            }
+            else
+            {
+                txtCounterNa1.Enabled = false;
+                txtCounterNa2.Enabled = false;
+                txtCounterNa3.Enabled = false;
+                txtCounterNa4.Enabled = false;
             }
             
             txtPeriodEvent.Text = tmpConfig.PeriodEvent.ToString();
@@ -185,9 +219,211 @@ namespace TransitServer
             cbBaudRate3.SelectedItem = 4800;
         }
 
+        #region ComboBoxIndexChanged
+        private void CbChannel1_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            ComboBoxIndexChanged(cbChannel1, txtIp1, txtPort1);
+        }
+        private void CbChannel2_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            ComboBoxIndexChanged(cbChannel2, txtIp2, txtPort2);
+        }
+        private void cbChannel3_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            ComboBoxIndexChanged(cbChannel3, txtIp3, txtPort3);
+        }
+        private void ComboBoxIndexChanged(ComboBox comboBox, TextBox txtIP, TextBox txtPort)
+        {
+            if (comboBox.SelectedItem.ToString() == "server")
+            {
+                txtIP.Enabled = true;
+                txtIP.Text = Encoding.UTF8.GetString(config.profile[0].ip_port).Split(':')[0];
+                txtPort.Enabled = true;
+                txtPort.Text = Encoding.UTF8.GetString(config.profile[0].ip_port).Split(':')[1];
+                txtIP.BackColor = Color.White;
+                txtPort.BackColor = Color.White;
+            }
+            if (comboBox.SelectedItem.ToString() == "listener")
+            {
+                txtIP.Enabled = true;
+                txtIP.Text = Encoding.UTF8.GetString(config.profile[0].ip_port).Split(':')[0];
+                txtPort.Enabled = true;
+                txtPort.Text = Encoding.UTF8.GetString(config.profile[0].ip_port).Split(':')[1];
+                txtIP.BackColor = Color.White;
+                txtPort.BackColor = Color.White;
+            }
+            if (comboBox.SelectedItem.ToString() == "not use")
+            {
+                txtIP.Enabled = false;
+                txtIP.Text = String.Empty;
+                txtPort.Enabled = false;
+                txtPort.Text = String.Empty;
+                txtIP.BackColor = Color.White;
+                txtPort.BackColor = Color.White;
+            }
+        }
+        #endregion
+
+        #region TextBoxTextChanged
+        private void TextBoxChanged(TextBox textBox, Button buttonSave, string oldName)
+        {
+            if (textBox.Text == String.Empty)
+            {
+                textBox.BackColor = Color.Red;
+                buttonSave.Enabled = false;
+            }
+            else
+            {
+                textBox.BackColor = Color.White;
+                if (textBox.Text != oldName) buttonSave.Enabled = true;
+            }
+        }
+        private void TextBoxPortChanged(TextBox textBox, Button buttonSave, string oldName)
+        {
+            Regex regex = new Regex(@"^\d{5}$");
+            if (regex.IsMatch(textBox.Text) & textBox.Text != oldName)
+            {
+                textBox.BackColor = Color.White;
+                buttonSave.Enabled = true;
+            }
+            else
+            {
+                textBox.BackColor = Color.Red;
+                buttonSave.Enabled = false;
+            }
+        }
+        private void TextBoxCounterNaChanged(TextBox textBox, Button buttonSave, string oldName)
+        {
+            Regex regex = new Regex(@"^\d+$");
+            if (regex.IsMatch(textBox.Text) & textBox.Text != oldName)
+            {
+                textBox.BackColor = Color.White;
+                buttonSave.Enabled = true;
+            }
+            else
+            {
+                textBox.BackColor = Color.Red;
+                buttonSave.Enabled = false;
+            }
+        }
+        private void TextBoxIpChanged(TextBox textBox, Button buttonSave, string oldName)
+        {
+            Regex regex = new Regex(@"^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}$");
+            if (regex.IsMatch(textBox.Text) & textBox.Text != oldName)
+            {
+                textBox.BackColor = Color.White;
+                buttonSave.Enabled = true;
+            }
+            else
+            {
+                textBox.BackColor = Color.Red;
+                buttonSave.Enabled = false;
+            }
+        }
         private void TxtName_TextChanged(object sender, EventArgs e)
         {
-            if (txtNameModem.Text != "" && txtNameModem.Text != oldNameModem) btnSaveChanges.Enabled = true;
+            TextBoxChanged(txtNameModem, btnSaveChanges, oldNameModem);
+        }
+        private void TxtApn1_TextChanged(object sender, EventArgs e)
+        {
+            string oldNameApn1 = Encoding.UTF8.GetString(config.apnName[0].APN);
+            TextBoxChanged(txtApn1, btnSaveChanges, oldNameApn1);
+        }
+        private void TxtApn2_TextChanged(object sender, EventArgs e)
+        {
+            string oldNameApn2 = Encoding.UTF8.GetString(config.apnName[0].APN);
+            TextBoxChanged(txtApn2, btnSaveChanges, oldNameApn2);
+        }
+        private void TxtIp1_TextChanged(object sender, EventArgs e)
+        {
+            string oldNameTxtIp1 = Encoding.UTF8.GetString(config.profile[0].ip_port).Split(':')[0];
+            TextBoxIpChanged(txtIp1, btnSaveChanges, oldNameTxtIp1);
+        }
+        private void TxtPort1_TextChanged(object sender, EventArgs e)
+        {
+            string oldNameTxtPort1 = Encoding.UTF8.GetString(config.profile[0].ip_port).Split(':')[1];
+            TextBoxPortChanged(txtPort1, btnSaveChanges, oldNameTxtPort1);
+        }
+        private void TxtIp2_TextChanged(object sender, EventArgs e)
+        {
+            string oldNameTxtIp2 = Encoding.UTF8.GetString(config.profile[1].ip_port).Split(':')[0];
+            TextBoxIpChanged(txtIp2, btnSaveChanges, oldNameTxtIp2);
+        }
+        private void TxtPort2_TextChanged(object sender, EventArgs e)
+        {
+            string oldNameTxtPort2 = Encoding.UTF8.GetString(config.profile[1].ip_port).Split(':')[1];
+            TextBoxPortChanged(txtPort2, btnSaveChanges, oldNameTxtPort2);
+        }
+        private void TxtIp3_TextChanged(object sender, EventArgs e)
+        {
+            string oldNameTxtIp3 = Encoding.UTF8.GetString(config.profile[2].ip_port).Split(':')[0];
+            TextBoxIpChanged(txtIp3, btnSaveChanges, oldNameTxtIp3);
+        }
+        private void TxtPort3_TextChanged(object sender, EventArgs e)
+        {
+            string oldNameTxtPort3 = Encoding.UTF8.GetString(config.profile[2].ip_port).Split(':')[1];
+            TextBoxPortChanged(txtPort3, btnSaveChanges, oldNameTxtPort3);
+        }
+        private void TxtCounterNa1_TextChanged(object sender, EventArgs e)
+        {
+            string oldTxtCounterNa1 = config.u32CounterNA[0].ToString();
+            TextBoxCounterNaChanged(txtCounterNa1, btnSaveChanges, oldTxtCounterNa1);
+        }
+        private void TxtCounterNa2_TextChanged(object sender, EventArgs e)
+        {
+            string oldTxtCounterNa2 = config.u32CounterNA[1].ToString();
+            TextBoxCounterNaChanged(txtCounterNa2, btnSaveChanges, oldTxtCounterNa2);
+        }
+        private void TxtCounterNa3_TextChanged(object sender, EventArgs e)
+        {
+            string oldTxtCounterNa3 = config.u32CounterNA[2].ToString();
+            TextBoxCounterNaChanged(txtCounterNa3, btnSaveChanges, oldTxtCounterNa3);
+        }
+        private void TxtCounterNa4_TextChanged(object sender, EventArgs e)
+        {
+            string oldTxtCounterNa4 = config.u32CounterNA[3].ToString();
+            TextBoxCounterNaChanged(txtCounterNa4, btnSaveChanges, oldTxtCounterNa4);
+        }
+
+        #endregion
+
+        private void TxtTestIp_TextChanged(object sender, EventArgs e)
+        {
+            Regex regex = new Regex(@"^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}$");
+            if (regex.IsMatch(txtTestIp.Text))
+            {
+                txtTestIp.BackColor = Color.White;
+            }
+            else
+            {
+                txtTestIp.BackColor = Color.Red;
+            }
+        }
+
+        private void TxtTesPort_TextChanged(object sender, EventArgs e)
+        {
+            Regex regex = new Regex(@"^\d{5}$");
+            if (regex.IsMatch(txtTestPort.Text))
+            {
+                txtTestPort.BackColor = Color.White;
+            }
+            else
+            {
+                txtTestPort.BackColor = Color.Red;
+            }
+        }
+
+        private void TxtTestNA_TextChanged(object sender, EventArgs e)
+        {
+            Regex regex = new Regex(@"^\d+$");
+            if (regex.IsMatch(txtTestNA.Text))
+            {
+                txtTestNA.BackColor = Color.White;
+            }
+            else
+            {
+                txtTestNA.BackColor = Color.Red;
+            }
         }
     }
 }
