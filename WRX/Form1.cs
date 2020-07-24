@@ -10,6 +10,7 @@ using System.Text;
 using System.Threading;
 using System.Windows.Forms;
 using System.Configuration;
+using System.Net.NetworkInformation;
 
 namespace TransitServer
 {
@@ -17,7 +18,8 @@ namespace TransitServer
     {
         static object locker = new object();
         bool isUsed = false;
-        int localPort = 10114;
+        //int localPort = 10114;
+        readonly int localPort = Int32.Parse(ConfigurationManager.AppSettings.Get("port"));
         List<GPRSclient> gModemClients = new List<GPRSclient>();
         List<AskueServer>gAskueServers = new List<AskueServer>();
         TcpListener transitServer;
@@ -32,6 +34,10 @@ namespace TransitServer
         }
         private void Form1_Load(object sender, EventArgs e)
         {
+            if (!CheckFreePort(localPort))
+            {
+                MessageBox.Show($"Внутренний порт {localPort} занят другим приложением!\nПоменяйте порт или завершите работу другой программы.");
+            }
             try
             {
                 transitServer = new TcpListener(IPAddress.Any, localPort);
@@ -55,10 +61,25 @@ namespace TransitServer
         }
 
         #region SocketCreated
+        public bool CheckFreePort(int localPort)
+        {
+            IPGlobalProperties ipGlobalProperties = IPGlobalProperties.GetIPGlobalProperties();
+            TcpConnectionInformation[] tcpConnInfoArray = ipGlobalProperties.GetActiveTcpConnections();
+
+            foreach (TcpConnectionInformation tcpi in tcpConnInfoArray)
+            {
+                if (tcpi.LocalEndPoint.Port == localPort)
+                {
+                    return false;
+                }
+            }
+            return true;
+        }
         private void SocketsCreate()
         {
             statusString.Items.Add("Клиенты модемов: 0");
             statusString.Items.Add("Клиентов АСКУЭ: 0");
+
             //statusString.Items.Add("  Handle:");
             while (true)
             {
@@ -92,7 +113,6 @@ namespace TransitServer
             byte[] auth = new byte[28] { 0xC0, 0x00, 0x06, 0x00, 0x14, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0xE7, 0x48, 0xC2 };    //команда авторизации
             ns.Write(auth, 0, auth.Length);     // отправляем сообщение 
             Console("Запрос на авторизацию отправлен!");
-            //lbConsole.Invoke(new Action(() => lbConsole.Items.Add("Запрос на авторизацию отправлен!")));
             while (tcpClient.Connected && isWhile)  // пока клиент подключен, ждем приходящие сообщения
             {
                 byte[] bytes = new byte[1024];     // готовим место для принятия сообщения
@@ -128,43 +148,57 @@ namespace TransitServer
                     {
                         if (CRC.CheckReverse(bytes, new Crc16Modbus()))
                         {
+                            string hexString = string.Format("получено {1} байт-> {0}", string.Join(" ", bytes.Take(count).Select(r => string.Format("{0:X}", r))), count);
+                            Console(hexString);
                             DateTime dt1970 = new DateTime(1970, 1, 1, 0, 0, 0, 0);
                             //tsConfig conf = setBytes(bytes);
-                            if (bytes[0] == 0xFB) //длинный СА
+                            try
                             {
-                                byte[] bytesCId = bytes.Skip(1).Take(12).ToArray();
-                                string strCId = BitConverter.ToString(bytesCId).Replace("-", "");
-                                byte func = bytes[13];
-                                byte[] bytesObjectId = bytes.Skip(14).Take(16).ToArray();
-                                Guid objectId = new Guid(bytesObjectId);
-                                byte networkAddress = bytes[30];
-                                byte[] byteTime = bytes.Skip(31).Take(4).ToArray();
-                                UInt32 uInt32Time = (UInt32)(byteTime[3] << 24) | (UInt32)(byteTime[2] << 16) | (UInt32)(byteTime[1] << 8) | byteTime[0];
-                                DateTime dtContollers = dt1970.AddSeconds(uInt32Time);
-                                UInt16 code = Helper.ToUInt16(bytes, 35);
-                                DateTime[] dtEvent = new DateTime[16];
-                                for (int i = 0; i < 16; i++)
+                                if (bytes[0] == 0xFB) //длинный СА
                                 {
-                                    //byte[] byteTime1 = msg.Skip(37 + i*4 ).Take(4).ToArray();
-                                    //UInt32 uInt32Time1 = (UInt32)(byteTime1[3] << 24) | (UInt32)(byteTime1[2] << 16) | (UInt32)(byteTime1[1] << 8) | byteTime1[0];
-                                    //dtEvent[i] = dt1970.AddSeconds(uInt32Time1);
-                                    dtEvent[i] = u32ToBytes(bytes.Skip(37 + i * 4).Take(4).ToArray());
-                                }
-                                byte[] arrParams = new byte[] { 0x01, 0x02, 0x07, 0x08, 0x0A, 0x12 };//, 0x13 };
-                                for (int i = 0; i < arrParams.Length; i++)
-                                {
-                                    if (((byte)(code >> i) & 1) == 1)
+                                    byte[] bytesCId = bytes.Skip(1).Take(12).ToArray();
+                                    for (int i = 37; i < 91; i++)
                                     {
-                                        NewEvent(imeiDictinary.GetNameSql(modemClient.IMEI), dtEvent[i], ParameterName(arrParams[i]));
+                                        if (bytes[i] == 0xff) bytes[i] = 0;
+                                    }
+                                    string strCId = BitConverter.ToString(bytesCId).Replace("-", "");
+                                    byte func = bytes[13];
+                                    byte[] bytesObjectId = bytes.Skip(14).Take(16).ToArray();
+                                    Guid objectId = new Guid(bytesObjectId);
+                                    byte networkAddress = bytes[30];
+                                    byte[] byteTime = bytes.Skip(31).Take(4).ToArray();
+                                    UInt32 uInt32Time = (UInt32)(byteTime[3] << 24) | (UInt32)(byteTime[2] << 16) | (UInt32)(byteTime[1] << 8) | byteTime[0];
+                                    DateTime dtContollers = dt1970.AddSeconds(uInt32Time);
+                                    UInt16 code = Helper.ToUInt16(bytes, 35);
+                                    DateTime[] dtEvent = new DateTime[16];
+                                    for (int i = 0; i < 16; i++)
+                                    {
+                                        //byte[] byteTime1 = msg.Skip(37 + i*4 ).Take(4).ToArray();
+                                        //UInt32 uInt32Time1 = (UInt32)(byteTime1[3] << 24) | (UInt32)(byteTime1[2] << 16) | (UInt32)(byteTime1[1] << 8) | byteTime1[0];
+                                        //dtEvent[i] = dt1970.AddSeconds(uInt32Time1);
+                                        dtEvent[i] = u32ToBytes(bytes.Skip(37 + i * 4).Take(4).ToArray());
+                                    }
+                                    byte[] arrParams = new byte[] { 0x01, 0x02, 0x07, 0x08, 0x0A, 0x12 };//, 0x13 };
+                                    for (int i = 0; i < arrParams.Length; i++)
+                                    {
+                                        if (((byte)(code >> i) & 1) == 1)
+                                        {
+                                            NewEvent(imeiDictinary.GetNameSql(modemClient.IMEI), dtEvent[i], ParameterName(arrParams[i]));
+                                        }
                                     }
                                 }
+                                //if (bytes[0] == 0xFB) //считываем конфиг
+                                //{
+                                //    tsConfig conf = setBytes(bytes);
+                                //    FormRedactorModems formRedactorModems = new FormRedactorModems();
+                                //    formRedactorModems.config = conf;
+                                //}
                             }
-                            if (bytes[0] == 0xFB) //считываем конфиг
+                            catch(Exception exc)
                             {
-                                tsConfig conf = setBytes(bytes);
-                                FormRedactorModems formRedactorModems = new FormRedactorModems();
-                                formRedactorModems.config = conf;
+                                Console($"Ошибка входных данных! {exc.Message}");
                             }
+                            
                         }
                         else if (CRC.Check(bytes, new Crc16Modbus()))
                         {
@@ -175,13 +209,13 @@ namespace TransitServer
 
                     }
 
-                    string hexString = string.Format("получено {1} байт-> {0}", string.Join(" ", bytes.Take(count).Select(r => string.Format("{0:X}", r))), count);
-                    Console(hexString);
+                    //string hexString = string.Format("получено {1} байт-> {0}", string.Join(" ", bytes.Take(count).Select(r => string.Format("{0:X}", r))), count);
+                    //Console(hexString);
                 }
                 catch (Exception ex)
                 {
                     isWhile = false;
-                    //MessageBox.Show(ex.Message);
+                    MessageBox.Show(ex.Message);
                 }
             }  
             string imei = findClientImeibyHandle(tcpClient.Client.Handle);
