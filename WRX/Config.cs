@@ -50,17 +50,19 @@ namespace TransitServer
         public byte u8Mode;                 //4
         public UInt32 u32ReleaseTs;         //8
 
-        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 3)]
-        public tsProfiles[] profile;   //3  //3*48 = 144 байта 8+144=152
         [MarshalAs(UnmanagedType.ByValArray, SizeConst = 2)]
         public tsApnName[] apnName;
+
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 24)]
+        public byte[] u8client;      //Типы счетчиков   = 24 байта              //200
+
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 24)]
+        public byte[] u8server;      //Типы счетчиков   = 24 байта              //200
 
         [MarshalAs(UnmanagedType.ByValArray, SizeConst = 3)]
         public tsUartConfig[] sUart;         //160
 
         public UInt16 PeriodEvent;      // Период опроса нештатных ситуации //178
-        public byte apnCount;         // Количесвто симок
-        public byte profileCount;       // Количество профилей   = 4 байта      //180
 
         [MarshalAs(UnmanagedType.ByValArray, SizeConst = 4)]
         public UInt32[] u32CounterNA;     //Сетевые адреса счетчиков  	= 16 байтов   //196
@@ -68,6 +70,10 @@ namespace TransitServer
         [MarshalAs(UnmanagedType.ByValArray, SizeConst = 4)]
         public byte[] u8CounterType;      //Типы счетчиков   = 4 байта              //200
 
+        public byte u8ModemType;                 //4
+        public byte u8currSimCard;                 //4
+        public byte u8firstServer;                 //4
+        public byte u8Reserved3;                 //4
     }
     //// CSDtoGPRS
 

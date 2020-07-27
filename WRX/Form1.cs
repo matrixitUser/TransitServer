@@ -157,35 +157,48 @@ namespace TransitServer
                                 if (bytes[0] == 0xFB) //длинный СА
                                 {
                                     byte[] bytesCId = bytes.Skip(1).Take(12).ToArray();
-                                    for (int i = 37; i < 91; i++)
-                                    {
-                                        if (bytes[i] == 0xff) bytes[i] = 0;
-                                    }
                                     string strCId = BitConverter.ToString(bytesCId).Replace("-", "");
                                     byte func = bytes[13];
-                                    byte[] bytesObjectId = bytes.Skip(14).Take(16).ToArray();
-                                    Guid objectId = new Guid(bytesObjectId);
-                                    byte networkAddress = bytes[30];
-                                    byte[] byteTime = bytes.Skip(31).Take(4).ToArray();
-                                    UInt32 uInt32Time = (UInt32)(byteTime[3] << 24) | (UInt32)(byteTime[2] << 16) | (UInt32)(byteTime[1] << 8) | byteTime[0];
-                                    DateTime dtContollers = dt1970.AddSeconds(uInt32Time);
-                                    UInt16 code = Helper.ToUInt16(bytes, 35);
-                                    DateTime[] dtEvent = new DateTime[16];
-                                    for (int i = 0; i < 16; i++)
+
+                                    if (bytes[13] == 0x4D) //длинный СА
                                     {
-                                        //byte[] byteTime1 = msg.Skip(37 + i*4 ).Take(4).ToArray();
-                                        //UInt32 uInt32Time1 = (UInt32)(byteTime1[3] << 24) | (UInt32)(byteTime1[2] << 16) | (UInt32)(byteTime1[1] << 8) | byteTime1[0];
-                                        //dtEvent[i] = dt1970.AddSeconds(uInt32Time1);
-                                        dtEvent[i] = u32ToBytes(bytes.Skip(37 + i * 4).Take(4).ToArray());
-                                    }
-                                    byte[] arrParams = new byte[] { 0x01, 0x02, 0x07, 0x08, 0x0A, 0x12 };//, 0x13 };
-                                    for (int i = 0; i < arrParams.Length; i++)
-                                    {
-                                        if (((byte)(code >> i) & 1) == 1)
+
+                                        byte[] bytesObjectId = bytes.Skip(14).Take(16).ToArray();
+                                        byte[] counterNa = bytes.Skip(30).Take(4).ToArray();
+                                        //byte networkAddress = bytes[30];
+                                        Guid objectId = new Guid(bytesObjectId);
+                                        byte[] byteTime = bytes.Skip(34).Take(4).ToArray(); //31
+                                        UInt32 uInt32Time = (UInt32)(byteTime[3] << 24) | (UInt32)(byteTime[2] << 16) | (UInt32)(byteTime[1] << 8) | byteTime[0];
+                                        DateTime dtContollers = dt1970.AddSeconds(uInt32Time);
+                                        UInt16 code = Helper.ToUInt16(bytes, 38);
+                                        DateTime[] dtEvent = new DateTime[16];
+                                        for (int i = 0; i < 16; i++)
                                         {
-                                            NewEvent(imeiDictinary.GetNameSql(modemClient.IMEI), dtEvent[i], ParameterName(arrParams[i]));
+                                            if (i == 7)
+                                            {
+                                                byte[] byteTime1 = bytes.Skip(40 + i * 4).Take(4).ToArray(); //31
+                                                UInt32 uInt32Time1 = (UInt32)(byteTime1[3] << 24) | (UInt32)(byteTime1[2] << 16) | (UInt32)(byteTime1[1] << 8) | byteTime1[0];
+                                                dtEvent[i] = dt1970.AddSeconds(uInt32Time1);
+                                            }
+                                            else
+                                            {
+                                                dtEvent[i] = u32ToBytes(bytes.Skip(40 + i * 4).Take(4).ToArray());
+                                            }
+                                            //byte[] byteTime1 = bytes.Skip(37 + i*4 ).Take(4).ToArray();
+                                            //UInt32 uInt32Time1 = (UInt32)(byteTime1[3] << 24) | (UInt32)(byteTime1[2] << 16) | (UInt32)(byteTime1[1] << 8) | byteTime1[0];
+                                            //dtEvent[i] = dt1970.AddSeconds(uInt32Time1);
+                                        }
+                                        byte[] arrParams = new byte[] { 0x01, 0x02, 0x07, 0x08, 0x0A, 0x12, 0x13, 0x00 };
+                                        List<dynamic> records = new List<dynamic>();
+                                        for (int i = 0; i < arrParams.Length; i++)
+                                        {
+                                            if (((byte)(code >> i) & 1) == 1 && dtEvent[i] != DateTime.MinValue)
+                                            {
+                                                NewEvent(imeiDictinary.GetNameSql(modemClient.IMEI), dtEvent[i], ParameterName(arrParams[i]));
+                                            }
                                         }
                                     }
+
                                 }
                                 //if (bytes[0] == 0xFB) //считываем конфиг
                                 //{
@@ -204,9 +217,9 @@ namespace TransitServer
                         {
 
                         }
-
-                        Answer(bytes, count, tcpClient.Client.Handle);
-
+                        
+                        Answer(bytes, count, tcpClient.Client.Handle, ns);
+                        
                     }
 
                     //string hexString = string.Format("получено {1} байт-> {0}", string.Join(" ", bytes.Take(count).Select(r => string.Format("{0:X}", r))), count);
@@ -234,7 +247,7 @@ namespace TransitServer
             statusString.Invoke(new Action(() => statusString.Items[1].Text = statusStr));
         }
 
-        private void Answer(byte[] msg, int len, IntPtr clientHandle)
+        private void Answer(byte[] msg, int len, IntPtr clientHandle, NetworkStream ns)
         {
             byte[] bytes = new byte[512];
             byte[] crc = new byte[2];
@@ -247,7 +260,7 @@ namespace TransitServer
                     {
                         crc = CRC.CrcCalculate(msg, 1, i - 3);
                         if ((crc[0] == msg[i - 1]) && (crc[1] == msg[i - 2]))
-                            AnswerTeleofic(msg, i, clientHandle);
+                            AnswerTeleofic(msg, i, clientHandle, ns);
                         return;
                     }
                 }
@@ -259,7 +272,7 @@ namespace TransitServer
             }
         }
 
-        private void AnswerTeleofic(byte[] bytes, int len, IntPtr clientHandle)
+        private void AnswerTeleofic(byte[] bytes, int len, IntPtr clientHandle, NetworkStream ns)
         {
             byte protocol = bytes[1];
             byte doit = bytes[2];
@@ -273,13 +286,20 @@ namespace TransitServer
             switch (cmd)
             {
                 case 0:
-                    int index = clientIndex(clientHandle);
+                    int index = ClientIndex(clientHandle);
                     string IMEI = "";
                     StringBuilder builder = new StringBuilder();
                     builder.Append(Encoding.UTF8.GetString(bytes, 6, 15));
                     IMEI = builder.ToString();
                     DateTime dateTime = DateTime.Now;
                     Console($"Ответ на запрос авторизации получен! IMEI: {IMEI}");
+
+                    //Отправляем запрос на конфиг
+                    List<byte> listGetConfig = new List<byte>() { 0xF3, 0x60, 0x00, 0x00, 0x00 };
+                    listGetConfig.AddRange(CRC.Calc(listGetConfig.ToArray(), new Crc16Modbus()).CrcData);
+                    ns.Write(listGetConfig.ToArray(), 0, listGetConfig.Count);
+                    Console($"Отправлен запрос на конфиг!{listGetConfig[0]}-{listGetConfig[1]}-{listGetConfig[2]}-{listGetConfig[3]}-{listGetConfig[4]}-{listGetConfig[5]}-{listGetConfig[6]}");
+
                     if (index >= 0)
                     {
                         gModemClients[index].IMEI = IMEI;
@@ -367,7 +387,7 @@ namespace TransitServer
             catch { }
 
         }
-        private int clientIndex(IntPtr clientHandle)
+        private int ClientIndex(IntPtr clientHandle)
         {
             int index = 0;
             foreach (var cl in gModemClients)
@@ -406,6 +426,8 @@ namespace TransitServer
         {
             switch (param)
             {
+                case 0x00:
+                    return "вскрытие шкафа";
                 case 0x01:
                     return "включение/выключение прибора";
                 case 0x02:

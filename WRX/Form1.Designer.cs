@@ -37,7 +37,6 @@
             this.tsmiRedactorModema = new System.Windows.Forms.ToolStripMenuItem();
             this.tsmiAddGroup = new System.Windows.Forms.ToolStripMenuItem();
             this.panel5 = new System.Windows.Forms.Panel();
-            this.button2 = new System.Windows.Forms.Button();
             this.tcDown = new System.Windows.Forms.TabControl();
             this.tpEvent = new System.Windows.Forms.TabPage();
             this.panel9 = new System.Windows.Forms.Panel();
@@ -55,6 +54,7 @@
             this.splitter1 = new System.Windows.Forms.Splitter();
             this.panel6 = new System.Windows.Forms.Panel();
             this.btnClear = new System.Windows.Forms.Button();
+            this.button2 = new System.Windows.Forms.Button();
             this.statusString = new System.Windows.Forms.StatusStrip();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
             this.panel11 = new System.Windows.Forms.Panel();
@@ -133,23 +133,11 @@
             // 
             // panel5
             // 
-            this.panel5.Controls.Add(this.button2);
             this.panel5.Controls.Add(this.tcDown);
-            this.panel5.Location = new System.Drawing.Point(6, 481);
+            this.panel5.Location = new System.Drawing.Point(6, 504);
             this.panel5.Name = "panel5";
-            this.panel5.Size = new System.Drawing.Size(1265, 199);
+            this.panel5.Size = new System.Drawing.Size(993, 199);
             this.panel5.TabIndex = 2;
-            // 
-            // button2
-            // 
-            this.button2.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.button2.Location = new System.Drawing.Point(1131, 26);
-            this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(91, 31);
-            this.button2.TabIndex = 4;
-            this.button2.Text = "Отправить";
-            this.button2.UseVisualStyleBackColor = true;
-            this.button2.Click += new System.EventHandler(this.BtSendAuth_Click);
             // 
             // tcDown
             // 
@@ -158,7 +146,7 @@
             this.tcDown.Location = new System.Drawing.Point(7, 4);
             this.tcDown.Name = "tcDown";
             this.tcDown.SelectedIndex = 0;
-            this.tcDown.Size = new System.Drawing.Size(1106, 188);
+            this.tcDown.Size = new System.Drawing.Size(986, 188);
             this.tcDown.TabIndex = 0;
             // 
             // tpEvent
@@ -167,7 +155,7 @@
             this.tpEvent.Controls.Add(this.panel8);
             this.tpEvent.Location = new System.Drawing.Point(4, 22);
             this.tpEvent.Name = "tpEvent";
-            this.tpEvent.Size = new System.Drawing.Size(1098, 162);
+            this.tpEvent.Size = new System.Drawing.Size(978, 162);
             this.tpEvent.TabIndex = 2;
             this.tpEvent.Text = "События";
             this.tpEvent.UseVisualStyleBackColor = true;
@@ -178,7 +166,7 @@
             this.panel9.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panel9.Location = new System.Drawing.Point(0, 0);
             this.panel9.Name = "panel9";
-            this.panel9.Size = new System.Drawing.Size(1066, 162);
+            this.panel9.Size = new System.Drawing.Size(941, 162);
             this.panel9.TabIndex = 2;
             // 
             // dgvEvent
@@ -195,7 +183,7 @@
             this.dgvEvent.Location = new System.Drawing.Point(0, 0);
             this.dgvEvent.Name = "dgvEvent";
             this.dgvEvent.RowHeadersWidth = 20;
-            this.dgvEvent.Size = new System.Drawing.Size(1066, 162);
+            this.dgvEvent.Size = new System.Drawing.Size(941, 162);
             this.dgvEvent.TabIndex = 0;
             this.dgvEvent.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.DgvEvent1_CellContentClick);
             // 
@@ -242,9 +230,9 @@
             this.panel8.Controls.Add(this.btnGetAllEvents);
             this.panel8.Controls.Add(this.btnSongMute);
             this.panel8.Dock = System.Windows.Forms.DockStyle.Right;
-            this.panel8.Location = new System.Drawing.Point(1066, 0);
+            this.panel8.Location = new System.Drawing.Point(941, 0);
             this.panel8.Name = "panel8";
-            this.panel8.Size = new System.Drawing.Size(32, 162);
+            this.panel8.Size = new System.Drawing.Size(37, 162);
             this.panel8.TabIndex = 1;
             // 
             // btnGetAllEvents
@@ -252,7 +240,7 @@
             this.btnGetAllEvents.Dock = System.Windows.Forms.DockStyle.Top;
             this.btnGetAllEvents.Location = new System.Drawing.Point(0, 27);
             this.btnGetAllEvents.Name = "btnGetAllEvents";
-            this.btnGetAllEvents.Size = new System.Drawing.Size(32, 27);
+            this.btnGetAllEvents.Size = new System.Drawing.Size(37, 27);
             this.btnGetAllEvents.TabIndex = 2;
             this.btnGetAllEvents.Text = "all";
             this.btnGetAllEvents.UseVisualStyleBackColor = true;
@@ -264,7 +252,7 @@
             this.btnSongMute.Image = global::TransitServer.Properties.Resources.sound1;
             this.btnSongMute.Location = new System.Drawing.Point(0, 0);
             this.btnSongMute.Name = "btnSongMute";
-            this.btnSongMute.Size = new System.Drawing.Size(32, 27);
+            this.btnSongMute.Size = new System.Drawing.Size(37, 27);
             this.btnSongMute.TabIndex = 1;
             this.btnSongMute.UseVisualStyleBackColor = true;
             this.btnSongMute.Click += new System.EventHandler(this.BtnSongMute_Click);
@@ -276,7 +264,7 @@
             this.tpConsole.Controls.Add(this.panel6);
             this.tpConsole.Location = new System.Drawing.Point(4, 22);
             this.tpConsole.Name = "tpConsole";
-            this.tpConsole.Size = new System.Drawing.Size(1098, 162);
+            this.tpConsole.Size = new System.Drawing.Size(1740, 162);
             this.tpConsole.TabIndex = 0;
             this.tpConsole.Text = "Консоль";
             this.tpConsole.UseVisualStyleBackColor = true;
@@ -287,7 +275,7 @@
             this.panel7.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panel7.Location = new System.Drawing.Point(0, 0);
             this.panel7.Name = "panel7";
-            this.panel7.Size = new System.Drawing.Size(1070, 162);
+            this.panel7.Size = new System.Drawing.Size(1712, 162);
             this.panel7.TabIndex = 3;
             // 
             // lbConsole
@@ -296,13 +284,13 @@
             this.lbConsole.FormattingEnabled = true;
             this.lbConsole.Location = new System.Drawing.Point(0, 0);
             this.lbConsole.Name = "lbConsole";
-            this.lbConsole.Size = new System.Drawing.Size(1070, 162);
+            this.lbConsole.Size = new System.Drawing.Size(1712, 162);
             this.lbConsole.TabIndex = 0;
             // 
             // splitter1
             // 
             this.splitter1.Dock = System.Windows.Forms.DockStyle.Right;
-            this.splitter1.Location = new System.Drawing.Point(1070, 0);
+            this.splitter1.Location = new System.Drawing.Point(1712, 0);
             this.splitter1.Name = "splitter1";
             this.splitter1.Size = new System.Drawing.Size(3, 162);
             this.splitter1.TabIndex = 2;
@@ -312,7 +300,7 @@
             // 
             this.panel6.Controls.Add(this.btnClear);
             this.panel6.Dock = System.Windows.Forms.DockStyle.Right;
-            this.panel6.Location = new System.Drawing.Point(1073, 0);
+            this.panel6.Location = new System.Drawing.Point(1715, 0);
             this.panel6.Name = "panel6";
             this.panel6.Size = new System.Drawing.Size(25, 162);
             this.panel6.TabIndex = 1;
@@ -329,11 +317,22 @@
             this.btnClear.UseVisualStyleBackColor = true;
             this.btnClear.Click += new System.EventHandler(this.BtnClear_Click);
             // 
+            // button2
+            // 
+            this.button2.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.button2.Location = new System.Drawing.Point(908, 441);
+            this.button2.Name = "button2";
+            this.button2.Size = new System.Drawing.Size(91, 31);
+            this.button2.TabIndex = 4;
+            this.button2.Text = "Отправить";
+            this.button2.UseVisualStyleBackColor = true;
+            this.button2.Click += new System.EventHandler(this.BtSendAuth_Click);
+            // 
             // statusString
             // 
             this.statusString.Location = new System.Drawing.Point(0, 706);
             this.statusString.Name = "statusString";
-            this.statusString.Size = new System.Drawing.Size(1309, 22);
+            this.statusString.Size = new System.Drawing.Size(1022, 22);
             this.statusString.TabIndex = 3;
             this.statusString.Text = "statusStrip1";
             this.statusString.MouseMove += new System.Windows.Forms.MouseEventHandler(this.StatusString_MouseMove);
@@ -494,7 +493,8 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.Azure;
-            this.ClientSize = new System.Drawing.Size(1309, 728);
+            this.ClientSize = new System.Drawing.Size(1022, 728);
+            this.Controls.Add(this.button2);
             this.Controls.Add(this.btChangePort);
             this.Controls.Add(this.dgvModems);
             this.Controls.Add(this.btn_AddModem);

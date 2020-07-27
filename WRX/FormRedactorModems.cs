@@ -104,71 +104,71 @@ namespace TransitServer
             cbChannel2.DropDownStyle = ComboBoxStyle.DropDownList;
             cbChannel3.DropDownStyle = ComboBoxStyle.DropDownList;
 
-            if (tmpConfig.profile != null)
-            {
-                if (Encoding.UTF8.GetString(tmpConfig.profile[0].ip_port).Contains(':'))
-                {
-                    txtIp1.Text = Encoding.UTF8.GetString(tmpConfig.profile[0].ip_port).Split(':')[0];
-                    txtPort1.Text = Encoding.UTF8.GetString(tmpConfig.profile[0].ip_port).Split(':')[1];
-                    cbChannel1.SelectedItem = dropList[0];
-                }
-                if (Encoding.UTF8.GetString(tmpConfig.profile[1].ip_port).Contains(':'))
-                {
-                    txtIp2.Text = Encoding.UTF8.GetString(tmpConfig.profile[1].ip_port).Split(':')[0];
-                    txtPort2.Text = Encoding.UTF8.GetString(tmpConfig.profile[1].ip_port).Split(':')[1];
-                }
-                if (Encoding.UTF8.GetString(tmpConfig.profile[2].ip_port).Contains(':'))
-                {
-                    txtIp3.Text = Encoding.UTF8.GetString(tmpConfig.profile[2].ip_port).Split(':')[0];
-                    txtPort3.Text = Encoding.UTF8.GetString(tmpConfig.profile[2].ip_port).Split(':')[1];
-                }
-            }
+            //if (tmpConfig.profile != null)
+            //{
+            //    if (Encoding.UTF8.GetString(tmpConfig.profile[0].ip_port).Contains(':'))
+            //    {
+            //        txtIp1.Text = Encoding.UTF8.GetString(tmpConfig.profile[0].ip_port).Split(':')[0];
+            //        txtPort1.Text = Encoding.UTF8.GetString(tmpConfig.profile[0].ip_port).Split(':')[1];
+            //        cbChannel1.SelectedItem = dropList[0];
+            //    }
+            //    if (Encoding.UTF8.GetString(tmpConfig.profile[1].ip_port).Contains(':'))
+            //    {
+            //        txtIp2.Text = Encoding.UTF8.GetString(tmpConfig.profile[1].ip_port).Split(':')[0];
+            //        txtPort2.Text = Encoding.UTF8.GetString(tmpConfig.profile[1].ip_port).Split(':')[1];
+            //    }
+            //    if (Encoding.UTF8.GetString(tmpConfig.profile[2].ip_port).Contains(':'))
+            //    {
+            //        txtIp3.Text = Encoding.UTF8.GetString(tmpConfig.profile[2].ip_port).Split(':')[0];
+            //        txtPort3.Text = Encoding.UTF8.GetString(tmpConfig.profile[2].ip_port).Split(':')[1];
+            //    }
+            //}
 
-            if(tmpConfig.profileCount == 0)
-            {
-                cbChannel1.SelectedItem = dropList[2];
-                cbChannel2.SelectedItem = dropList[2];
-                cbChannel3.SelectedItem = dropList[2];
-                cbChannel1.Enabled = false;
-                cbChannel2.Enabled = false;
-                txtIp1.Enabled = false;
-                txtIp2.Enabled = false;
-                txtPort1.Enabled = false;
-                txtPort2.Enabled = false;
-                cbChannel3.Enabled = false;
-                txtIp3.Enabled = false;
-                txtPort3.Enabled = false;
-            }
-            if (tmpConfig.profileCount == 1)
-            {
-                cbChannel2.SelectedItem = dropList[2];
-                cbChannel3.SelectedItem = dropList[2];
-                cbChannel2.Enabled = false;
-                txtIp2.Enabled = false;
-                txtPort2.Enabled = false;
-                cbChannel3.Enabled = false;
-                txtIp3.Enabled = false;
-                txtPort3.Enabled = false;
-            }
-            if (tmpConfig.profileCount == 2)
-            {
-                cbChannel3.SelectedItem = dropList[2];
-                cbChannel3.Enabled = false;
-                txtIp3.Enabled = false;
-                txtPort3.Enabled = false;
-            }
+            //if(tmpConfig.profileCount == 0)
+            //{
+            //    cbChannel1.SelectedItem = dropList[2];
+            //    cbChannel2.SelectedItem = dropList[2];
+            //    cbChannel3.SelectedItem = dropList[2];
+            //    cbChannel1.Enabled = false;
+            //    cbChannel2.Enabled = false;
+            //    txtIp1.Enabled = false;
+            //    txtIp2.Enabled = false;
+            //    txtPort1.Enabled = false;
+            //    txtPort2.Enabled = false;
+            //    cbChannel3.Enabled = false;
+            //    txtIp3.Enabled = false;
+            //    txtPort3.Enabled = false;
+            //}
+            //if (tmpConfig.profileCount == 1)
+            //{
+            //    cbChannel2.SelectedItem = dropList[2];
+            //    cbChannel3.SelectedItem = dropList[2];
+            //    cbChannel2.Enabled = false;
+            //    txtIp2.Enabled = false;
+            //    txtPort2.Enabled = false;
+            //    cbChannel3.Enabled = false;
+            //    txtIp3.Enabled = false;
+            //    txtPort3.Enabled = false;
+            //}
+            //if (tmpConfig.profileCount == 2)
+            //{
+            //    cbChannel3.SelectedItem = dropList[2];
+            //    cbChannel3.Enabled = false;
+            //    txtIp3.Enabled = false;
+            //    txtPort3.Enabled = false;
+            //}
 
-            if(tmpConfig.apnName != null)
-            {
-                txtApn1.Text = Encoding.UTF8.GetString(tmpConfig.apnName[0].APN);
-                if (tmpConfig.apnCount > 1)
-                    txtApn2.Text = Encoding.UTF8.GetString(tmpConfig.apnName[1].APN);
-                else txtApn2.Enabled = false;
-            }
-            else
-            {
-                txtApn1.Enabled = false; txtApn2.Enabled = false;
-            }
+            //if(tmpConfig.apnName != null)
+            //{
+            //    txtApn1.Text = Encoding.UTF8.GetString(tmpConfig.apnName[0].APN);
+            //    if (tmpConfig.apnCount > 1)
+            //        txtApn2.Text = Encoding.UTF8.GetString(tmpConfig.apnName[1].APN);
+            //    else txtApn2.Enabled = false;
+            //}
+            //else
+            //{
+            //    txtApn1.Enabled = false; txtApn2.Enabled = false;
+            //}
 
             cbType1.DropDownStyle = ComboBoxStyle.DropDownList;
             cbType2.DropDownStyle = ComboBoxStyle.DropDownList;
@@ -237,18 +237,18 @@ namespace TransitServer
             if (comboBox.SelectedItem.ToString() == "server")
             {
                 txtIP.Enabled = true;
-                txtIP.Text = Encoding.UTF8.GetString(config.profile[0].ip_port).Split(':')[0];
+                //txtIP.Text = Encoding.UTF8.GetString(config.profile[0].ip_port).Split(':')[0];
                 txtPort.Enabled = true;
-                txtPort.Text = Encoding.UTF8.GetString(config.profile[0].ip_port).Split(':')[1];
+                //txtPort.Text = Encoding.UTF8.GetString(config.profile[0].ip_port).Split(':')[1];
                 txtIP.BackColor = Color.White;
                 txtPort.BackColor = Color.White;
             }
             if (comboBox.SelectedItem.ToString() == "listener")
             {
                 txtIP.Enabled = true;
-                txtIP.Text = Encoding.UTF8.GetString(config.profile[0].ip_port).Split(':')[0];
+                //txtIP.Text = Encoding.UTF8.GetString(config.profile[0].ip_port).Split(':')[0];
                 txtPort.Enabled = true;
-                txtPort.Text = Encoding.UTF8.GetString(config.profile[0].ip_port).Split(':')[1];
+               // txtPort.Text = Encoding.UTF8.GetString(config.profile[0].ip_port).Split(':')[1];
                 txtIP.BackColor = Color.White;
                 txtPort.BackColor = Color.White;
             }
@@ -336,33 +336,33 @@ namespace TransitServer
         }
         private void TxtIp1_TextChanged(object sender, EventArgs e)
         {
-            string oldNameTxtIp1 = Encoding.UTF8.GetString(config.profile[0].ip_port).Split(':')[0];
-            TextBoxIpChanged(txtIp1, btnSaveChanges, oldNameTxtIp1);
+            //string oldNameTxtIp1 = Encoding.UTF8.GetString(config.profile[0].ip_port).Split(':')[0];
+            //TextBoxIpChanged(txtIp1, btnSaveChanges, oldNameTxtIp1);
         }
         private void TxtPort1_TextChanged(object sender, EventArgs e)
         {
-            string oldNameTxtPort1 = Encoding.UTF8.GetString(config.profile[0].ip_port).Split(':')[1];
-            TextBoxPortChanged(txtPort1, btnSaveChanges, oldNameTxtPort1);
+            //string oldNameTxtPort1 = Encoding.UTF8.GetString(config.profile[0].ip_port).Split(':')[1];
+            //TextBoxPortChanged(txtPort1, btnSaveChanges, oldNameTxtPort1);
         }
         private void TxtIp2_TextChanged(object sender, EventArgs e)
         {
-            string oldNameTxtIp2 = Encoding.UTF8.GetString(config.profile[1].ip_port).Split(':')[0];
-            TextBoxIpChanged(txtIp2, btnSaveChanges, oldNameTxtIp2);
+            //string oldNameTxtIp2 = Encoding.UTF8.GetString(config.profile[1].ip_port).Split(':')[0];
+            //TextBoxIpChanged(txtIp2, btnSaveChanges, oldNameTxtIp2);
         }
         private void TxtPort2_TextChanged(object sender, EventArgs e)
         {
-            string oldNameTxtPort2 = Encoding.UTF8.GetString(config.profile[1].ip_port).Split(':')[1];
-            TextBoxPortChanged(txtPort2, btnSaveChanges, oldNameTxtPort2);
+            //string oldNameTxtPort2 = Encoding.UTF8.GetString(config.profile[1].ip_port).Split(':')[1];
+            //TextBoxPortChanged(txtPort2, btnSaveChanges, oldNameTxtPort2);
         }
         private void TxtIp3_TextChanged(object sender, EventArgs e)
         {
-            string oldNameTxtIp3 = Encoding.UTF8.GetString(config.profile[2].ip_port).Split(':')[0];
-            TextBoxIpChanged(txtIp3, btnSaveChanges, oldNameTxtIp3);
+            //string oldNameTxtIp3 = Encoding.UTF8.GetString(config.profile[2].ip_port).Split(':')[0];
+            //TextBoxIpChanged(txtIp3, btnSaveChanges, oldNameTxtIp3);
         }
         private void TxtPort3_TextChanged(object sender, EventArgs e)
         {
-            string oldNameTxtPort3 = Encoding.UTF8.GetString(config.profile[2].ip_port).Split(':')[1];
-            TextBoxPortChanged(txtPort3, btnSaveChanges, oldNameTxtPort3);
+            //string oldNameTxtPort3 = Encoding.UTF8.GetString(config.profile[2].ip_port).Split(':')[1];
+            //TextBoxPortChanged(txtPort3, btnSaveChanges, oldNameTxtPort3);
         }
         private void TxtCounterNa1_TextChanged(object sender, EventArgs e)
         {
