@@ -137,6 +137,7 @@
             this.label29 = new System.Windows.Forms.Label();
             this.label26 = new System.Windows.Forms.Label();
             this.toolTipInput = new System.Windows.Forms.ToolTip(this.components);
+            this.sendConfig = new System.Windows.Forms.Button();
             this.panel1.SuspendLayout();
             this.panel2.SuspendLayout();
             this.panel3.SuspendLayout();
@@ -233,6 +234,7 @@
             this.button2.TabIndex = 14;
             this.button2.Text = "Корректировка времени";
             this.button2.UseVisualStyleBackColor = false;
+            this.button2.Click += new System.EventHandler(this.button2_Click);
             // 
             // label5
             // 
@@ -1262,12 +1264,24 @@
             this.label26.TabIndex = 60;
             this.label26.Text = "Приборы учета:";
             // 
+            // sendConfig
+            // 
+            this.sendConfig.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(255)))), ((int)(((byte)(255)))));
+            this.sendConfig.Location = new System.Drawing.Point(486, 616);
+            this.sendConfig.Name = "sendConfig";
+            this.sendConfig.Size = new System.Drawing.Size(103, 35);
+            this.sendConfig.TabIndex = 60;
+            this.sendConfig.Text = "Отправить конфиг";
+            this.sendConfig.UseVisualStyleBackColor = false;
+            this.sendConfig.Click += new System.EventHandler(this.sendConfig_Click);
+            // 
             // FormRedactorModems
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(210)))), ((int)(((byte)(255)))), ((int)(((byte)(250)))));
             this.ClientSize = new System.Drawing.Size(1097, 668);
+            this.Controls.Add(this.sendConfig);
             this.Controls.Add(this.panel5);
             this.Controls.Add(this.panel4);
             this.Controls.Add(this.panel3);
@@ -1405,5 +1419,6 @@
         private System.Windows.Forms.TextBox txtTestIp;
         private System.Windows.Forms.TextBox txtTestNA;
         private System.Windows.Forms.ToolTip toolTipInput;
+        private System.Windows.Forms.Button sendConfig;
     }
 }

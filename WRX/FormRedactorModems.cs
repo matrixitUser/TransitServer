@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Linq;
+using System.Net.Sockets;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Threading;
 using System.Windows.Forms;
 
 namespace TransitServer
@@ -104,71 +106,24 @@ namespace TransitServer
             cbChannel2.DropDownStyle = ComboBoxStyle.DropDownList;
             cbChannel3.DropDownStyle = ComboBoxStyle.DropDownList;
 
-            //if (tmpConfig.profile != null)
-            //{
-            //    if (Encoding.UTF8.GetString(tmpConfig.profile[0].ip_port).Contains(':'))
-            //    {
-            //        txtIp1.Text = Encoding.UTF8.GetString(tmpConfig.profile[0].ip_port).Split(':')[0];
-            //        txtPort1.Text = Encoding.UTF8.GetString(tmpConfig.profile[0].ip_port).Split(':')[1];
-            //        cbChannel1.SelectedItem = dropList[0];
-            //    }
-            //    if (Encoding.UTF8.GetString(tmpConfig.profile[1].ip_port).Contains(':'))
-            //    {
-            //        txtIp2.Text = Encoding.UTF8.GetString(tmpConfig.profile[1].ip_port).Split(':')[0];
-            //        txtPort2.Text = Encoding.UTF8.GetString(tmpConfig.profile[1].ip_port).Split(':')[1];
-            //    }
-            //    if (Encoding.UTF8.GetString(tmpConfig.profile[2].ip_port).Contains(':'))
-            //    {
-            //        txtIp3.Text = Encoding.UTF8.GetString(tmpConfig.profile[2].ip_port).Split(':')[0];
-            //        txtPort3.Text = Encoding.UTF8.GetString(tmpConfig.profile[2].ip_port).Split(':')[1];
-            //    }
-            //}
-
-            //if(tmpConfig.profileCount == 0)
-            //{
-            //    cbChannel1.SelectedItem = dropList[2];
-            //    cbChannel2.SelectedItem = dropList[2];
-            //    cbChannel3.SelectedItem = dropList[2];
-            //    cbChannel1.Enabled = false;
-            //    cbChannel2.Enabled = false;
-            //    txtIp1.Enabled = false;
-            //    txtIp2.Enabled = false;
-            //    txtPort1.Enabled = false;
-            //    txtPort2.Enabled = false;
-            //    cbChannel3.Enabled = false;
-            //    txtIp3.Enabled = false;
-            //    txtPort3.Enabled = false;
-            //}
-            //if (tmpConfig.profileCount == 1)
-            //{
-            //    cbChannel2.SelectedItem = dropList[2];
-            //    cbChannel3.SelectedItem = dropList[2];
-            //    cbChannel2.Enabled = false;
-            //    txtIp2.Enabled = false;
-            //    txtPort2.Enabled = false;
-            //    cbChannel3.Enabled = false;
-            //    txtIp3.Enabled = false;
-            //    txtPort3.Enabled = false;
-            //}
-            //if (tmpConfig.profileCount == 2)
-            //{
-            //    cbChannel3.SelectedItem = dropList[2];
-            //    cbChannel3.Enabled = false;
-            //    txtIp3.Enabled = false;
-            //    txtPort3.Enabled = false;
-            //}
-
-            //if(tmpConfig.apnName != null)
-            //{
-            //    txtApn1.Text = Encoding.UTF8.GetString(tmpConfig.apnName[0].APN);
-            //    if (tmpConfig.apnCount > 1)
-            //        txtApn2.Text = Encoding.UTF8.GetString(tmpConfig.apnName[1].APN);
-            //    else txtApn2.Enabled = false;
-            //}
-            //else
-            //{
-            //    txtApn1.Enabled = false; txtApn2.Enabled = false;
-            //}
+            if (tmpConfig.u8server != null)
+            {
+                if (Encoding.UTF8.GetString(tmpConfig.u8server).Contains(':'))
+                {
+                    txtIp1.Text = Encoding.UTF8.GetString(tmpConfig.u8server).Split(':')[0];
+                    txtPort1.Text = Encoding.UTF8.GetString(tmpConfig.u8server).Split(':')[1];
+                    cbChannel1.SelectedItem = dropList[0];
+                }
+            }
+            if (tmpConfig.u8client != null)
+            {
+                if (Encoding.UTF8.GetString(tmpConfig.u8client).Contains(':'))
+                {
+                    txtIp2.Text = Encoding.UTF8.GetString(tmpConfig.u8client).Split(':')[0];
+                    txtPort2.Text = Encoding.UTF8.GetString(tmpConfig.u8client).Split(':')[1];
+                    cbChannel2.SelectedItem = dropList[1];
+                }
+            }
 
             cbType1.DropDownStyle = ComboBoxStyle.DropDownList;
             cbType2.DropDownStyle = ComboBoxStyle.DropDownList;
@@ -195,7 +150,13 @@ namespace TransitServer
             txtMode.Text = tmpConfig.u8Mode.ToString();
             txtRelease.Text = tmpConfig.u32ReleaseTs.ToString();
             txtFlashVer.Text = tmpConfig.u16FlashVer.ToString();
-            if(tmpConfig.sUart != null)
+            if(tmpConfig.apnName != null)
+            {
+                txtApn1.Text = Encoding.UTF8.GetString(tmpConfig.apnName[0].APN);
+                txtApn2.Text = Encoding.UTF8.GetString(tmpConfig.apnName[1].APN);
+            }
+                
+            if (tmpConfig.sUart != null)
             {
                 cbBaudRate1.SelectedItem = (UInt32)tmpConfig.sUart[0].u32BaudRate;
                 cbBaudRate2.SelectedItem = (UInt32)tmpConfig.sUart[1].u32BaudRate;
@@ -336,8 +297,8 @@ namespace TransitServer
         }
         private void TxtIp1_TextChanged(object sender, EventArgs e)
         {
-            //string oldNameTxtIp1 = Encoding.UTF8.GetString(config.profile[0].ip_port).Split(':')[0];
-            //TextBoxIpChanged(txtIp1, btnSaveChanges, oldNameTxtIp1);
+            string oldNameTxtIp1 = Encoding.UTF8.GetString(config.u8server).Split(':')[0];
+            TextBoxIpChanged(txtIp1, btnSaveChanges, oldNameTxtIp1);
         }
         private void TxtPort1_TextChanged(object sender, EventArgs e)
         {
@@ -424,6 +385,18 @@ namespace TransitServer
             {
                 txtTestNA.BackColor = Color.Red;
             }
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            Form1 form1 = this.Owner as Form1;
+            form1.send();
+        }
+
+        private void sendConfig_Click(object sender, EventArgs e)
+        {
+            Form1 form1 = this.Owner as Form1;
+            form1.sendConfigForSaveThread();
         }
     }
 }

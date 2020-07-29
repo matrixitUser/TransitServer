@@ -29,7 +29,7 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
             this.updateDgvModems = new System.Windows.Forms.Button();
             this.btn_AddModem = new System.Windows.Forms.Button();
@@ -74,6 +74,7 @@
             this.activeConnection = new System.Windows.Forms.DataGridViewImageColumn();
             this.btChangePort = new System.Windows.Forms.Button();
             this.dataGridViewImageColumn1 = new System.Windows.Forms.DataGridViewImageColumn();
+            this.button1 = new System.Windows.Forms.Button();
             this.contextMenuStrip1.SuspendLayout();
             this.panel5.SuspendLayout();
             this.tcDown.SuspendLayout();
@@ -216,9 +217,9 @@
             // 
             // colEventQuite
             // 
-            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            dataGridViewCellStyle1.NullValue = "квитировать";
-            this.colEventQuite.DefaultCellStyle = dataGridViewCellStyle1;
+            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewCellStyle2.NullValue = "квитировать";
+            this.colEventQuite.DefaultCellStyle = dataGridViewCellStyle2;
             this.colEventQuite.FillWeight = 80F;
             this.colEventQuite.HeaderText = "quite";
             this.colEventQuite.Name = "colEventQuite";
@@ -264,7 +265,7 @@
             this.tpConsole.Controls.Add(this.panel6);
             this.tpConsole.Location = new System.Drawing.Point(4, 22);
             this.tpConsole.Name = "tpConsole";
-            this.tpConsole.Size = new System.Drawing.Size(1740, 162);
+            this.tpConsole.Size = new System.Drawing.Size(978, 162);
             this.tpConsole.TabIndex = 0;
             this.tpConsole.Text = "Консоль";
             this.tpConsole.UseVisualStyleBackColor = true;
@@ -275,7 +276,7 @@
             this.panel7.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panel7.Location = new System.Drawing.Point(0, 0);
             this.panel7.Name = "panel7";
-            this.panel7.Size = new System.Drawing.Size(1712, 162);
+            this.panel7.Size = new System.Drawing.Size(950, 162);
             this.panel7.TabIndex = 3;
             // 
             // lbConsole
@@ -284,13 +285,13 @@
             this.lbConsole.FormattingEnabled = true;
             this.lbConsole.Location = new System.Drawing.Point(0, 0);
             this.lbConsole.Name = "lbConsole";
-            this.lbConsole.Size = new System.Drawing.Size(1712, 162);
+            this.lbConsole.Size = new System.Drawing.Size(950, 162);
             this.lbConsole.TabIndex = 0;
             // 
             // splitter1
             // 
             this.splitter1.Dock = System.Windows.Forms.DockStyle.Right;
-            this.splitter1.Location = new System.Drawing.Point(1712, 0);
+            this.splitter1.Location = new System.Drawing.Point(950, 0);
             this.splitter1.Name = "splitter1";
             this.splitter1.Size = new System.Drawing.Size(3, 162);
             this.splitter1.TabIndex = 2;
@@ -300,7 +301,7 @@
             // 
             this.panel6.Controls.Add(this.btnClear);
             this.panel6.Dock = System.Windows.Forms.DockStyle.Right;
-            this.panel6.Location = new System.Drawing.Point(1715, 0);
+            this.panel6.Location = new System.Drawing.Point(953, 0);
             this.panel6.Name = "panel6";
             this.panel6.Size = new System.Drawing.Size(25, 162);
             this.panel6.TabIndex = 1;
@@ -320,11 +321,11 @@
             // button2
             // 
             this.button2.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.button2.Location = new System.Drawing.Point(908, 441);
+            this.button2.Location = new System.Drawing.Point(881, 428);
             this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(91, 31);
+            this.button2.Size = new System.Drawing.Size(118, 70);
             this.button2.TabIndex = 4;
-            this.button2.Text = "Отправить";
+            this.button2.Text = "Отправить запрос на авторизацию";
             this.button2.UseVisualStyleBackColor = true;
             this.button2.Click += new System.EventHandler(this.BtSendAuth_Click);
             // 
@@ -488,12 +489,24 @@
             this.dataGridViewImageColumn1.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Automatic;
             this.dataGridViewImageColumn1.Width = 20;
             // 
+            // button1
+            // 
+            this.button1.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.button1.Location = new System.Drawing.Point(757, 428);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(118, 70);
+            this.button1.TabIndex = 9;
+            this.button1.Text = "Отправить запрос на конфиг";
+            this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.button1_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.Azure;
             this.ClientSize = new System.Drawing.Size(1022, 728);
+            this.Controls.Add(this.button1);
             this.Controls.Add(this.button2);
             this.Controls.Add(this.btChangePort);
             this.Controls.Add(this.dgvModems);
@@ -573,6 +586,7 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn name;
         private System.Windows.Forms.DataGridViewTextBoxColumn lastConnection;
         private System.Windows.Forms.DataGridViewImageColumn activeConnection;
+        private System.Windows.Forms.Button button1;
     }
 }
 

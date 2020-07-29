@@ -45,7 +45,7 @@ namespace TransitServer
                 SQLiteCommand m_sqlCmd3 = new SQLiteCommand(m_dbConn);
 
                 m_sqlCmd1.CommandText = "CREATE TABLE IF NOT EXISTS dbEvents (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, date TEXT, message TEXT, quite TEXT)";
-                m_sqlCmd2.CommandText = "CREATE TABLE IF NOT EXISTS modems (id INTEGER PRIMARY KEY AUTOINCREMENT, imei TEXT, port TEXT, name TEXT, lastConnection TEXT, activeConnection INTEGER, groups TEXT DEFAULT '0')";
+                m_sqlCmd2.CommandText = "CREATE TABLE IF NOT EXISTS modems (id INTEGER PRIMARY KEY AUTOINCREMENT, imei TEXT, port TEXT, name TEXT, lastConnection TEXT, activeConnection INTEGER, groups TEXT DEFAULT '0', config TEXT)";
                 m_sqlCmd3.CommandText = "CREATE TABLE IF NOT EXISTS nodesTree (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, parent TEXT)";
 
                 m_sqlCmd1.ExecuteNonQuery();
@@ -204,6 +204,19 @@ namespace TransitServer
 
         #region ModemsWork
         //update
+        public void UpdateConfigModems(string imei, string config)
+        {
+            using (SQLiteConnection Connect = new SQLiteConnection("Data Source=" + dbFileName + ";Version=3;"))
+            {
+                string commandText = "UPDATE modems SET config = @config WHERE imei = @imei;";
+                SQLiteCommand Command = new SQLiteCommand(commandText, Connect);
+                Command.Parameters.AddWithValue("@imei", imei);
+                Command.Parameters.AddWithValue("@config", config);
+                Connect.Open();
+                Command.ExecuteNonQuery();
+                Connect.Close();
+            }
+        }
         public void UpdateGroupModems(string imei, string groups)
         {
             using (SQLiteConnection Connect = new SQLiteConnection("Data Source=" + dbFileName + ";Version=3;"))

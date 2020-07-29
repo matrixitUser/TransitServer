@@ -7,6 +7,15 @@ namespace TransitServer
 {
     static class Helper
     {
+        public static byte GetLowByte(UInt16 b)
+        {
+            return (byte)(b & 0xFF);
+        }
+
+        public static byte GetHighByte(UInt16 b)
+        {
+            return (byte)((b >> 8) & 0xFF);
+        }
         public static dynamic BuildMessage(string what)
         {
             dynamic message = new ExpandoObject();

@@ -142,6 +142,5 @@ namespace TransitServer
         {
             return CheckReverse(buffer, 0, buffer.Length, calculator);
         }
-
     }
 }
