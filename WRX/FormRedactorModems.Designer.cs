@@ -138,11 +138,15 @@
             this.label26 = new System.Windows.Forms.Label();
             this.toolTipInput = new System.Windows.Forms.ToolTip(this.components);
             this.sendConfig = new System.Windows.Forms.Button();
+            this.btnCurrent = new System.Windows.Forms.Button();
+            this.panel6 = new System.Windows.Forms.Panel();
+            this.label45 = new System.Windows.Forms.Label();
             this.panel1.SuspendLayout();
             this.panel2.SuspendLayout();
             this.panel3.SuspendLayout();
             this.panel4.SuspendLayout();
             this.panel5.SuspendLayout();
+            this.panel6.SuspendLayout();
             this.SuspendLayout();
             // 
             // btnSaveChanges
@@ -179,7 +183,7 @@
             // txtName
             // 
             this.txtName.Font = new System.Drawing.Font("Times New Roman", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.txtName.Location = new System.Drawing.Point(216, 70);
+            this.txtName.Location = new System.Drawing.Point(184, 70);
             this.txtName.Name = "txtName";
             this.txtName.Size = new System.Drawing.Size(145, 23);
             this.txtName.TabIndex = 7;
@@ -188,7 +192,7 @@
             // 
             this.txtLastCon.Enabled = false;
             this.txtLastCon.Font = new System.Drawing.Font("Times New Roman", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.txtLastCon.Location = new System.Drawing.Point(216, 97);
+            this.txtLastCon.Location = new System.Drawing.Point(184, 97);
             this.txtLastCon.Name = "txtLastCon";
             this.txtLastCon.Size = new System.Drawing.Size(145, 23);
             this.txtLastCon.TabIndex = 8;
@@ -430,7 +434,7 @@
             // txtPort
             // 
             this.txtPort.Font = new System.Drawing.Font("Times New Roman", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.txtPort.Location = new System.Drawing.Point(216, 43);
+            this.txtPort.Location = new System.Drawing.Point(184, 43);
             this.txtPort.Name = "txtPort";
             this.txtPort.Size = new System.Drawing.Size(145, 23);
             this.txtPort.TabIndex = 36;
@@ -449,7 +453,7 @@
             // 
             this.txtFlashVer.Enabled = false;
             this.txtFlashVer.Font = new System.Drawing.Font("Times New Roman", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.txtFlashVer.Location = new System.Drawing.Point(219, 100);
+            this.txtFlashVer.Location = new System.Drawing.Point(186, 100);
             this.txtFlashVer.Name = "txtFlashVer";
             this.txtFlashVer.Size = new System.Drawing.Size(145, 23);
             this.txtFlashVer.TabIndex = 39;
@@ -458,7 +462,7 @@
             // 
             this.txtRelease.Enabled = false;
             this.txtRelease.Font = new System.Drawing.Font("Times New Roman", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.txtRelease.Location = new System.Drawing.Point(219, 149);
+            this.txtRelease.Location = new System.Drawing.Point(186, 149);
             this.txtRelease.Name = "txtRelease";
             this.txtRelease.Size = new System.Drawing.Size(145, 23);
             this.txtRelease.TabIndex = 38;
@@ -467,7 +471,7 @@
             // 
             this.txtMode.Enabled = false;
             this.txtMode.Font = new System.Drawing.Font("Times New Roman", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.txtMode.Location = new System.Drawing.Point(219, 124);
+            this.txtMode.Location = new System.Drawing.Point(186, 124);
             this.txtMode.Name = "txtMode";
             this.txtMode.Size = new System.Drawing.Size(145, 23);
             this.txtMode.TabIndex = 37;
@@ -475,7 +479,7 @@
             // txtPeriodEvent
             // 
             this.txtPeriodEvent.Font = new System.Drawing.Font("Times New Roman", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.txtPeriodEvent.Location = new System.Drawing.Point(219, 174);
+            this.txtPeriodEvent.Location = new System.Drawing.Point(186, 174);
             this.txtPeriodEvent.Name = "txtPeriodEvent";
             this.txtPeriodEvent.Size = new System.Drawing.Size(145, 23);
             this.txtPeriodEvent.TabIndex = 42;
@@ -484,7 +488,7 @@
             // 
             this.txtImei.Enabled = false;
             this.txtImei.Font = new System.Drawing.Font("Times New Roman", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.txtImei.Location = new System.Drawing.Point(219, 224);
+            this.txtImei.Location = new System.Drawing.Point(186, 224);
             this.txtImei.Name = "txtImei";
             this.txtImei.Size = new System.Drawing.Size(145, 23);
             this.txtImei.TabIndex = 41;
@@ -493,7 +497,7 @@
             // 
             this.textBox7.Enabled = false;
             this.textBox7.Font = new System.Drawing.Font("Times New Roman", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.textBox7.Location = new System.Drawing.Point(219, 199);
+            this.textBox7.Location = new System.Drawing.Point(186, 199);
             this.textBox7.Name = "textBox7";
             this.textBox7.Size = new System.Drawing.Size(145, 23);
             this.textBox7.TabIndex = 40;
@@ -502,7 +506,7 @@
             // 
             this.textBox8.Enabled = false;
             this.textBox8.Font = new System.Drawing.Font("Times New Roman", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.textBox8.Location = new System.Drawing.Point(219, 249);
+            this.textBox8.Location = new System.Drawing.Point(186, 249);
             this.textBox8.Name = "textBox8";
             this.textBox8.Size = new System.Drawing.Size(145, 23);
             this.textBox8.TabIndex = 45;
@@ -511,7 +515,7 @@
             // 
             this.textBox9.Enabled = false;
             this.textBox9.Font = new System.Drawing.Font("Times New Roman", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.textBox9.Location = new System.Drawing.Point(219, 300);
+            this.textBox9.Location = new System.Drawing.Point(186, 300);
             this.textBox9.Name = "textBox9";
             this.textBox9.Size = new System.Drawing.Size(145, 23);
             this.textBox9.TabIndex = 44;
@@ -520,7 +524,7 @@
             // 
             this.textBox10.Enabled = false;
             this.textBox10.Font = new System.Drawing.Font("Times New Roman", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.textBox10.Location = new System.Drawing.Point(219, 274);
+            this.textBox10.Location = new System.Drawing.Point(186, 274);
             this.textBox10.Name = "textBox10";
             this.textBox10.Size = new System.Drawing.Size(145, 23);
             this.textBox10.TabIndex = 43;
@@ -529,7 +533,7 @@
             // 
             this.textBox11.Enabled = false;
             this.textBox11.Font = new System.Drawing.Font("Times New Roman", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.textBox11.Location = new System.Drawing.Point(219, 325);
+            this.textBox11.Location = new System.Drawing.Point(186, 325);
             this.textBox11.Name = "textBox11";
             this.textBox11.Size = new System.Drawing.Size(145, 23);
             this.textBox11.TabIndex = 48;
@@ -538,7 +542,7 @@
             // 
             this.textBox12.Enabled = false;
             this.textBox12.Font = new System.Drawing.Font("Times New Roman", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.textBox12.Location = new System.Drawing.Point(219, 375);
+            this.textBox12.Location = new System.Drawing.Point(186, 375);
             this.textBox12.Name = "textBox12";
             this.textBox12.Size = new System.Drawing.Size(145, 23);
             this.textBox12.TabIndex = 47;
@@ -547,7 +551,7 @@
             // 
             this.textBox13.Enabled = false;
             this.textBox13.Font = new System.Drawing.Font("Times New Roman", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.textBox13.Location = new System.Drawing.Point(219, 350);
+            this.textBox13.Location = new System.Drawing.Point(186, 350);
             this.textBox13.Name = "textBox13";
             this.textBox13.Size = new System.Drawing.Size(145, 23);
             this.textBox13.TabIndex = 46;
@@ -556,7 +560,7 @@
             // 
             this.textBox14.Enabled = false;
             this.textBox14.Font = new System.Drawing.Font("Times New Roman", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.textBox14.Location = new System.Drawing.Point(219, 399);
+            this.textBox14.Location = new System.Drawing.Point(186, 399);
             this.textBox14.Name = "textBox14";
             this.textBox14.Size = new System.Drawing.Size(145, 23);
             this.textBox14.TabIndex = 51;
@@ -564,7 +568,7 @@
             // txtApn2
             // 
             this.txtApn2.Font = new System.Drawing.Font("Times New Roman", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.txtApn2.Location = new System.Drawing.Point(219, 447);
+            this.txtApn2.Location = new System.Drawing.Point(186, 447);
             this.txtApn2.Name = "txtApn2";
             this.txtApn2.Size = new System.Drawing.Size(145, 23);
             this.txtApn2.TabIndex = 50;
@@ -573,7 +577,7 @@
             // txtApn1
             // 
             this.txtApn1.Font = new System.Drawing.Font("Times New Roman", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.txtApn1.Location = new System.Drawing.Point(219, 423);
+            this.txtApn1.Location = new System.Drawing.Point(186, 423);
             this.txtApn1.Name = "txtApn1";
             this.txtApn1.Size = new System.Drawing.Size(145, 23);
             this.txtApn1.TabIndex = 49;
@@ -583,7 +587,7 @@
             // 
             this.txtLastConnection.Enabled = false;
             this.txtLastConnection.Font = new System.Drawing.Font("Times New Roman", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.txtLastConnection.Location = new System.Drawing.Point(219, 472);
+            this.txtLastConnection.Location = new System.Drawing.Point(186, 472);
             this.txtLastConnection.Name = "txtLastConnection";
             this.txtLastConnection.Size = new System.Drawing.Size(145, 23);
             this.txtLastConnection.TabIndex = 52;
@@ -592,7 +596,7 @@
             // 
             this.txtNetworkAdres.Enabled = false;
             this.txtNetworkAdres.Font = new System.Drawing.Font("Times New Roman", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.txtNetworkAdres.Location = new System.Drawing.Point(219, 75);
+            this.txtNetworkAdres.Location = new System.Drawing.Point(186, 75);
             this.txtNetworkAdres.Name = "txtNetworkAdres";
             this.txtNetworkAdres.Size = new System.Drawing.Size(145, 23);
             this.txtNetworkAdres.TabIndex = 53;
@@ -649,7 +653,7 @@
             this.panel1.Font = new System.Drawing.Font("Times New Roman", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.panel1.Location = new System.Drawing.Point(12, 12);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(377, 498);
+            this.panel1.Size = new System.Drawing.Size(340, 498);
             this.panel1.TabIndex = 55;
             // 
             // label44
@@ -665,7 +669,7 @@
             // txtNameModem
             // 
             this.txtNameModem.Font = new System.Drawing.Font("Times New Roman", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.txtNameModem.Location = new System.Drawing.Point(219, 49);
+            this.txtNameModem.Location = new System.Drawing.Point(186, 49);
             this.txtNameModem.Name = "txtNameModem";
             this.txtNameModem.Size = new System.Drawing.Size(145, 23);
             this.txtNameModem.TabIndex = 55;
@@ -688,16 +692,16 @@
             this.panel2.Controls.Add(this.label23);
             this.panel2.Controls.Add(this.txtIp3);
             this.panel2.Font = new System.Drawing.Font("Times New Roman", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.panel2.Location = new System.Drawing.Point(416, 12);
+            this.panel2.Location = new System.Drawing.Point(358, 12);
             this.panel2.Name = "panel2";
-            this.panel2.Size = new System.Drawing.Size(487, 145);
+            this.panel2.Size = new System.Drawing.Size(339, 145);
             this.panel2.TabIndex = 56;
             // 
             // txtTestPort
             // 
-            this.txtTestPort.Location = new System.Drawing.Point(366, 9);
+            this.txtTestPort.Location = new System.Drawing.Point(255, 9);
             this.txtTestPort.Name = "txtTestPort";
-            this.txtTestPort.Size = new System.Drawing.Size(100, 20);
+            this.txtTestPort.Size = new System.Drawing.Size(83, 20);
             this.txtTestPort.TabIndex = 62;
             this.txtTestPort.TextChanged += new System.EventHandler(this.TxtTesPort_TextChanged);
             // 
@@ -706,9 +710,9 @@
             this.cbChannel3.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawVariable;
             this.cbChannel3.Font = new System.Drawing.Font("Times New Roman", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.cbChannel3.FormattingEnabled = true;
-            this.cbChannel3.Location = new System.Drawing.Point(52, 106);
+            this.cbChannel3.Location = new System.Drawing.Point(6, 106);
             this.cbChannel3.Name = "cbChannel3";
-            this.cbChannel3.Size = new System.Drawing.Size(121, 24);
+            this.cbChannel3.Size = new System.Drawing.Size(100, 24);
             this.cbChannel3.TabIndex = 65;
             this.cbChannel3.SelectedIndexChanged += new System.EventHandler(this.cbChannel3_SelectedIndexChanged);
             // 
@@ -717,15 +721,15 @@
             this.cbChannel2.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawVariable;
             this.cbChannel2.Font = new System.Drawing.Font("Times New Roman", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.cbChannel2.FormattingEnabled = true;
-            this.cbChannel2.Location = new System.Drawing.Point(52, 78);
+            this.cbChannel2.Location = new System.Drawing.Point(6, 78);
             this.cbChannel2.Name = "cbChannel2";
-            this.cbChannel2.Size = new System.Drawing.Size(121, 24);
+            this.cbChannel2.Size = new System.Drawing.Size(100, 24);
             this.cbChannel2.TabIndex = 66;
             this.cbChannel2.SelectedIndexChanged += new System.EventHandler(this.CbChannel2_SelectedIndexChanged);
             // 
             // txtTestIp
             // 
-            this.txtTestIp.Location = new System.Drawing.Point(208, 8);
+            this.txtTestIp.Location = new System.Drawing.Point(149, 7);
             this.txtTestIp.Name = "txtTestIp";
             this.txtTestIp.Size = new System.Drawing.Size(100, 20);
             this.txtTestIp.TabIndex = 60;
@@ -737,9 +741,9 @@
             this.cbChannel1.FlatStyle = System.Windows.Forms.FlatStyle.System;
             this.cbChannel1.Font = new System.Drawing.Font("Times New Roman", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.cbChannel1.FormattingEnabled = true;
-            this.cbChannel1.Location = new System.Drawing.Point(52, 50);
+            this.cbChannel1.Location = new System.Drawing.Point(6, 50);
             this.cbChannel1.Name = "cbChannel1";
-            this.cbChannel1.Size = new System.Drawing.Size(121, 24);
+            this.cbChannel1.Size = new System.Drawing.Size(100, 24);
             this.cbChannel1.TabIndex = 64;
             this.cbChannel1.SelectedIndexChanged += new System.EventHandler(this.CbChannel1_SelectedIndexChanged);
             // 
@@ -747,7 +751,7 @@
             // 
             this.label25.AutoSize = true;
             this.label25.Font = new System.Drawing.Font("Times New Roman", 12F);
-            this.label25.Location = new System.Drawing.Point(385, 27);
+            this.label25.Location = new System.Drawing.Point(290, 27);
             this.label25.Name = "label25";
             this.label25.Size = new System.Drawing.Size(35, 19);
             this.label25.TabIndex = 58;
@@ -757,7 +761,7 @@
             // 
             this.label24.AutoSize = true;
             this.label24.Font = new System.Drawing.Font("Times New Roman", 12F);
-            this.label24.Location = new System.Drawing.Point(236, 27);
+            this.label24.Location = new System.Drawing.Point(170, 27);
             this.label24.Name = "label24";
             this.label24.Size = new System.Drawing.Size(23, 19);
             this.label24.TabIndex = 58;
@@ -766,54 +770,54 @@
             // txtPort1
             // 
             this.txtPort1.Font = new System.Drawing.Font("Times New Roman", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.txtPort1.Location = new System.Drawing.Point(359, 50);
+            this.txtPort1.Location = new System.Drawing.Point(238, 50);
             this.txtPort1.Name = "txtPort1";
-            this.txtPort1.Size = new System.Drawing.Size(112, 23);
+            this.txtPort1.Size = new System.Drawing.Size(100, 23);
             this.txtPort1.TabIndex = 63;
             this.txtPort1.TextChanged += new System.EventHandler(this.TxtPort1_TextChanged);
             // 
             // txtPort2
             // 
             this.txtPort2.Font = new System.Drawing.Font("Times New Roman", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.txtPort2.Location = new System.Drawing.Point(359, 79);
+            this.txtPort2.Location = new System.Drawing.Point(238, 79);
             this.txtPort2.Name = "txtPort2";
-            this.txtPort2.Size = new System.Drawing.Size(112, 23);
+            this.txtPort2.Size = new System.Drawing.Size(100, 23);
             this.txtPort2.TabIndex = 62;
             this.txtPort2.TextChanged += new System.EventHandler(this.TxtPort2_TextChanged);
             // 
             // txtPort3
             // 
             this.txtPort3.Font = new System.Drawing.Font("Times New Roman", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.txtPort3.Location = new System.Drawing.Point(359, 106);
+            this.txtPort3.Location = new System.Drawing.Point(238, 106);
             this.txtPort3.Name = "txtPort3";
-            this.txtPort3.Size = new System.Drawing.Size(112, 23);
+            this.txtPort3.Size = new System.Drawing.Size(100, 23);
             this.txtPort3.TabIndex = 61;
             this.txtPort3.TextChanged += new System.EventHandler(this.TxtPort3_TextChanged);
             // 
             // txtIp1
             // 
             this.txtIp1.Font = new System.Drawing.Font("Times New Roman", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.txtIp1.Location = new System.Drawing.Point(197, 50);
+            this.txtIp1.Location = new System.Drawing.Point(121, 50);
             this.txtIp1.Name = "txtIp1";
-            this.txtIp1.Size = new System.Drawing.Size(145, 23);
+            this.txtIp1.Size = new System.Drawing.Size(100, 23);
             this.txtIp1.TabIndex = 60;
             this.txtIp1.TextChanged += new System.EventHandler(this.TxtIp1_TextChanged);
             // 
             // txtIp2
             // 
             this.txtIp2.Font = new System.Drawing.Font("Times New Roman", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.txtIp2.Location = new System.Drawing.Point(197, 79);
+            this.txtIp2.Location = new System.Drawing.Point(121, 79);
             this.txtIp2.Name = "txtIp2";
-            this.txtIp2.Size = new System.Drawing.Size(145, 23);
+            this.txtIp2.Size = new System.Drawing.Size(100, 23);
             this.txtIp2.TabIndex = 59;
             this.txtIp2.TextChanged += new System.EventHandler(this.TxtIp2_TextChanged);
             // 
             // txtIp3
             // 
             this.txtIp3.Font = new System.Drawing.Font("Times New Roman", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.txtIp3.Location = new System.Drawing.Point(197, 106);
+            this.txtIp3.Location = new System.Drawing.Point(121, 106);
             this.txtIp3.Name = "txtIp3";
-            this.txtIp3.Size = new System.Drawing.Size(145, 23);
+            this.txtIp3.Size = new System.Drawing.Size(100, 23);
             this.txtIp3.TabIndex = 58;
             this.txtIp3.TextChanged += new System.EventHandler(this.TxtIp3_TextChanged);
             // 
@@ -829,7 +833,7 @@
             this.panel3.Font = new System.Drawing.Font("Times New Roman", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.panel3.Location = new System.Drawing.Point(12, 513);
             this.panel3.Name = "panel3";
-            this.panel3.Size = new System.Drawing.Size(370, 131);
+            this.panel3.Size = new System.Drawing.Size(340, 131);
             this.panel3.TabIndex = 57;
             // 
             // panel4
@@ -846,14 +850,14 @@
             this.panel4.Controls.Add(this.label28);
             this.panel4.Controls.Add(this.txtCounterNa3);
             this.panel4.Font = new System.Drawing.Font("Times New Roman", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.panel4.Location = new System.Drawing.Point(416, 176);
+            this.panel4.Location = new System.Drawing.Point(358, 176);
             this.panel4.Name = "panel4";
-            this.panel4.Size = new System.Drawing.Size(383, 196);
+            this.panel4.Size = new System.Drawing.Size(331, 196);
             this.panel4.TabIndex = 58;
             // 
             // txtTestNA
             // 
-            this.txtTestNA.Location = new System.Drawing.Point(218, 164);
+            this.txtTestNA.Location = new System.Drawing.Point(209, 164);
             this.txtTestNA.Name = "txtTestNA";
             this.txtTestNA.Size = new System.Drawing.Size(100, 20);
             this.txtTestNA.TabIndex = 61;
@@ -874,7 +878,7 @@
             this.txtCounterNa4.Font = new System.Drawing.Font("Times New Roman", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.txtCounterNa4.Location = new System.Drawing.Point(199, 135);
             this.txtCounterNa4.Name = "txtCounterNa4";
-            this.txtCounterNa4.Size = new System.Drawing.Size(145, 23);
+            this.txtCounterNa4.Size = new System.Drawing.Size(119, 23);
             this.txtCounterNa4.TabIndex = 70;
             this.txtCounterNa4.TextChanged += new System.EventHandler(this.TxtCounterNa4_TextChanged);
             // 
@@ -926,7 +930,7 @@
             this.txtCounterNa1.Font = new System.Drawing.Font("Times New Roman", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.txtCounterNa1.Location = new System.Drawing.Point(199, 51);
             this.txtCounterNa1.Name = "txtCounterNa1";
-            this.txtCounterNa1.Size = new System.Drawing.Size(145, 23);
+            this.txtCounterNa1.Size = new System.Drawing.Size(119, 23);
             this.txtCounterNa1.TabIndex = 60;
             this.txtCounterNa1.TextChanged += new System.EventHandler(this.TxtCounterNa1_TextChanged);
             // 
@@ -935,7 +939,7 @@
             this.txtCounterNa2.Font = new System.Drawing.Font("Times New Roman", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.txtCounterNa2.Location = new System.Drawing.Point(199, 79);
             this.txtCounterNa2.Name = "txtCounterNa2";
-            this.txtCounterNa2.Size = new System.Drawing.Size(145, 23);
+            this.txtCounterNa2.Size = new System.Drawing.Size(119, 23);
             this.txtCounterNa2.TabIndex = 59;
             this.txtCounterNa2.TextChanged += new System.EventHandler(this.TxtCounterNa2_TextChanged);
             // 
@@ -954,7 +958,7 @@
             this.txtCounterNa3.Font = new System.Drawing.Font("Times New Roman", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.txtCounterNa3.Location = new System.Drawing.Point(199, 107);
             this.txtCounterNa3.Name = "txtCounterNa3";
-            this.txtCounterNa3.Size = new System.Drawing.Size(145, 23);
+            this.txtCounterNa3.Size = new System.Drawing.Size(119, 23);
             this.txtCounterNa3.TabIndex = 58;
             this.txtCounterNa3.TextChanged += new System.EventHandler(this.TxtCounterNa3_TextChanged);
             // 
@@ -988,7 +992,7 @@
             this.panel5.Controls.Add(this.cbBaudRate1);
             this.panel5.Controls.Add(this.label29);
             this.panel5.Controls.Add(this.label26);
-            this.panel5.Location = new System.Drawing.Point(415, 391);
+            this.panel5.Location = new System.Drawing.Point(358, 387);
             this.panel5.Name = "panel5";
             this.panel5.Size = new System.Drawing.Size(670, 202);
             this.panel5.TabIndex = 59;
@@ -1267,13 +1271,42 @@
             // sendConfig
             // 
             this.sendConfig.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(255)))), ((int)(((byte)(255)))));
-            this.sendConfig.Location = new System.Drawing.Point(486, 616);
+            this.sendConfig.Location = new System.Drawing.Point(516, 616);
             this.sendConfig.Name = "sendConfig";
-            this.sendConfig.Size = new System.Drawing.Size(103, 35);
+            this.sendConfig.Size = new System.Drawing.Size(73, 35);
             this.sendConfig.TabIndex = 60;
             this.sendConfig.Text = "Отправить конфиг";
             this.sendConfig.UseVisualStyleBackColor = false;
             this.sendConfig.Click += new System.EventHandler(this.sendConfig_Click);
+            // 
+            // btnCurrent
+            // 
+            this.btnCurrent.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(255)))), ((int)(((byte)(255)))));
+            this.btnCurrent.Location = new System.Drawing.Point(452, 616);
+            this.btnCurrent.Name = "btnCurrent";
+            this.btnCurrent.Size = new System.Drawing.Size(58, 35);
+            this.btnCurrent.TabIndex = 61;
+            this.btnCurrent.Text = "Current";
+            this.btnCurrent.UseVisualStyleBackColor = false;
+            this.btnCurrent.Click += new System.EventHandler(this.btnCurrent_Click);
+            // 
+            // panel6
+            // 
+            this.panel6.Controls.Add(this.label45);
+            this.panel6.Location = new System.Drawing.Point(702, 12);
+            this.panel6.Name = "panel6";
+            this.panel6.Size = new System.Drawing.Size(383, 369);
+            this.panel6.TabIndex = 62;
+            // 
+            // label45
+            // 
+            this.label45.AutoSize = true;
+            this.label45.Font = new System.Drawing.Font("Times New Roman", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.label45.Location = new System.Drawing.Point(3, 7);
+            this.label45.Name = "label45";
+            this.label45.Size = new System.Drawing.Size(100, 24);
+            this.label45.TabIndex = 63;
+            this.label45.Text = "Текущие:";
             // 
             // FormRedactorModems
             // 
@@ -1281,6 +1314,8 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(210)))), ((int)(((byte)(255)))), ((int)(((byte)(250)))));
             this.ClientSize = new System.Drawing.Size(1097, 668);
+            this.Controls.Add(this.panel6);
+            this.Controls.Add(this.btnCurrent);
             this.Controls.Add(this.sendConfig);
             this.Controls.Add(this.panel5);
             this.Controls.Add(this.panel4);
@@ -1305,6 +1340,8 @@
             this.panel4.PerformLayout();
             this.panel5.ResumeLayout(false);
             this.panel5.PerformLayout();
+            this.panel6.ResumeLayout(false);
+            this.panel6.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -1420,5 +1457,8 @@
         private System.Windows.Forms.TextBox txtTestNA;
         private System.Windows.Forms.ToolTip toolTipInput;
         private System.Windows.Forms.Button sendConfig;
+        private System.Windows.Forms.Button btnCurrent;
+        private System.Windows.Forms.Panel panel6;
+        private System.Windows.Forms.Label label45;
     }
 }

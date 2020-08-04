@@ -398,5 +398,11 @@ namespace TransitServer
             Form1 form1 = this.Owner as Form1;
             form1.sendConfigForSaveThread();
         }
+
+        private void btnCurrent_Click(object sender, EventArgs e)
+        {
+            Form1 form1 = this.Owner as Form1;
+            form1.sendConfigForCurrent();
+        }
     }
 }

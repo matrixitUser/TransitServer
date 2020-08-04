@@ -75,6 +75,9 @@
             this.btChangePort = new System.Windows.Forms.Button();
             this.dataGridViewImageColumn1 = new System.Windows.Forms.DataGridViewImageColumn();
             this.button1 = new System.Windows.Forms.Button();
+            this.btSendMail = new System.Windows.Forms.Button();
+            this.настроитьОтправкуСобытияToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.tsmiMailSendCustom = new System.Windows.Forms.ToolStripMenuItem();
             this.contextMenuStrip1.SuspendLayout();
             this.panel5.SuspendLayout();
             this.tcDown.SuspendLayout();
@@ -114,21 +117,22 @@
             // 
             this.contextMenuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.tsmiRedactorModema,
-            this.tsmiAddGroup});
+            this.tsmiAddGroup,
+            this.tsmiMailSendCustom});
             this.contextMenuStrip1.Name = "contextMenuStrip1";
-            this.contextMenuStrip1.Size = new System.Drawing.Size(177, 48);
+            this.contextMenuStrip1.Size = new System.Drawing.Size(239, 92);
             // 
             // tsmiRedactorModema
             // 
             this.tsmiRedactorModema.Name = "tsmiRedactorModema";
-            this.tsmiRedactorModema.Size = new System.Drawing.Size(176, 22);
+            this.tsmiRedactorModema.Size = new System.Drawing.Size(238, 22);
             this.tsmiRedactorModema.Text = "Свойства модема";
             this.tsmiRedactorModema.Click += new System.EventHandler(this.TsmiRedactorModema_Click);
             // 
             // tsmiAddGroup
             // 
             this.tsmiAddGroup.Name = "tsmiAddGroup";
-            this.tsmiAddGroup.Size = new System.Drawing.Size(176, 22);
+            this.tsmiAddGroup.Size = new System.Drawing.Size(238, 22);
             this.tsmiAddGroup.Text = "Добавить в группу";
             this.tsmiAddGroup.Click += new System.EventHandler(this.TsmiAddGroup_Click);
             // 
@@ -362,21 +366,22 @@
             // 
             this.contextMenuStrip2.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.добавитьГруппуToolStripMenuItem,
-            this.tsmiDelNode});
+            this.tsmiDelNode,
+            this.настроитьОтправкуСобытияToolStripMenuItem});
             this.contextMenuStrip2.Name = "contextMenuStrip2";
-            this.contextMenuStrip2.Size = new System.Drawing.Size(168, 48);
+            this.contextMenuStrip2.Size = new System.Drawing.Size(236, 70);
             // 
             // добавитьГруппуToolStripMenuItem
             // 
             this.добавитьГруппуToolStripMenuItem.Name = "добавитьГруппуToolStripMenuItem";
-            this.добавитьГруппуToolStripMenuItem.Size = new System.Drawing.Size(167, 22);
+            this.добавитьГруппуToolStripMenuItem.Size = new System.Drawing.Size(235, 22);
             this.добавитьГруппуToolStripMenuItem.Text = "Добавить группу";
             this.добавитьГруппуToolStripMenuItem.Click += new System.EventHandler(this.ToolStripMenuItem_Click);
             // 
             // tsmiDelNode
             // 
             this.tsmiDelNode.Name = "tsmiDelNode";
-            this.tsmiDelNode.Size = new System.Drawing.Size(167, 22);
+            this.tsmiDelNode.Size = new System.Drawing.Size(235, 22);
             this.tsmiDelNode.Text = "Удалить группу";
             this.tsmiDelNode.Click += new System.EventHandler(this.DelToolStripMenuItem_Click);
             // 
@@ -500,12 +505,37 @@
             this.button1.UseVisualStyleBackColor = true;
             this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
+            // btSendMail
+            // 
+            this.btSendMail.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(255)))), ((int)(((byte)(192)))));
+            this.btSendMail.Location = new System.Drawing.Point(625, 466);
+            this.btSendMail.Name = "btSendMail";
+            this.btSendMail.Size = new System.Drawing.Size(94, 23);
+            this.btSendMail.TabIndex = 10;
+            this.btSendMail.Text = "SendMailTest";
+            this.btSendMail.UseVisualStyleBackColor = false;
+            this.btSendMail.Click += new System.EventHandler(this.btSendMail_Click);
+            // 
+            // настроитьОтправкуСобытияToolStripMenuItem
+            // 
+            this.настроитьОтправкуСобытияToolStripMenuItem.Name = "настроитьОтправкуСобытияToolStripMenuItem";
+            this.настроитьОтправкуСобытияToolStripMenuItem.Size = new System.Drawing.Size(235, 22);
+            this.настроитьОтправкуСобытияToolStripMenuItem.Text = "Настроить отправку события";
+            // 
+            // tsmiMailSendCustom
+            // 
+            this.tsmiMailSendCustom.Name = "tsmiMailSendCustom";
+            this.tsmiMailSendCustom.Size = new System.Drawing.Size(238, 22);
+            this.tsmiMailSendCustom.Text = "Настройка отправки событий";
+            this.tsmiMailSendCustom.Click += new System.EventHandler(this.TsmiMailSendCustom_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.Azure;
             this.ClientSize = new System.Drawing.Size(1022, 728);
+            this.Controls.Add(this.btSendMail);
             this.Controls.Add(this.button1);
             this.Controls.Add(this.button2);
             this.Controls.Add(this.btChangePort);
@@ -587,6 +617,9 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn lastConnection;
         private System.Windows.Forms.DataGridViewImageColumn activeConnection;
         private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.Button btSendMail;
+        private System.Windows.Forms.ToolStripMenuItem tsmiMailSendCustom;
+        private System.Windows.Forms.ToolStripMenuItem настроитьОтправкуСобытияToolStripMenuItem;
     }
 }
 

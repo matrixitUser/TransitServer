@@ -44,12 +44,39 @@ namespace TransitServer
             SendConfig.IsBackground = true;
             SendConfig.Start();
         }
+
+        public void sendConfigForCurrent()
+        {
+            Thread SendConfig = new Thread(sendCurrent);
+            SendConfig.IsBackground = true;
+            SendConfig.Start();
+        }
+        private void sendCurrent()
+        {
+            //Отправляем запрос на конфиг
+            List<byte> listGetConfig = new List<byte>();
+            listGetConfig.Add(0xf3);
+            listGetConfig.Add(0x5F);
+            listGetConfig.Add(0x00);
+            listGetConfig.Add(0x00);
+            listGetConfig.Add(0x00);
+            listGetConfig.Add(0x00);
+            listGetConfig.AddRange(CRC.Calc(listGetConfig.ToArray(), new Crc16Modbus()).CrcData);
+
+            foreach (var cl in gModemClients)
+            {
+                cl.ns.Write(listGetConfig.ToArray(), 0, listGetConfig.Count);     // отправляем сообщение 
+            }
+            string tmpStr = string.Format("Отправлено {1} байт-> {0}", string.Join(" ", listGetConfig.ToArray().Take(listGetConfig.Count).Select(r => string.Format("{0:X}", r))), listGetConfig.Count);
+            Console(tmpStr);
+        }
         private void sendConfigForSave()
         {
             //Отправляем запрос на конфиг
             List<byte> listGetConfig = new List<byte>();
             listGetConfig.Add(0xf3);
             listGetConfig.Add(0x61);
+            gConfig.u8firstServer=0;
             listGetConfig.AddRange(getBytes(gConfig));
             listGetConfig.AddRange(CRC.Calc(listGetConfig.ToArray(), new Crc16Modbus()).CrcData);
 

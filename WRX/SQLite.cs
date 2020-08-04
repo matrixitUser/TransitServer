@@ -43,15 +43,17 @@ namespace TransitServer
                 SQLiteCommand m_sqlCmd1 = new SQLiteCommand(m_dbConn);
                 SQLiteCommand m_sqlCmd2 = new SQLiteCommand(m_dbConn);
                 SQLiteCommand m_sqlCmd3 = new SQLiteCommand(m_dbConn);
+                SQLiteCommand m_sqlCmd4 = new SQLiteCommand(m_dbConn);
 
                 m_sqlCmd1.CommandText = "CREATE TABLE IF NOT EXISTS dbEvents (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, date TEXT, message TEXT, quite TEXT)";
                 m_sqlCmd2.CommandText = "CREATE TABLE IF NOT EXISTS modems (id INTEGER PRIMARY KEY AUTOINCREMENT, imei TEXT, port TEXT, name TEXT, lastConnection TEXT, activeConnection INTEGER, groups TEXT DEFAULT '0', config TEXT)";
                 m_sqlCmd3.CommandText = "CREATE TABLE IF NOT EXISTS nodesTree (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, parent TEXT)";
+                m_sqlCmd4.CommandText = "CREATE TABLE IF NOT EXISTS dbMails (id INTEGER PRIMARY KEY AUTOINCREMENT, imei TEXT, groups TEXT, senderMail TEXT, recieverMail TEXT, nameSenderMail TEXT, subjectMail TEXT, smtpClient TEXT, smtpPort TEXT, senderPassword TEXT)";
 
                 m_sqlCmd1.ExecuteNonQuery();
                 m_sqlCmd2.ExecuteNonQuery();
                 m_sqlCmd3.ExecuteNonQuery();
-
+                m_sqlCmd4.ExecuteNonQuery();
             }
             catch (SQLiteException ex)
             {
@@ -625,6 +627,31 @@ namespace TransitServer
                 Connect.Close();
             }
         }
+        #endregion
+
+        #region dbMails
+        public void InsertSenderMail(string imei, string group, string senderMail, string recieverMail, string nameSenderMail, string subjectMail, string smtpClient, string smtpPort, string senderPassword )
+        {
+            // записываем информацию в базу данных
+            using (SQLiteConnection Connect = new SQLiteConnection("Data Source=" + dbFileName + ";Version=3;"))
+            {
+                string commandText = "INSERT INTO [dbMails] ([imei], [groups], [senderMail], [recieverMail], [nameSenderMail], [subjectMail], [smtpClient], [smtpPort], [senderPassword]) VALUES(@imei, @group, @senderMail, @recieverMail, @nameSenderMail, @subjectMail, @smtpClient, @smtpPort, @senderPassword)";
+                SQLiteCommand Command = new SQLiteCommand(commandText, Connect);
+                Command.Parameters.AddWithValue("@imei", imei);
+                Command.Parameters.AddWithValue("@group", group);
+                Command.Parameters.AddWithValue("@senderMail", senderMail);
+                Command.Parameters.AddWithValue("@recieverMail", recieverMail);
+                Command.Parameters.AddWithValue("@nameSenderMail", nameSenderMail);
+                Command.Parameters.AddWithValue("@subjectMail", subjectMail);
+                Command.Parameters.AddWithValue("@smtpClient", smtpClient);
+                Command.Parameters.AddWithValue("@smtpPort", smtpPort);
+                Command.Parameters.AddWithValue("@senderPassword", senderPassword);
+                Connect.Open();
+                Command.ExecuteNonQuery();
+                Connect.Close();
+            }
+        }
+
         #endregion
     }
 }

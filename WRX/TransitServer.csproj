@@ -91,6 +91,12 @@
     <Compile Include="DialogFormOk.Designer.cs">
       <DependentUpon>DialogFormOk.cs</DependentUpon>
     </Compile>
+    <Compile Include="FormChangeSenderMails.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormChangeSenderMails.Designer.cs">
+      <DependentUpon>FormChangeSenderMails.cs</DependentUpon>
+    </Compile>
     <Compile Include="FormRedactorModems.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -147,6 +153,9 @@
     <Compile Include="SQLite.cs" />
     <EmbeddedResource Include="DialogFormOk.resx">
       <DependentUpon>DialogFormOk.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FormChangeSenderMails.resx">
+      <DependentUpon>FormChangeSenderMails.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="FormRedactorModems.resx">
       <DependentUpon>FormRedactorModems.cs</DependentUpon>

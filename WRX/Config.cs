@@ -33,6 +33,30 @@ namespace TransitServer
 
             return str;
         }
+
+        public T setBytesFromConfig<T>(byte[] arr, T type)
+        {
+            int size = Marshal.SizeOf(type);
+            IntPtr ptr = Marshal.AllocHGlobal(size);
+
+            Marshal.Copy(arr, 0, ptr, size);
+
+            type = (T)Marshal.PtrToStructure(ptr, type.GetType());
+            Marshal.FreeHGlobal(ptr);
+
+            return type;
+        }
+        public byte[] getBytes<T>(T str)
+        {
+            int size = Marshal.SizeOf(str);
+            byte[] arr = new byte[size];
+
+            IntPtr ptr = Marshal.AllocHGlobal(size);
+            Marshal.StructureToPtr(str, ptr, true);
+            Marshal.Copy(ptr, arr, 0, size);
+            Marshal.FreeHGlobal(ptr);
+            return arr;
+        }
     }
     public struct tsUartConfig
     {
@@ -77,33 +101,32 @@ namespace TransitServer
         public byte u8Reserved2;
         public byte u8Reserved3;                
     }
- //   u16 u16FlashVer;                    //0x00  (0)
- //   u8 u8NetworkAddress;                //0x02
- //   u8 u8Mode;                          // =4 байта
+    
+    public struct tsCurrent
+    {
 
- //   uint32_t u32ReleaseTs;              //=4 байта
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 3)]
+        public UInt32[] chipId;
 
- //   u8 APN[2][32];
-	//u8 client[32];
- //   u8 server[32];
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 16)]
+        public byte[] objectId;
 
- //   tsUartConfig sUart1;    //64 bit
- //   tsUartConfig sUart2;
- //   tsUartConfig sUart3;    //по 8 байт * 3 = 24 байта
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 2)]
+        public UInt32[] imei;
 
- //   //Периоды, времена
- //   u16 PeriodEvent;    				// Период опроса нештатных ситуации
- //   u8 u8ModemType;
- //   u8 u8firstServer;
+        public UInt32 counterTime;
 
- //   u32 u32CounterNA[4];        		//Сетевые адреса счетчиков  	= 16 байтов ( по indexу счетчика
+        public UInt16 event_;
+        public byte u8Reserved1;
+        public byte u8Reserved2;
 
- //   u8 u8CounterType[4];                //Типы счетчиков   = 4 байта
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 16)]
+        public UInt32[] timeEvent;
 
- //   u8 u8currSimCard;
- //   u8 u8Reserved1;
- //   u8 u8Reserved2;
- //   u8 u8Reserved3;
+        public UInt32 timePoll;
+
+    }
+    
 
     [StructLayout(LayoutKind.Sequential, Pack = 1, CharSet = CharSet.Unicode)]
     public struct tsApnName

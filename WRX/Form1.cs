@@ -11,6 +11,8 @@ using System.Threading;
 using System.Windows.Forms;
 using System.Configuration;
 using System.Net.NetworkInformation;
+using System.Threading.Tasks;
+using System.Net.Mail;
 
 namespace TransitServer
 {
@@ -151,8 +153,6 @@ namespace TransitServer
                     {
                         if (CRC.CheckReverse(bytes, new Crc16Modbus()))
                         {
-                            
-                            //tsConfig conf = setBytes(bytes);
                             try
                             {
                                 if (bytes[0] == 0xFB) //длинный СА
@@ -187,6 +187,7 @@ namespace TransitServer
                 {
                     //isWhile = false;
                     //MessageBox.Show(ex.Message + " 1");
+                    Console(ex.Message);
                 }
             }  
             string imei = findClientImeibyHandle(tcpClient.Client.Handle);
@@ -213,37 +214,37 @@ namespace TransitServer
             {
                 case 0x4D:
                     {
-                        byte[] bytesObjectId = data.Skip(1).Take(16).ToArray();
-                        byte[] counterNa = data.Skip(17).Take(4).ToArray();
+
+                        byte[] config = data.Skip(1).ToArray();
+                        tsCurrent cur = setBytesFromConfig<tsCurrent>(config, new tsCurrent());
+                        UInt64 u64Imei = (UInt64)((UInt64)cur.imei[1] << 32) | (UInt64)cur.imei[0];
+                        string strImei = u64Imei.ToString();
+                        //byte[] counterNa = data.Skip(17).Take(4).ToArray(); ------------------------------------!!!!!!!!!!!!!!!!!!!!!!
                         //byte networkAddress = bytes[30];
-                        Guid objectId = new Guid(bytesObjectId);
-                        byte[] byteTime = data.Skip(21).Take(4).ToArray(); //31
-                        UInt32 uInt32Time = (UInt32)(byteTime[3] << 24) | (UInt32)(byteTime[2] << 16) | (UInt32)(byteTime[1] << 8) | byteTime[0];
-                        DateTime dtContollers = dt1970.AddSeconds(uInt32Time);
-                        UInt16 code = Helper.ToUInt16(data, 25);
+                        Guid objectId = new Guid(cur.objectId);
+                        DateTime dtContollers = dt1970.AddSeconds(cur.counterTime);
                         DateTime[] dtEvent = new DateTime[16];
                         for (int i = 0; i < 16; i++)
                         {
-                            if (i == 7)
-                            {
-                                byte[] byteTime1 = data.Skip(27 + i * 4).Take(4).ToArray(); //31
-                                UInt32 uInt32Time1 = (UInt32)(byteTime1[3] << 24) | (UInt32)(byteTime1[2] << 16) | (UInt32)(byteTime1[1] << 8) | byteTime1[0];
-                                dtEvent[i] = dt1970.AddSeconds(uInt32Time1);
-                            }
-                            else
-                            {
-                                dtEvent[i] = u32ToBytes(data.Skip(27 + i * 4).Take(4).ToArray());
-                            }
+                            if (cur.timeEvent[i] == 0xFFFFFFFF) dtEvent[i] = dt1970;
+                            else dtEvent[i] = dt1970.AddSeconds(cur.timeEvent[i]);
                         }
                         byte[] arrParams = new byte[] { 0x01, 0x02, 0x07, 0x08, 0x0A, 0x12, 0x13, 0x00 };
                         List<dynamic> records = new List<dynamic>();
                         for (int i = 0; i < arrParams.Length; i++)
                         {
-                            if (((byte)(code >> i) & 1) == 1 && dtEvent[i] != DateTime.MinValue)
+                            if (((byte)(cur.event_ >> i) & 1) == 1 && dtEvent[i] != DateTime.MinValue)
                             {
                                 NewEvent(imeiDictinary.GetNameSql(modemClient.IMEI), dtEvent[i], ParameterName(arrParams[i]));
                             }
                         }
+                        break;
+                    }
+                case 0x5F:
+                    {
+                        byte[] config = data.Skip(1).ToArray();
+                        tsCurrent conf = setBytesFromConfig<tsCurrent>(config, new tsCurrent());
+                        string strTmp = string.Format(string.Join(" ", config.Take(config.Length).Select(r => string.Format("{0:X}", r))), config.Length);
                         break;
                     }
                 case 0x60://96
@@ -251,11 +252,14 @@ namespace TransitServer
                         byte[] config = data.Skip(1).ToArray();
                         tsConfig conf = setBytes(config);
                         gConfig = conf;
-                        string configForSQl = string.Format(string.Join("", config.Take(config.Length).Select(r => string.Format("{0:X}", r))), config.Length);
+                        //gConfig.u8ModemType = 5;
+                        string configForSQl = string.Format(string.Join(" ", config.Take(config.Length).Select(r => string.Format("{0:X}", r))), config.Length);
                         SQLite.Instance.UpdateConfigModems(modemClient.IMEI, configForSQl);
                         break;
                     }
                 case 0x61: // 97
+                    byte[] config1 = data.Skip(1).ToArray();
+                    string configForSQl1 = string.Format(string.Join(" ", config1.Take(config1.Length).Select(r => string.Format("{0:X}", r))), config1.Length);
                     //byte[] configTmp = getBytes(config);
                     //string configForSQl = string.Format(string.Join(" ", configTmp.Take(configTmp.Length).Select(r => string.Format("{0:X}", r))), configTmp.Length);
                     break;
@@ -286,6 +290,20 @@ namespace TransitServer
             }
         }
 
+        private void InsertMailSender(string imei)
+        {
+            // взятие переменных из app.config
+            string senderMail = ConfigurationManager.AppSettings.Get("senderMail");
+            string nameSenderMail = ConfigurationManager.AppSettings.Get("nameSenderMail");
+            string recieverMail = ConfigurationManager.AppSettings.Get("recieverMail");
+            string subjectMail = ConfigurationManager.AppSettings.Get("subjectMail");
+            string smtpClient = ConfigurationManager.AppSettings.Get("smtpClient");
+            Int32.TryParse(ConfigurationManager.AppSettings.Get("smtpPort"), out int smtpPort);
+            string senderPassword = ConfigurationManager.AppSettings.Get("senderPassword");
+
+            SQLite.Instance.InsertSenderMail(imei, "0", senderMail, recieverMail, nameSenderMail, subjectMail, smtpClient, smtpPort.ToString(), senderPassword);
+        }
+
         private void AnswerTeleofic(byte[] bytes, int len, IntPtr clientHandle, NetworkStream ns)
         {
             byte protocol = bytes[1];
@@ -313,13 +331,13 @@ namespace TransitServer
                     listGetConfig.AddRange(CRC.Calc(listGetConfig.ToArray(), new Crc16Modbus()).CrcData);
                     ns.Write(listGetConfig.ToArray(), 0, listGetConfig.Count);
                     string tmpStr = string.Format("Отправлено {1} байт-> {0}", string.Join(" ", listGetConfig.ToArray().Take(listGetConfig.Count).Select(r => string.Format("{0:X}", r))), listGetConfig.Count);
-                    Console($"Отправлен запрос на конфиг!{listGetConfig[0]}-{listGetConfig[1]}-{listGetConfig[2]}-{listGetConfig[3]}-{listGetConfig[4]}-{listGetConfig[5]}-{listGetConfig[6]}");
                     Console(tmpStr);
                     if (index >= 0)
                     {
                         gModemClients[index].IMEI = IMEI;
                         int port = imeiDictinary.GetPortSql(IMEI);
                         imeiDictinary.SetPortSql(IMEI); // записываем модем в БД и задаем порт
+                        InsertMailSender(IMEI); // добавляем в БД в таблицу dbMail данные об отправителе, значения по умолчанию берем с конфига
                         Invoke(new Action(() => SQLite.Instance.UpdateActiveConnectionModemsbyImei(IMEI, 1))); // придаем статус модема = ПОДКЛЮЧЕН
                         SQLite.Instance.UpdateLastConnectionModemsbyImei(IMEI, DateTime.Now.ToString());
                         gModemClients[index].PORT = port;
@@ -428,6 +446,7 @@ namespace TransitServer
             }
             else
             {
+                SendEmailAsync(name, date, message).GetAwaiter();
                 tcDown.Invoke(new Action(() => tcDown.SelectedTab = tpEvent));
                 SQLite.Instance.InsertRow(name, date, message);
                 dgvEvent.Invoke(new Action(() => dgvEvent.Rows.Add()));
@@ -436,6 +455,31 @@ namespace TransitServer
                 dgvEvent.Rows[dgvEvent.RowCount - 1].Cells[COLDATE].Value = date.ToString();
                 song.Play();
             }
+        }
+
+        private static async Task SendEmailAsync(string nameModem, DateTime dateEvent, string message)
+        {
+            // взятие переменных из app.config
+            string senderMail= ConfigurationManager.AppSettings.Get("senderMail");
+            string nameSenderMail = ConfigurationManager.AppSettings.Get("nameSenderMail");
+            string recieverMail = ConfigurationManager.AppSettings.Get("recieverMail");
+            string subjectMail = ConfigurationManager.AppSettings.Get("subjectMail");
+            string smtpClient = ConfigurationManager.AppSettings.Get("smtpClient");
+            Int32.TryParse(ConfigurationManager.AppSettings.Get("smtpPort"), out int smtpPort);
+            string senderPassword = ConfigurationManager.AppSettings.Get("senderPassword");
+
+            // настройка почты
+            MailAddress from = new MailAddress(senderMail, nameSenderMail); // отправитель и имя отправителя
+            MailAddress to = new MailAddress(recieverMail); // получатель
+            MailMessage m = new MailMessage(from, to); // объект сообщения
+            m.CC.Add("support@matrixit.ru");
+            m.Subject = subjectMail; // тема
+            m.Body = $"{nameModem}: {message} {dateEvent}";
+            SmtpClient smtp = new SmtpClient(smtpClient, smtpPort); // адрес smtp-сервера и порт, с которого будем отправлять письмо
+            smtp.Credentials = new NetworkCredential(senderMail, senderPassword); // логин и пароль
+            smtp.EnableSsl = true;
+
+            await smtp.SendMailAsync(m);
         }
         public string ParameterName(byte param)
         {
@@ -732,6 +776,30 @@ namespace TransitServer
             Thread SendConfig = new Thread(sendConfig);
             SendConfig.IsBackground = true;
             SendConfig.Start();
+        }
+
+        private void btSendMail_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                SendEmailAsync("Тестовый объект", DateTime.Now, "Открытие-закрытие шкафа").GetAwaiter();
+                Console("Письмо отправлено успешно.");
+            }
+            catch (Exception exc)
+            {
+                Console(exc.Message);
+            }
+        }
+
+        private void TsmiMailSendCustom_Click(object sender, EventArgs e)
+        {
+            FormChangeSenderMails form = new FormChangeSenderMails();
+            form.labelNameModem.Text = dgvModems.Rows[mouseLocation.RowIndex].Cells[MODEMSCOLNAME].Value.ToString();
+            form.labelImeiModem.Text = dgvModems.Rows[mouseLocation.RowIndex].Cells[MODEMSCOLIMEI].Value.ToString();
+            if (form.ShowDialog() == DialogResult.OK)
+            {
+                
+            }
         }
     }
 }
