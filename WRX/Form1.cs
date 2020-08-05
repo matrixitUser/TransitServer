@@ -20,6 +20,7 @@ namespace TransitServer
     {
         static object locker = new object();
         bool isUsed = false;
+        public bool isCustomGroup = false;
         //int localPort = 10114;
         readonly int localPort = Int32.Parse(ConfigurationManager.AppSettings.Get("port"));
         List<GPRSclient> gModemClients = new List<GPRSclient>();
@@ -144,7 +145,7 @@ namespace TransitServer
                             {
                                 if (((byte)(bytes[1] >> i) & 1) == 1)
                                 {
-                                    NewEvent(imeiDictinary.GetNameSql(modemClient.IMEI), dateTime, ParameterName(arrParams[i]));
+                                    NewEvent(imeiDictinary.GetNameSql(modemClient.IMEI), dateTime, ParameterName(arrParams[i]), modemClient.IMEI);
                                 }
                             }
                         }
@@ -235,7 +236,7 @@ namespace TransitServer
                         {
                             if (((byte)(cur.event_ >> i) & 1) == 1 && dtEvent[i] != DateTime.MinValue)
                             {
-                                NewEvent(imeiDictinary.GetNameSql(modemClient.IMEI), dtEvent[i], ParameterName(arrParams[i]));
+                                NewEvent(imeiDictinary.GetNameSql(modemClient.IMEI), dtEvent[i], ParameterName(arrParams[i]), modemClient.IMEI);
                             }
                         }
                         break;
@@ -288,20 +289,6 @@ namespace TransitServer
             {
                 gAskueServers[0].ns.Write(msg, 0, len);
             }
-        }
-
-        private void InsertMailSender(string imei)
-        {
-            // взятие переменных из app.config
-            string senderMail = ConfigurationManager.AppSettings.Get("senderMail");
-            string nameSenderMail = ConfigurationManager.AppSettings.Get("nameSenderMail");
-            string recieverMail = ConfigurationManager.AppSettings.Get("recieverMail");
-            string subjectMail = ConfigurationManager.AppSettings.Get("subjectMail");
-            string smtpClient = ConfigurationManager.AppSettings.Get("smtpClient");
-            Int32.TryParse(ConfigurationManager.AppSettings.Get("smtpPort"), out int smtpPort);
-            string senderPassword = ConfigurationManager.AppSettings.Get("senderPassword");
-
-            SQLite.Instance.InsertSenderMail(imei, "0", senderMail, recieverMail, nameSenderMail, subjectMail, smtpClient, smtpPort.ToString(), senderPassword);
         }
 
         private void AnswerTeleofic(byte[] bytes, int len, IntPtr clientHandle, NetworkStream ns)
@@ -437,7 +424,7 @@ namespace TransitServer
         #endregion //  //
 
         #region Events
-        public void NewEvent(string name, DateTime date, string message)
+        public void NewEvent(string name, DateTime date, string message, string imei)
         {
             List<dynamic> tmp = SQLite.Instance.GetRowForCheck(name, date, message);
             if (tmp.Count > 0)
@@ -446,40 +433,16 @@ namespace TransitServer
             }
             else
             {
-                SendEmailAsync(name, date, message).GetAwaiter();
+                SendEmailAsync(name, date, message, imei).GetAwaiter();
                 tcDown.Invoke(new Action(() => tcDown.SelectedTab = tpEvent));
-                SQLite.Instance.InsertRow(name, date, message);
+                SQLite.Instance.InsertRow(name, date, message, imei);
                 dgvEvent.Invoke(new Action(() => dgvEvent.Rows.Add()));
                 dgvEvent.Rows[dgvEvent.RowCount - 1].Cells[COLEVENTNAME].Value = name;
                 dgvEvent.Rows[dgvEvent.RowCount - 1].Cells[COLMESSAGE].Value = message;
                 dgvEvent.Rows[dgvEvent.RowCount - 1].Cells[COLDATE].Value = date.ToString();
+                dgvEvent.Rows[dgvEvent.RowCount - 1].Cells[COLEVENTIMEIMODEM].Value = date.ToString();
                 song.Play();
             }
-        }
-
-        private static async Task SendEmailAsync(string nameModem, DateTime dateEvent, string message)
-        {
-            // взятие переменных из app.config
-            string senderMail= ConfigurationManager.AppSettings.Get("senderMail");
-            string nameSenderMail = ConfigurationManager.AppSettings.Get("nameSenderMail");
-            string recieverMail = ConfigurationManager.AppSettings.Get("recieverMail");
-            string subjectMail = ConfigurationManager.AppSettings.Get("subjectMail");
-            string smtpClient = ConfigurationManager.AppSettings.Get("smtpClient");
-            Int32.TryParse(ConfigurationManager.AppSettings.Get("smtpPort"), out int smtpPort);
-            string senderPassword = ConfigurationManager.AppSettings.Get("senderPassword");
-
-            // настройка почты
-            MailAddress from = new MailAddress(senderMail, nameSenderMail); // отправитель и имя отправителя
-            MailAddress to = new MailAddress(recieverMail); // получатель
-            MailMessage m = new MailMessage(from, to); // объект сообщения
-            m.CC.Add("support@matrixit.ru");
-            m.Subject = subjectMail; // тема
-            m.Body = $"{nameModem}: {message} {dateEvent}";
-            SmtpClient smtp = new SmtpClient(smtpClient, smtpPort); // адрес smtp-сервера и порт, с которого будем отправлять письмо
-            smtp.Credentials = new NetworkCredential(senderMail, senderPassword); // логин и пароль
-            smtp.EnableSsl = true;
-
-            await smtp.SendMailAsync(m);
         }
         public string ParameterName(byte param)
         {
@@ -506,10 +469,11 @@ namespace TransitServer
             }
         }
 
-        const string COLEVENTNAME = "colEventName";
+        const string COLEVENTNAME = "colEventNameModem";
         const string COLMESSAGE = "colEventMessage";
         const string COLDATE = "colEventDate";
         const string COLQUITE = "colEventQuite";
+        const string COLEVENTIMEIMODEM = "colEventImeiModem";
         public void EventsFromDB(List<dynamic> records)
         {
             dgvEvent.Rows.Clear();
@@ -589,6 +553,7 @@ namespace TransitServer
             catch (Exception e)
             {
                 //MessageBox.Show(e.Message);
+                Console(e.Message);
             }
 
             if (!records.Any())
@@ -641,6 +606,14 @@ namespace TransitServer
         private TreeNodeMouseClickEventArgs nodeLocation;
         private void TrView1_NodeMouseClick(object sender, TreeNodeMouseClickEventArgs e)
         {
+            if (e.Node.Name == "0")
+            {
+                tsmiCustomGroupSendMail.Enabled = false;
+            }
+            else
+            {
+                tsmiCustomGroupSendMail.Enabled = true;
+            }
             nodeLocation = e;
             List<string> tmp = SQLite.Instance.GetParentsNodeForCheck(e.Node.Text);
             if (tmp.Count > 0) tsmiDelNode.Enabled = false;
@@ -708,7 +681,17 @@ namespace TransitServer
                 TreeNode newNode = new TreeNode(formAddNode.txtNameGroup.Text);
                 nodeLocation.Node.Nodes.Add(newNode);
                 nodeLocation.Node.Expand();
-                SQLite.Instance.InsertNode(newNode.Text, newNode.Parent.Text);
+
+                string senderMail = ConfigurationManager.AppSettings.Get("senderMail");
+                string nameSenderMail = ConfigurationManager.AppSettings.Get("nameSenderMail");
+                string recieverMail = ConfigurationManager.AppSettings.Get("recieverMail");
+                string subjectMail = ConfigurationManager.AppSettings.Get("subjectMail");
+                string smtpClient = ConfigurationManager.AppSettings.Get("smtpClient");
+                Int32.TryParse(ConfigurationManager.AppSettings.Get("smtpPort"), out int smtpPort);
+                string senderPassword = ConfigurationManager.AppSettings.Get("senderPassword");
+
+                SQLite.Instance.InsertNode(newNode.Text, newNode.Parent.Text, senderMail, recieverMail, nameSenderMail, subjectMail, smtpClient, smtpPort.ToString(), senderPassword);
+
             }
         }
         private void DelToolStripMenuItem_Click(object sender, EventArgs e)
@@ -765,24 +748,22 @@ namespace TransitServer
         }
         public void Console(string str)
         {
+            tcDown.Invoke(new Action(() => tcDown.SelectedTab = tpConsole));
             string textConsole = $"{DateTime.Now}: {str}";
             lbConsole.Invoke(new Action(() => lbConsole.Items.Add(textConsole)));
         }
-
-        #endregion
-
-        private void button1_Click(object sender, EventArgs e)
+        private void BtSendConfig_Click(object sender, EventArgs e)
         {
             Thread SendConfig = new Thread(sendConfig);
             SendConfig.IsBackground = true;
             SendConfig.Start();
         }
 
-        private void btSendMail_Click(object sender, EventArgs e)
+        private void BtSendMail_Click(object sender, EventArgs e)
         {
             try
             {
-                SendEmailAsync("Тестовый объект", DateTime.Now, "Открытие-закрытие шкафа").GetAwaiter();
+                SendEmailAsync("Тестовый объект", DateTime.Now, "Открытие-закрытие шкафа", "852585258525852").GetAwaiter();
                 Console("Письмо отправлено успешно.");
             }
             catch (Exception exc)
@@ -790,15 +771,145 @@ namespace TransitServer
                 Console(exc.Message);
             }
         }
+        #endregion
 
+        #region SendMail
+        private void InsertMailSender(string imei)
+        {
+            // взятие переменных из app.config
+            string senderMail = ConfigurationManager.AppSettings.Get("senderMail");
+            string nameSenderMail = ConfigurationManager.AppSettings.Get("nameSenderMail");
+            string recieverMail = ConfigurationManager.AppSettings.Get("recieverMail");
+            string subjectMail = ConfigurationManager.AppSettings.Get("subjectMail");
+            string smtpClient = ConfigurationManager.AppSettings.Get("smtpClient");
+            Int32.TryParse(ConfigurationManager.AppSettings.Get("smtpPort"), out int smtpPort);
+            string senderPassword = ConfigurationManager.AppSettings.Get("senderPassword");
+
+            SQLite.Instance.InsertSenderMail(imei, "0", senderMail, recieverMail, nameSenderMail, subjectMail, smtpClient, smtpPort.ToString(), senderPassword);
+        }
+
+        private static async Task SendEmailAsync(string nameModem, DateTime dateEvent, string message, string imei)
+        {
+            // взятие переменных из Базы Данных
+            dynamic record = SQLite.Instance.GetAllParamSenderMail(imei);
+            string senderMail = record.senderMail;
+            string nameSenderMail = record.nameSenderMail;
+            string recieverMail = record.recieverMail;
+            string subjectMail = ConfigurationManager.AppSettings.Get("subjectMail");
+            string smtpClient = record.smtpClient;
+            Int32.TryParse(record.smtpPort, out int smtpPort);
+            string senderPassword = record.senderPassword;
+
+            // настройка почты
+            MailAddress from = new MailAddress(senderMail, nameSenderMail); // отправитель и имя отправителя
+            MailAddress to = new MailAddress(recieverMail); // получатель
+            MailMessage m = new MailMessage(from, to); // объект сообщения
+            m.CC.Add("support@matrixit.ru");
+            m.Subject = subjectMail; // тема
+            m.Body = $"{nameModem}: {message} {dateEvent}";
+            SmtpClient smtp = new SmtpClient(smtpClient, smtpPort); // адрес smtp-сервера и порт, с которого будем отправлять письмо
+            smtp.Credentials = new NetworkCredential(senderMail, senderPassword); // логин и пароль
+            smtp.EnableSsl = true;
+
+            await smtp.SendMailAsync(m);
+        }
         private void TsmiMailSendCustom_Click(object sender, EventArgs e)
         {
             FormChangeSenderMails form = new FormChangeSenderMails();
+            form.isCustomGroup = false;
             form.labelNameModem.Text = dgvModems.Rows[mouseLocation.RowIndex].Cells[MODEMSCOLNAME].Value.ToString();
             form.labelImeiModem.Text = dgvModems.Rows[mouseLocation.RowIndex].Cells[MODEMSCOLIMEI].Value.ToString();
+            form.labelInfoText.Visible = true;
+            form.labelInfoText.Text = "Настройки данной формы\nбудут действовать только на\nданный объект";
+
+            dynamic record = SQLite.Instance.GetAllParamSenderMail(form.labelImeiModem.Text);
+            if (record.group == "0") form.txtGroup.Text = "Все";
+            else
+            {
+                form.txtGroup.Text = SQLite.Instance.GetCurrentGroup(record.group);
+            }
+            form.txtNameSenderMail.Text = record.nameSenderMail;
+            form.txtRecieverMail.Text = record.recieverMail;
+            form.txtSenderMail.Text = record.senderMail;
+            form.txtSmtpClient.Text = record.smtpClient;
+            form.txtSmtpPort.Text = record.smtpPort;
+            form.txtSubjectMail.Text = record.subjectMail;
+            form.txtSenderPassword.Text = record.senderPassword;
+
             if (form.ShowDialog() == DialogResult.OK)
             {
-                
+
+            }
+        }
+        #endregion
+
+        private void TsmiCustomGroupSendMail_Click(object sender, EventArgs e)
+        {
+            FormChangeSenderMails form = new FormChangeSenderMails();
+            form.isCustomGroup = true;
+            form.labelNameModem.Visible = false;
+            form.labelImeiModem.Visible = false;
+            form.labImei.Visible = false;
+            form.labName.Visible = false;
+            form.labelInfoText.Visible = true;
+            form.labelInfoText.Text = "Настройки данной формы\nбудут действовать на все\nдочерние узлы группы";
+            form.labelInfoText.Location = new System.Drawing.Point(20, 20);
+            form.txtGroup.Text = nodeLocation.Node.Text;
+
+            dynamic record = SQLite.Instance.GetAllParamNodesTree(nodeLocation.Node.Name);
+            // взятие переменных из app.config
+            form.txtNameSenderMail.Text = record.nameSenderMail;
+            form.txtRecieverMail.Text = record.recieverMail;
+            form.txtSenderMail.Text = record.senderMail;
+            form.txtSmtpClient.Text = record.smtpClient;
+            form.txtSmtpPort.Text = record.smtpPort;
+            form.txtSubjectMail.Text = record.subjectMail;
+            form.txtSenderPassword.Text = record.senderPassword;
+
+            // получаем список imei модемов дочерних узлов
+            List<dynamic> listModems = GetImeiModemFromNodes(nodeLocation);
+
+            if (form.ShowDialog() == DialogResult.OK)
+            {
+                foreach(var list in listModems)
+                {
+                    SQLite.Instance.UpdateDbMails(list.imei, form.txtSenderMail.Text, form.txtNameSenderMail.Text, form.txtRecieverMail.Text, form.txtSubjectMail.Text, form.txtSmtpClient.Text, form.txtSmtpPort.Text, form.txtSenderPassword.Text);
+                }
+            }
+        }
+        private List<dynamic> GetImeiModemFromNodes(TreeNodeMouseClickEventArgs e)
+        {
+            List<dynamic> listModems = SQLite.Instance.GetModems();
+            List<dynamic> listViewModems = new List<dynamic>();
+            TreeNode selectedNode;
+            if (e.Node.Name == "0")
+            {
+                return SQLite.Instance.GetModems();
+            }
+            else
+            {
+                selectedNode = e.Node;
+                foreach (var obj in listModems)
+                {
+                    if (selectedNode.Name == obj.group) listViewModems.Add(obj);
+                }
+                if (selectedNode.FirstNode != null) listViewModems.AddRange(RoundOnNodeOutImei(listModems, selectedNode.FirstNode));
+                return listViewModems;
+            }
+        }
+        public List<dynamic> RoundOnNodeOutImei(List<dynamic> listModems, TreeNode selectedNode)
+        {
+            List<dynamic> listViewModems = new List<dynamic>();
+            for (; ; )
+            {
+                foreach (var obj1 in listModems)
+                {
+                    if (selectedNode.Name == obj1.group) listViewModems.Add(obj1);
+                }
+
+                selectedNode = selectedNode.NextNode;
+                if (selectedNode == null) return listViewModems;
+                RoundOnNodeOut(listModems, selectedNode);
             }
         }
     }

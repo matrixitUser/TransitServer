@@ -45,9 +45,9 @@ namespace TransitServer
                 SQLiteCommand m_sqlCmd3 = new SQLiteCommand(m_dbConn);
                 SQLiteCommand m_sqlCmd4 = new SQLiteCommand(m_dbConn);
 
-                m_sqlCmd1.CommandText = "CREATE TABLE IF NOT EXISTS dbEvents (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, date TEXT, message TEXT, quite TEXT)";
+                m_sqlCmd1.CommandText = "CREATE TABLE IF NOT EXISTS dbEvents (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, date TEXT, message TEXT, quite TEXT, imei TEXT)";
                 m_sqlCmd2.CommandText = "CREATE TABLE IF NOT EXISTS modems (id INTEGER PRIMARY KEY AUTOINCREMENT, imei TEXT, port TEXT, name TEXT, lastConnection TEXT, activeConnection INTEGER, groups TEXT DEFAULT '0', config TEXT)";
-                m_sqlCmd3.CommandText = "CREATE TABLE IF NOT EXISTS nodesTree (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, parent TEXT)";
+                m_sqlCmd3.CommandText = "CREATE TABLE IF NOT EXISTS nodesTree (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, parent TEXT, senderMail TEXT, recieverMail TEXT, nameSenderMail TEXT, subjectMail TEXT, smtpClient TEXT, smtpPort TEXT, senderPassword TEXT)";
                 m_sqlCmd4.CommandText = "CREATE TABLE IF NOT EXISTS dbMails (id INTEGER PRIMARY KEY AUTOINCREMENT, imei TEXT, groups TEXT, senderMail TEXT, recieverMail TEXT, nameSenderMail TEXT, subjectMail TEXT, smtpClient TEXT, smtpPort TEXT, senderPassword TEXT)";
 
                 m_sqlCmd1.ExecuteNonQuery();
@@ -75,15 +75,22 @@ namespace TransitServer
                 Connect.Close();
             }
         }
-        public void InsertNode(string nameNode, string parent)
+        public void InsertNode(string nameNode, string parent, string senderMail, string recieverMail, string nameSenderMail, string subjectMail, string smtpClient, string smtpPort, string senderPassword)
         {
             // записываем информацию в базу данных
             using (SQLiteConnection Connect = new SQLiteConnection("Data Source=" + dbFileName + ";Version=3;"))
             {
-                string commandText = "INSERT INTO [nodesTree] ([name], [parent]) VALUES(@nameNode, @parent)";
+                string commandText = "INSERT INTO [nodesTree] ([name], [parent], [senderMail], [recieverMail], [nameSenderMail], [subjectMail], [smtpClient], [smtpPort], [senderPassword]) VALUES(@nameNode, @parent, @senderMail, @recieverMail, @nameSenderMail, @subjectMail, @smtpClient, @smtpPort, @senderPassword)";
                 SQLiteCommand Command = new SQLiteCommand(commandText, Connect);
                 Command.Parameters.AddWithValue("@nameNode", nameNode);
                 Command.Parameters.AddWithValue("@parent", parent);
+                Command.Parameters.AddWithValue("@senderMail", senderMail);
+                Command.Parameters.AddWithValue("@recieverMail", recieverMail);
+                Command.Parameters.AddWithValue("@nameSenderMail", nameSenderMail);
+                Command.Parameters.AddWithValue("@subjectMail", subjectMail);
+                Command.Parameters.AddWithValue("@smtpClient", smtpClient);
+                Command.Parameters.AddWithValue("@smtpPort", smtpPort);
+                Command.Parameters.AddWithValue("@senderPassword", senderPassword);
                 Connect.Open();
                 Command.ExecuteNonQuery();
                 Connect.Close();
@@ -147,6 +154,38 @@ namespace TransitServer
                 Connect.Close();
             }
             return listNodesTree;
+        }
+
+        public dynamic GetAllParamNodesTree(string idGroup)
+        {
+            dynamic record = new ExpandoObject();
+
+            if (!File.Exists(dbFileName)) return record;
+
+            using (SQLiteConnection Connect = new SQLiteConnection("Data Source=" + dbFileName + ";Version=3;"))
+            {
+                Connect.Open();
+                SQLiteCommand Command = new SQLiteCommand
+                {
+                    Connection = Connect,
+                    CommandText = @"SELECT * FROM [nodesTree] where [id] = @idGroup"
+                };
+                Command.Parameters.AddWithValue("@idGroup", idGroup);
+                SQLiteDataReader sqlReader = Command.ExecuteReader();
+
+                while (sqlReader.Read()) // считываем и вносим в лист все параметры
+                {
+                    record.senderMail = (string)sqlReader["senderMail"];
+                    record.nameSenderMail = (string)sqlReader["nameSenderMail"];
+                    record.recieverMail = sqlReader["recieverMail"];
+                    record.subjectMail = sqlReader["subjectMail"];
+                    record.smtpClient = sqlReader["smtpClient"];
+                    record.smtpPort = sqlReader["smtpPort"];
+                    record.senderPassword = sqlReader["senderPassword"];
+                }
+                Connect.Close();
+            }
+            return record;
         }
 
         public string GetIdGroup(string imei)
@@ -536,6 +575,7 @@ namespace TransitServer
                     record.name = (string)sqlReader["name"];
                     record.date = (string)sqlReader["date"];
                     record.message = (string)sqlReader["message"];
+                    record.imei = (string)sqlReader["imei"];
                     records.Add(record);
                 }
                 Connect.Close();
@@ -562,6 +602,7 @@ namespace TransitServer
                     record.date = (string)sqlReader["date"];
                     record.message = (string)sqlReader["message"];
                     record.quite = sqlReader["quite"];
+                    record.imei = (string)sqlReader["imei"];
                     records.Add(record);
                 }
                 Connect.Close();
@@ -597,7 +638,7 @@ namespace TransitServer
             }
             return records;
         }
-        public void InsertRow(string name, DateTime date, string message)
+        public void InsertRow(string name, DateTime date, string message, string imei)
         {
             // записываем информацию в базу данных
             using (SQLiteConnection Connect = new SQLiteConnection("Data Source=" + dbFileName + ";Version=3;"))
@@ -607,6 +648,7 @@ namespace TransitServer
                 Command.Parameters.AddWithValue("@name", name);
                 Command.Parameters.AddWithValue("@date", date.ToString());
                 Command.Parameters.AddWithValue("@message", message);
+                Command.Parameters.AddWithValue("@imei", imei);
                 Connect.Open();
                 Command.ExecuteNonQuery();
                 Connect.Close();
@@ -623,7 +665,7 @@ namespace TransitServer
                 Command.Parameters.AddWithValue("@date", date);
                 Command.Parameters.AddWithValue("@message", message);
                 Connect.Open();
-                Command.ExecuteNonQuery(); // можно эту строку вместо двух последующих строк
+                Command.ExecuteNonQuery();
                 Connect.Close();
             }
         }
@@ -652,6 +694,73 @@ namespace TransitServer
             }
         }
 
+        public dynamic GetAllParamSenderMail(string imei)
+        {
+            dynamic record = new ExpandoObject();
+
+            if (!File.Exists(dbFileName)) return record;
+
+            using (SQLiteConnection Connect = new SQLiteConnection("Data Source=" + dbFileName + ";Version=3;"))
+            {
+                Connect.Open();
+                SQLiteCommand Command = new SQLiteCommand
+                {
+                    Connection = Connect,
+                    CommandText = @"SELECT * FROM [dbMails] where [imei] = @imei"
+                };
+                Command.Parameters.AddWithValue("@imei", imei);
+                SQLiteDataReader sqlReader = Command.ExecuteReader();
+
+                while (sqlReader.Read()) // считываем и вносим в лист все параметры
+                {
+                    record.id = sqlReader["id"];
+                    record.group = (string)sqlReader["groups"];
+                    record.senderMail = (string)sqlReader["senderMail"];
+                    record.nameSenderMail = (string)sqlReader["nameSenderMail"];
+                    record.recieverMail = sqlReader["recieverMail"];
+                    record.subjectMail = sqlReader["subjectMail"];
+                    record.smtpClient = sqlReader["smtpClient"];
+                    record.smtpPort = sqlReader["smtpPort"];
+                    record.senderPassword = sqlReader["senderPassword"];
+                }
+                Connect.Close();
+            }
+            return record;
+        }
+
+        public void UpdateGroupDbMails(string imei, string groups)
+        {
+            using (SQLiteConnection Connect = new SQLiteConnection("Data Source=" + dbFileName + ";Version=3;"))
+            {
+                string commandText = "UPDATE dbMails SET groups = @groups WHERE imei = @imei;";
+                SQLiteCommand Command = new SQLiteCommand(commandText, Connect);
+                Command.Parameters.AddWithValue("@imei", imei);
+                Command.Parameters.AddWithValue("@groups", groups);
+                Connect.Open();
+                Command.ExecuteNonQuery();
+                Connect.Close();
+            }
+        }
+
+        public void UpdateDbMails(string imei, string senderMail, string nameSenderMail, string recieverMail, string subjectMail, string smtpClient, string smtpPort, string senderPassword)
+        {
+            using (SQLiteConnection Connect = new SQLiteConnection("Data Source=" + dbFileName + ";Version=3;"))
+            {
+                string commandText = "UPDATE dbMails SET senderMail = @senderMail, nameSenderMail = @nameSenderMail, recieverMail = @recieverMail, subjectMail = @subjectMail, smtpClient = @smtpClient, smtpPort = @smtpPort, senderPassword = @senderPassword WHERE imei = @imei;";
+                SQLiteCommand Command = new SQLiteCommand(commandText, Connect);
+                Command.Parameters.AddWithValue("@imei", imei);
+                Command.Parameters.AddWithValue("@senderMail", senderMail);
+                Command.Parameters.AddWithValue("@nameSenderMail", nameSenderMail);
+                Command.Parameters.AddWithValue("@recieverMail", recieverMail);
+                Command.Parameters.AddWithValue("@subjectMail", subjectMail);
+                Command.Parameters.AddWithValue("@smtpClient", smtpClient);
+                Command.Parameters.AddWithValue("@smtpPort", smtpPort);
+                Command.Parameters.AddWithValue("@senderPassword", senderPassword);
+                Connect.Open();
+                Command.ExecuteNonQuery();
+                Connect.Close();
+            }
+        }
         #endregion
     }
 }

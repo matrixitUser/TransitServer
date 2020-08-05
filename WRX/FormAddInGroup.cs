@@ -21,6 +21,7 @@ namespace TransitServer
         private void btAdd_Click(object sender, EventArgs e)
         {
             SQLite.Instance.UpdateGroupModems(labImei.Text, textNode);
+            SQLite.Instance.UpdateGroupDbMails(labImei.Text, textNode);
             DialogResult = DialogResult.OK;
         }
     }

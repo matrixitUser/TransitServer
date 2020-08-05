@@ -36,15 +36,17 @@
             this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.tsmiRedactorModema = new System.Windows.Forms.ToolStripMenuItem();
             this.tsmiAddGroup = new System.Windows.Forms.ToolStripMenuItem();
+            this.tsmiMailSendCustom = new System.Windows.Forms.ToolStripMenuItem();
             this.panel5 = new System.Windows.Forms.Panel();
             this.tcDown = new System.Windows.Forms.TabControl();
             this.tpEvent = new System.Windows.Forms.TabPage();
             this.panel9 = new System.Windows.Forms.Panel();
             this.dgvEvent = new System.Windows.Forms.DataGridView();
-            this.colEventName = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colEventNameModem = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.colEventDate = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.colEventMessage = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.colEventQuite = new System.Windows.Forms.DataGridViewButtonColumn();
+            this.colEventImeiModem = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.panel8 = new System.Windows.Forms.Panel();
             this.btnGetAllEvents = new System.Windows.Forms.Button();
             this.btnSongMute = new System.Windows.Forms.Button();
@@ -62,6 +64,7 @@
             this.contextMenuStrip2 = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.добавитьГруппуToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.tsmiDelNode = new System.Windows.Forms.ToolStripMenuItem();
+            this.tsmiCustomGroupSendMail = new System.Windows.Forms.ToolStripMenuItem();
             this.label22 = new System.Windows.Forms.Label();
             this.txtFinder = new System.Windows.Forms.TextBox();
             this.label23 = new System.Windows.Forms.Label();
@@ -76,8 +79,6 @@
             this.dataGridViewImageColumn1 = new System.Windows.Forms.DataGridViewImageColumn();
             this.button1 = new System.Windows.Forms.Button();
             this.btSendMail = new System.Windows.Forms.Button();
-            this.настроитьОтправкуСобытияToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.tsmiMailSendCustom = new System.Windows.Forms.ToolStripMenuItem();
             this.contextMenuStrip1.SuspendLayout();
             this.panel5.SuspendLayout();
             this.tcDown.SuspendLayout();
@@ -120,7 +121,7 @@
             this.tsmiAddGroup,
             this.tsmiMailSendCustom});
             this.contextMenuStrip1.Name = "contextMenuStrip1";
-            this.contextMenuStrip1.Size = new System.Drawing.Size(239, 92);
+            this.contextMenuStrip1.Size = new System.Drawing.Size(239, 70);
             // 
             // tsmiRedactorModema
             // 
@@ -135,6 +136,13 @@
             this.tsmiAddGroup.Size = new System.Drawing.Size(238, 22);
             this.tsmiAddGroup.Text = "Добавить в группу";
             this.tsmiAddGroup.Click += new System.EventHandler(this.TsmiAddGroup_Click);
+            // 
+            // tsmiMailSendCustom
+            // 
+            this.tsmiMailSendCustom.Name = "tsmiMailSendCustom";
+            this.tsmiMailSendCustom.Size = new System.Drawing.Size(238, 22);
+            this.tsmiMailSendCustom.Text = "Настройка отправки событий";
+            this.tsmiMailSendCustom.Click += new System.EventHandler(this.TsmiMailSendCustom_Click);
             // 
             // panel5
             // 
@@ -180,10 +188,11 @@
             this.dgvEvent.BackgroundColor = System.Drawing.SystemColors.ActiveCaption;
             this.dgvEvent.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dgvEvent.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
-            this.colEventName,
+            this.colEventNameModem,
             this.colEventDate,
             this.colEventMessage,
-            this.colEventQuite});
+            this.colEventQuite,
+            this.colEventImeiModem});
             this.dgvEvent.Dock = System.Windows.Forms.DockStyle.Fill;
             this.dgvEvent.Location = new System.Drawing.Point(0, 0);
             this.dgvEvent.Name = "dgvEvent";
@@ -192,14 +201,12 @@
             this.dgvEvent.TabIndex = 0;
             this.dgvEvent.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.DgvEvent1_CellContentClick);
             // 
-            // colEventName
+            // colEventNameModem
             // 
-            this.colEventName.FillWeight = 150F;
-            this.colEventName.Frozen = true;
-            this.colEventName.HeaderText = "name";
-            this.colEventName.Name = "colEventName";
-            this.colEventName.ReadOnly = true;
-            this.colEventName.Width = 150;
+            this.colEventNameModem.Frozen = true;
+            this.colEventNameModem.HeaderText = "name";
+            this.colEventNameModem.Name = "colEventNameModem";
+            this.colEventNameModem.Width = 150;
             // 
             // colEventDate
             // 
@@ -208,7 +215,7 @@
             this.colEventDate.HeaderText = "date";
             this.colEventDate.Name = "colEventDate";
             this.colEventDate.ReadOnly = true;
-            this.colEventDate.Width = 200;
+            this.colEventDate.Width = 180;
             // 
             // colEventMessage
             // 
@@ -225,10 +232,18 @@
             dataGridViewCellStyle2.NullValue = "квитировать";
             this.colEventQuite.DefaultCellStyle = dataGridViewCellStyle2;
             this.colEventQuite.FillWeight = 80F;
+            this.colEventQuite.Frozen = true;
             this.colEventQuite.HeaderText = "quite";
             this.colEventQuite.Name = "colEventQuite";
             this.colEventQuite.Resizable = System.Windows.Forms.DataGridViewTriState.True;
             this.colEventQuite.Width = 120;
+            // 
+            // colEventImeiModem
+            // 
+            this.colEventImeiModem.Frozen = true;
+            this.colEventImeiModem.HeaderText = "imei";
+            this.colEventImeiModem.Name = "colEventImeiModem";
+            this.colEventImeiModem.Width = 170;
             // 
             // panel8
             // 
@@ -367,9 +382,9 @@
             this.contextMenuStrip2.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.добавитьГруппуToolStripMenuItem,
             this.tsmiDelNode,
-            this.настроитьОтправкуСобытияToolStripMenuItem});
+            this.tsmiCustomGroupSendMail});
             this.contextMenuStrip2.Name = "contextMenuStrip2";
-            this.contextMenuStrip2.Size = new System.Drawing.Size(236, 70);
+            this.contextMenuStrip2.Size = new System.Drawing.Size(236, 92);
             // 
             // добавитьГруппуToolStripMenuItem
             // 
@@ -384,6 +399,13 @@
             this.tsmiDelNode.Size = new System.Drawing.Size(235, 22);
             this.tsmiDelNode.Text = "Удалить группу";
             this.tsmiDelNode.Click += new System.EventHandler(this.DelToolStripMenuItem_Click);
+            // 
+            // tsmiCustomGroupSendMail
+            // 
+            this.tsmiCustomGroupSendMail.Name = "tsmiCustomGroupSendMail";
+            this.tsmiCustomGroupSendMail.Size = new System.Drawing.Size(235, 22);
+            this.tsmiCustomGroupSendMail.Text = "Настроить отправку события";
+            this.tsmiCustomGroupSendMail.Click += new System.EventHandler(this.TsmiCustomGroupSendMail_Click);
             // 
             // label22
             // 
@@ -503,7 +525,7 @@
             this.button1.TabIndex = 9;
             this.button1.Text = "Отправить запрос на конфиг";
             this.button1.UseVisualStyleBackColor = true;
-            this.button1.Click += new System.EventHandler(this.button1_Click);
+            this.button1.Click += new System.EventHandler(this.BtSendConfig_Click);
             // 
             // btSendMail
             // 
@@ -514,20 +536,7 @@
             this.btSendMail.TabIndex = 10;
             this.btSendMail.Text = "SendMailTest";
             this.btSendMail.UseVisualStyleBackColor = false;
-            this.btSendMail.Click += new System.EventHandler(this.btSendMail_Click);
-            // 
-            // настроитьОтправкуСобытияToolStripMenuItem
-            // 
-            this.настроитьОтправкуСобытияToolStripMenuItem.Name = "настроитьОтправкуСобытияToolStripMenuItem";
-            this.настроитьОтправкуСобытияToolStripMenuItem.Size = new System.Drawing.Size(235, 22);
-            this.настроитьОтправкуСобытияToolStripMenuItem.Text = "Настроить отправку события";
-            // 
-            // tsmiMailSendCustom
-            // 
-            this.tsmiMailSendCustom.Name = "tsmiMailSendCustom";
-            this.tsmiMailSendCustom.Size = new System.Drawing.Size(238, 22);
-            this.tsmiMailSendCustom.Text = "Настройка отправки событий";
-            this.tsmiMailSendCustom.Click += new System.EventHandler(this.TsmiMailSendCustom_Click);
+            this.btSendMail.Click += new System.EventHandler(this.BtSendMail_Click);
             // 
             // Form1
             // 
@@ -590,10 +599,6 @@
         private System.Windows.Forms.Panel panel8;
         private System.Windows.Forms.Button btnSongMute;
         private System.Windows.Forms.Button btnGetAllEvents;
-        private System.Windows.Forms.DataGridViewTextBoxColumn colEventName;
-        private System.Windows.Forms.DataGridViewTextBoxColumn colEventDate;
-        private System.Windows.Forms.DataGridViewTextBoxColumn colEventMessage;
-        private System.Windows.Forms.DataGridViewButtonColumn colEventQuite;
         private System.Windows.Forms.Button btn_AddModem;
         private System.Windows.Forms.Panel panel11;
         private System.Windows.Forms.Label label22;
@@ -619,7 +624,12 @@
         private System.Windows.Forms.Button button1;
         private System.Windows.Forms.Button btSendMail;
         private System.Windows.Forms.ToolStripMenuItem tsmiMailSendCustom;
-        private System.Windows.Forms.ToolStripMenuItem настроитьОтправкуСобытияToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem tsmiCustomGroupSendMail;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colEventNameModem;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colEventDate;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colEventMessage;
+        private System.Windows.Forms.DataGridViewButtonColumn colEventQuite;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colEventImeiModem;
     }
 }
 

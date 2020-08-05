@@ -41,6 +41,7 @@ namespace TransitServer
                 {
                     tcpclient.Close();
                     //MessageBox.Show(e.Message);
+                    Console(e.Message);
                     break;  //TODO 
                 }
                 string statusStr = string.Format("Клиенты АСКУЭ:{0}", gAskueServers.Count);
