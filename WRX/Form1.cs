@@ -215,13 +215,9 @@ namespace TransitServer
             {
                 case 0x4D:
                     {
-
                         byte[] config = data.Skip(1).ToArray();
                         tsCurrent cur = setBytesFromConfig<tsCurrent>(config, new tsCurrent());
-                        UInt64 u64Imei = (UInt64)((UInt64)cur.imei[1] << 32) | (UInt64)cur.imei[0];
-                        string strImei = u64Imei.ToString();
-                        //byte[] counterNa = data.Skip(17).Take(4).ToArray(); ------------------------------------!!!!!!!!!!!!!!!!!!!!!!
-                        //byte networkAddress = bytes[30];
+                        string imei = Encoding.ASCII.GetString(cur.imei);
                         Guid objectId = new Guid(cur.objectId);
                         DateTime dtContollers = dt1970.AddSeconds(cur.counterTime);
                         DateTime[] dtEvent = new DateTime[16];
@@ -236,7 +232,7 @@ namespace TransitServer
                         {
                             if (((byte)(cur.event_ >> i) & 1) == 1 && dtEvent[i] != DateTime.MinValue)
                             {
-                                NewEvent(imeiDictinary.GetNameSql(modemClient.IMEI), dtEvent[i], ParameterName(arrParams[i]), modemClient.IMEI);
+                                NewEvent(imeiDictinary.GetNameSql(imei), dtEvent[i], ParameterName(arrParams[i]), imei);
                             }
                         }
                         break;
@@ -254,13 +250,13 @@ namespace TransitServer
                         tsConfig conf = setBytes(config);
                         gConfig = conf;
                         //gConfig.u8ModemType = 5;
-                        string configForSQl = string.Format(string.Join(" ", config.Take(config.Length).Select(r => string.Format("{0:X}", r))), config.Length);
+                        string configForSQl = string.Format(string.Join("-", config.Take(config.Length).Select(r => string.Format("{0:X}", r))), config.Length);
                         SQLite.Instance.UpdateConfigModems(modemClient.IMEI, configForSQl);
                         break;
                     }
                 case 0x61: // 97
-                    byte[] config1 = data.Skip(1).ToArray();
-                    string configForSQl1 = string.Format(string.Join(" ", config1.Take(config1.Length).Select(r => string.Format("{0:X}", r))), config1.Length);
+                    //byte[] config1 = data.Skip(1).ToArray();
+                    //string configForSQl1 = string.Format(string.Join(" ", config1.Take(config1.Length).Select(r => string.Format("{0:X}", r))), config1.Length);
                     //byte[] configTmp = getBytes(config);
                     //string configForSQl = string.Format(string.Join(" ", configTmp.Take(configTmp.Length).Select(r => string.Format("{0:X}", r))), configTmp.Length);
                     break;
@@ -434,13 +430,14 @@ namespace TransitServer
             else
             {
                 SendEmailAsync(name, date, message, imei).GetAwaiter();
+                Console("Письмо отпралено.");
                 tcDown.Invoke(new Action(() => tcDown.SelectedTab = tpEvent));
                 SQLite.Instance.InsertRow(name, date, message, imei);
                 dgvEvent.Invoke(new Action(() => dgvEvent.Rows.Add()));
                 dgvEvent.Rows[dgvEvent.RowCount - 1].Cells[COLEVENTNAME].Value = name;
                 dgvEvent.Rows[dgvEvent.RowCount - 1].Cells[COLMESSAGE].Value = message;
-                dgvEvent.Rows[dgvEvent.RowCount - 1].Cells[COLDATE].Value = date.ToString();
-                dgvEvent.Rows[dgvEvent.RowCount - 1].Cells[COLEVENTIMEIMODEM].Value = date.ToString();
+                dgvEvent.Rows[dgvEvent.RowCount - 1].Cells[COLDATE].Value = date;
+                dgvEvent.Rows[dgvEvent.RowCount - 1].Cells[COLEVENTIMEIMODEM].Value = imei;
                 song.Play();
             }
         }
@@ -593,12 +590,12 @@ namespace TransitServer
             FormRedactorModems redactorObj = new FormRedactorModems();
             redactorObj.Owner = this;
             redactorObj.oldNameModem = dgvModems.Rows[mouseLocation.RowIndex].Cells[MODEMSCOLNAME].Value.ToString();
-            redactorObj.Show();
             redactorObj.idModem = dgvModems.Rows[mouseLocation.RowIndex].Cells[MODEMSCOLID].Value.ToString();
             redactorObj.txtLastConnection.Text = dgvModems.Rows[mouseLocation.RowIndex].Cells[MODEMSCOLLASTCONNECTION].Value.ToString();
             redactorObj.txtImei.Text = dgvModems.Rows[mouseLocation.RowIndex].Cells[MODEMSCOLIMEI].Value.ToString();
             redactorObj.txtPort.Text = dgvModems.Rows[mouseLocation.RowIndex].Cells[MODEMSCOLPORT].Value.ToString();
             redactorObj.txtNameModem.Text = dgvModems.Rows[mouseLocation.RowIndex].Cells[MODEMSCOLNAME].Value.ToString();
+            redactorObj.Show();
         }
         #endregion
 
@@ -795,7 +792,16 @@ namespace TransitServer
             string senderMail = record.senderMail;
             string nameSenderMail = record.nameSenderMail;
             string recieverMail = record.recieverMail;
-            string subjectMail = ConfigurationManager.AppSettings.Get("subjectMail");
+            List<string> listRecievers = new List<string>();
+            if (recieverMail.Contains(','))
+            {
+                listRecievers.AddRange(recieverMail.Split(','));
+            }
+            else 
+            {
+                listRecievers.Add(recieverMail);
+            }
+            string subjectMail = record.subjectMail;
             string smtpClient = record.smtpClient;
             Int32.TryParse(record.smtpPort, out int smtpPort);
             string senderPassword = record.senderPassword;
@@ -804,9 +810,12 @@ namespace TransitServer
             MailAddress from = new MailAddress(senderMail, nameSenderMail); // отправитель и имя отправителя
             MailAddress to = new MailAddress(recieverMail); // получатель
             MailMessage m = new MailMessage(from, to); // объект сообщения
-            m.CC.Add("support@matrixit.ru");
+            foreach(var list in listRecievers)
+            {
+                m.CC.Add(list);
+            }
             m.Subject = subjectMail; // тема
-            m.Body = $"{nameModem}: {message} {dateEvent}";
+            m.Body = $"{nameModem}: {message} {dateEvent}\nImei: {imei}";
             SmtpClient smtp = new SmtpClient(smtpClient, smtpPort); // адрес smtp-сервера и порт, с которого будем отправлять письмо
             smtp.Credentials = new NetworkCredential(senderMail, senderPassword); // логин и пароль
             smtp.EnableSsl = true;
@@ -841,8 +850,6 @@ namespace TransitServer
 
             }
         }
-        #endregion
-
         private void TsmiCustomGroupSendMail_Click(object sender, EventArgs e)
         {
             FormChangeSenderMails form = new FormChangeSenderMails();
@@ -871,7 +878,7 @@ namespace TransitServer
 
             if (form.ShowDialog() == DialogResult.OK)
             {
-                foreach(var list in listModems)
+                foreach (var list in listModems)
                 {
                     SQLite.Instance.UpdateDbMails(list.imei, form.txtSenderMail.Text, form.txtNameSenderMail.Text, form.txtRecieverMail.Text, form.txtSubjectMail.Text, form.txtSmtpClient.Text, form.txtSmtpPort.Text, form.txtSenderPassword.Text);
                 }
@@ -912,5 +919,6 @@ namespace TransitServer
                 RoundOnNodeOut(listModems, selectedNode);
             }
         }
+        #endregion
     }
 }

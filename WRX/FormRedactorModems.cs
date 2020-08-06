@@ -80,31 +80,43 @@ namespace TransitServer
             toolTipInput.InitialDelay = 100;
             toolTipInput.ReshowDelay = 500;
             toolTipInput.ShowAlways = true;
-            string textIpToolTip = "Правильная форма записи IP-адреса является запись\n в виде четырёх десятичных чисел значением от 0 до 255,\n разделённых точками, например, 192.168.0.3";
-            toolTipInput.SetToolTip(txtTestIp, textIpToolTip);
+            string textIpToolTip = " Правильная форма записи IP-адреса является запись\n в виде четырёх десятичных чисел значением от 0 до 255,\n разделённых точками, например, 192.168.0.3";
             toolTipInput.SetToolTip(txtIp1, textIpToolTip);
             toolTipInput.SetToolTip(txtIp2, textIpToolTip);
-            toolTipInput.SetToolTip(txtIp3, textIpToolTip);
-            string textPortToolTip = "Правильная форма записи порта является запись\n в виде пяти целых чисел, например 12345";
-            toolTipInput.SetToolTip(txtTestPort, textPortToolTip);
+            string textPortToolTip = " Правильная форма записи порта является запись\n в виде пяти целых чисел, например 12345";
             toolTipInput.SetToolTip(txtPort1, textPortToolTip);
             toolTipInput.SetToolTip(txtPort2, textPortToolTip);
-            toolTipInput.SetToolTip(txtPort3, textPortToolTip);
-            string textNetworkAdressToolTip = "Правильная форма записи сетевого адреса счетчика\n является запись в виде любых целых чисел, например 48";
-            toolTipInput.SetToolTip(txtTestNA, textNetworkAdressToolTip);
-            toolTipInput.SetToolTip(txtCounterNa1, textPortToolTip);
-            toolTipInput.SetToolTip(txtCounterNa2, textPortToolTip);
-            toolTipInput.SetToolTip(txtCounterNa3, textPortToolTip);
-            toolTipInput.SetToolTip(txtCounterNa4, textPortToolTip);
+            string textNetworkAdressToolTip = " Правильная форма записи сетевого адреса счетчика\n является запись в виде любых целых чисел, например 48";
+            toolTipInput.SetToolTip(txtCounterNa1, textNetworkAdressToolTip);
+            toolTipInput.SetToolTip(txtCounterNa2, textNetworkAdressToolTip);
+            toolTipInput.SetToolTip(txtCounterNa3, textNetworkAdressToolTip);
+            toolTipInput.SetToolTip(txtCounterNa4, textNetworkAdressToolTip);
 
-            tsConfig tmpConfig = config;
+            string strConfigTmp = SQLite.Instance.GetConfigFromSql(txtImei.Text);
+            string[] strConfig = strConfigTmp.Split('-');
+            List<byte> listConfig = new List<byte>();
+            for(int i = 0; i < strConfig.Length; i++)
+            {
+                try
+                {
+                    listConfig.Add(Convert.ToByte(strConfig[i], 16));
+                }
+                catch
+                {
+                    MessageBox.Show($"Ошибка в индексе: {i}");
+                }
+            }
+            byte[] byteConfig = listConfig.ToArray();
+
+            Form1 form1 = new Form1();
+            tsConfig tmpConfig = form1.setBytes(byteConfig);
+            config = tmpConfig;
+            //cbChannel1.DropDownStyle = ComboBoxStyle.DropDownList;
+            //cbChannel2.DropDownStyle = ComboBoxStyle.DropDownList;
             object[] dropList = new object[] { "server", "listener", "not use" };
-            cbChannel1.Items.AddRange(dropList);
-            cbChannel2.Items.AddRange(dropList);
-            cbChannel3.Items.AddRange(dropList);
-            cbChannel1.DropDownStyle = ComboBoxStyle.DropDownList;
-            cbChannel2.DropDownStyle = ComboBoxStyle.DropDownList;
-            cbChannel3.DropDownStyle = ComboBoxStyle.DropDownList;
+            cbChannel1.Items.AddRange(new object[] { "server", "listener", "not use" });
+            cbChannel2.Items.AddRange(new object[] { "server", "listener", "not use" });
+
 
             if (tmpConfig.u8server != null)
             {
@@ -112,7 +124,7 @@ namespace TransitServer
                 {
                     txtIp1.Text = Encoding.UTF8.GetString(tmpConfig.u8server).Split(':')[0];
                     txtPort1.Text = Encoding.UTF8.GetString(tmpConfig.u8server).Split(':')[1];
-                    cbChannel1.SelectedItem = dropList[0];
+                    cbChannel1.SelectedItem = "listener";
                 }
             }
             if (tmpConfig.u8client != null)
@@ -121,7 +133,7 @@ namespace TransitServer
                 {
                     txtIp2.Text = Encoding.UTF8.GetString(tmpConfig.u8client).Split(':')[0];
                     txtPort2.Text = Encoding.UTF8.GetString(tmpConfig.u8client).Split(':')[1];
-                    cbChannel2.SelectedItem = dropList[1];
+                    cbChannel2.SelectedItem = dropList[1].ToString();
                 }
             }
 
@@ -155,12 +167,14 @@ namespace TransitServer
                 txtApn1.Text = Encoding.UTF8.GetString(tmpConfig.apnName[0].APN);
                 txtApn2.Text = Encoding.UTF8.GetString(tmpConfig.apnName[1].APN);
             }
-                
+            cbBaudRate1.Items.AddRange(new object[] { 600, 1200, 2400, 4800, 9600, 14400, 19200, 28800, 38400, 57600 });
+            cbBaudRate2.Items.AddRange(new object[] { 600, 1200, 2400, 4800, 9600, 14400, 19200, 28800, 38400, 57600 });
+            cbBaudRate3.Items.AddRange(new object[] { 600, 1200, 2400, 4800, 9600, 14400, 19200, 28800, 38400, 57600 });
             if (tmpConfig.sUart != null)
             {
-                cbBaudRate1.SelectedItem = (UInt32)tmpConfig.sUart[0].u32BaudRate;
-                cbBaudRate2.SelectedItem = (UInt32)tmpConfig.sUart[1].u32BaudRate;
-                cbBaudRate3.SelectedItem = (UInt32)tmpConfig.sUart[3].u32BaudRate;
+                cbBaudRate1.SelectedItem = (Int32)tmpConfig.sUart[0].u32BaudRate;
+                cbBaudRate2.SelectedItem = (Int32)tmpConfig.sUart[1].u32BaudRate;
+                cbBaudRate3.SelectedItem = (Int32)tmpConfig.sUart[2].u32BaudRate;
                 txtWordLen1.Text = tmpConfig.sUart[0].u8WordLen.ToString();
                 txtWordLen2.Text = tmpConfig.sUart[1].u8WordLen.ToString();
                 txtWordLen3.Text = tmpConfig.sUart[2].u8WordLen.ToString();
@@ -171,13 +185,13 @@ namespace TransitServer
                 txtParity2.Text = tmpConfig.sUart[1].u8Parity.ToString();
                 txtParity3.Text = tmpConfig.sUart[2].u8Parity.ToString();
             }
+            else
+            {
+                cbBaudRate1.SelectedItem = 4800;
+                cbBaudRate2.SelectedItem = 4800;
+                cbBaudRate3.SelectedItem = 4800;
+            }
             btnSaveChanges.Enabled = false;
-            cbBaudRate1.Items.AddRange(new object[] { 600, 1200, 2400, 4800, 9600, 14400, 19200, 28800, 38400, 56000 });
-            cbBaudRate1.SelectedItem = 4800;
-            cbBaudRate2.Items.AddRange(new object[] { 600, 1200, 2400, 4800, 9600, 14400, 19200, 28800, 38400, 56000 });
-            cbBaudRate2.SelectedItem = 4800;
-            cbBaudRate3.Items.AddRange(new object[] { 600, 1200, 2400, 4800, 9600, 14400, 19200, 28800, 38400, 56000 });
-            cbBaudRate3.SelectedItem = 4800;
         }
 
         #region ComboBoxIndexChanged
@@ -188,10 +202,6 @@ namespace TransitServer
         private void CbChannel2_SelectedIndexChanged(object sender, EventArgs e)
         {
             ComboBoxIndexChanged(cbChannel2, txtIp2, txtPort2);
-        }
-        private void cbChannel3_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            ComboBoxIndexChanged(cbChannel3, txtIp3, txtPort3);
         }
         private void ComboBoxIndexChanged(ComboBox comboBox, TextBox txtIP, TextBox txtPort)
         {
@@ -242,7 +252,7 @@ namespace TransitServer
         private void TextBoxPortChanged(TextBox textBox, Button buttonSave, string oldName)
         {
             Regex regex = new Regex(@"^\d{5}$");
-            if (regex.IsMatch(textBox.Text) & textBox.Text != oldName)
+            if (regex.IsMatch(textBox.Text))
             {
                 textBox.BackColor = Color.White;
                 buttonSave.Enabled = true;
@@ -256,7 +266,7 @@ namespace TransitServer
         private void TextBoxCounterNaChanged(TextBox textBox, Button buttonSave, string oldName)
         {
             Regex regex = new Regex(@"^\d+$");
-            if (regex.IsMatch(textBox.Text) & textBox.Text != oldName)
+            if (regex.IsMatch(textBox.Text))
             {
                 textBox.BackColor = Color.White;
                 buttonSave.Enabled = true;
@@ -270,7 +280,7 @@ namespace TransitServer
         private void TextBoxIpChanged(TextBox textBox, Button buttonSave, string oldName)
         {
             Regex regex = new Regex(@"^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}$");
-            if (regex.IsMatch(textBox.Text) & textBox.Text != oldName)
+            if (regex.IsMatch(textBox.Text))
             {
                 textBox.BackColor = Color.White;
                 buttonSave.Enabled = true;
@@ -302,28 +312,18 @@ namespace TransitServer
         }
         private void TxtPort1_TextChanged(object sender, EventArgs e)
         {
-            //string oldNameTxtPort1 = Encoding.UTF8.GetString(config.profile[0].ip_port).Split(':')[1];
-            //TextBoxPortChanged(txtPort1, btnSaveChanges, oldNameTxtPort1);
+            string oldNameTxtPort1 = Encoding.UTF8.GetString(config.u8server).Split(':')[1];
+            TextBoxPortChanged(txtPort1, btnSaveChanges, oldNameTxtPort1);
         }
         private void TxtIp2_TextChanged(object sender, EventArgs e)
         {
-            //string oldNameTxtIp2 = Encoding.UTF8.GetString(config.profile[1].ip_port).Split(':')[0];
-            //TextBoxIpChanged(txtIp2, btnSaveChanges, oldNameTxtIp2);
+            string oldNameTxtIp2 = Encoding.UTF8.GetString(config.u8client).Split(':')[0];
+            TextBoxIpChanged(txtIp2, btnSaveChanges, oldNameTxtIp2);
         }
         private void TxtPort2_TextChanged(object sender, EventArgs e)
         {
-            //string oldNameTxtPort2 = Encoding.UTF8.GetString(config.profile[1].ip_port).Split(':')[1];
-            //TextBoxPortChanged(txtPort2, btnSaveChanges, oldNameTxtPort2);
-        }
-        private void TxtIp3_TextChanged(object sender, EventArgs e)
-        {
-            //string oldNameTxtIp3 = Encoding.UTF8.GetString(config.profile[2].ip_port).Split(':')[0];
-            //TextBoxIpChanged(txtIp3, btnSaveChanges, oldNameTxtIp3);
-        }
-        private void TxtPort3_TextChanged(object sender, EventArgs e)
-        {
-            //string oldNameTxtPort3 = Encoding.UTF8.GetString(config.profile[2].ip_port).Split(':')[1];
-            //TextBoxPortChanged(txtPort3, btnSaveChanges, oldNameTxtPort3);
+            string oldNameTxtPort2 = Encoding.UTF8.GetString(config.u8client).Split(':')[1];
+            TextBoxPortChanged(txtPort2, btnSaveChanges, oldNameTxtPort2);
         }
         private void TxtCounterNa1_TextChanged(object sender, EventArgs e)
         {
@@ -345,61 +345,21 @@ namespace TransitServer
             string oldTxtCounterNa4 = config.u32CounterNA[3].ToString();
             TextBoxCounterNaChanged(txtCounterNa4, btnSaveChanges, oldTxtCounterNa4);
         }
-
         #endregion
 
-        private void TxtTestIp_TextChanged(object sender, EventArgs e)
-        {
-            Regex regex = new Regex(@"^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}$");
-            if (regex.IsMatch(txtTestIp.Text))
-            {
-                txtTestIp.BackColor = Color.White;
-            }
-            else
-            {
-                txtTestIp.BackColor = Color.Red;
-            }
-        }
-
-        private void TxtTesPort_TextChanged(object sender, EventArgs e)
-        {
-            Regex regex = new Regex(@"^\d{5}$");
-            if (regex.IsMatch(txtTestPort.Text))
-            {
-                txtTestPort.BackColor = Color.White;
-            }
-            else
-            {
-                txtTestPort.BackColor = Color.Red;
-            }
-        }
-
-        private void TxtTestNA_TextChanged(object sender, EventArgs e)
-        {
-            Regex regex = new Regex(@"^\d+$");
-            if (regex.IsMatch(txtTestNA.Text))
-            {
-                txtTestNA.BackColor = Color.White;
-            }
-            else
-            {
-                txtTestNA.BackColor = Color.Red;
-            }
-        }
-
-        private void button2_Click(object sender, EventArgs e)
+        private void Button2_Click(object sender, EventArgs e)
         {
             Form1 form1 = this.Owner as Form1;
             form1.send();
         }
 
-        private void sendConfig_Click(object sender, EventArgs e)
+        private void SendConfig_Click(object sender, EventArgs e)
         {
             Form1 form1 = this.Owner as Form1;
             form1.sendConfigForSaveThread();
         }
 
-        private void btnCurrent_Click(object sender, EventArgs e)
+        private void BtnCurrent_Click(object sender, EventArgs e)
         {
             Form1 form1 = this.Owner as Form1;
             form1.sendConfigForCurrent();

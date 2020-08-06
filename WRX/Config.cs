@@ -19,7 +19,7 @@ namespace TransitServer
             Marshal.FreeHGlobal(ptr);
             return arr;
         }
-        tsConfig setBytes(byte[] arr)
+        public tsConfig setBytes(byte[] arr)
         {
             tsConfig str = new tsConfig();
 
@@ -111,22 +111,21 @@ namespace TransitServer
         [MarshalAs(UnmanagedType.ByValArray, SizeConst = 16)]
         public byte[] objectId;
 
-        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 2)]
-        public UInt32[] imei;
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 15)]
+        public byte[] imei;
+        public byte u8Reserved1;
 
         public UInt32 counterTime;
 
         public UInt16 event_;
-        public byte u8Reserved1;
         public byte u8Reserved2;
+        public byte u8Reserved3;
 
         [MarshalAs(UnmanagedType.ByValArray, SizeConst = 16)]
         public UInt32[] timeEvent;
 
         public UInt32 timePoll;
-
     }
-    
 
     [StructLayout(LayoutKind.Sequential, Pack = 1, CharSet = CharSet.Unicode)]
     public struct tsApnName

@@ -81,22 +81,16 @@
             this.label44 = new System.Windows.Forms.Label();
             this.txtNameModem = new System.Windows.Forms.TextBox();
             this.panel2 = new System.Windows.Forms.Panel();
-            this.txtTestPort = new System.Windows.Forms.TextBox();
-            this.cbChannel3 = new System.Windows.Forms.ComboBox();
             this.cbChannel2 = new System.Windows.Forms.ComboBox();
-            this.txtTestIp = new System.Windows.Forms.TextBox();
             this.cbChannel1 = new System.Windows.Forms.ComboBox();
             this.label25 = new System.Windows.Forms.Label();
             this.label24 = new System.Windows.Forms.Label();
             this.txtPort1 = new System.Windows.Forms.TextBox();
             this.txtPort2 = new System.Windows.Forms.TextBox();
-            this.txtPort3 = new System.Windows.Forms.TextBox();
             this.txtIp1 = new System.Windows.Forms.TextBox();
             this.txtIp2 = new System.Windows.Forms.TextBox();
-            this.txtIp3 = new System.Windows.Forms.TextBox();
             this.panel3 = new System.Windows.Forms.Panel();
             this.panel4 = new System.Windows.Forms.Panel();
-            this.txtTestNA = new System.Windows.Forms.TextBox();
             this.cbType4 = new System.Windows.Forms.ComboBox();
             this.txtCounterNa4 = new System.Windows.Forms.TextBox();
             this.cbType3 = new System.Windows.Forms.ComboBox();
@@ -238,7 +232,7 @@
             this.button2.TabIndex = 14;
             this.button2.Text = "Корректировка времени";
             this.button2.UseVisualStyleBackColor = false;
-            this.button2.Click += new System.EventHandler(this.button2_Click);
+            this.button2.Click += new System.EventHandler(this.Button2_Click);
             // 
             // label5
             // 
@@ -677,44 +671,20 @@
             // 
             // panel2
             // 
-            this.panel2.Controls.Add(this.txtTestPort);
-            this.panel2.Controls.Add(this.cbChannel3);
             this.panel2.Controls.Add(this.cbChannel2);
-            this.panel2.Controls.Add(this.txtTestIp);
             this.panel2.Controls.Add(this.cbChannel1);
             this.panel2.Controls.Add(this.label25);
             this.panel2.Controls.Add(this.label24);
             this.panel2.Controls.Add(this.txtPort1);
             this.panel2.Controls.Add(this.txtPort2);
-            this.panel2.Controls.Add(this.txtPort3);
             this.panel2.Controls.Add(this.txtIp1);
             this.panel2.Controls.Add(this.txtIp2);
             this.panel2.Controls.Add(this.label23);
-            this.panel2.Controls.Add(this.txtIp3);
             this.panel2.Font = new System.Drawing.Font("Times New Roman", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.panel2.Location = new System.Drawing.Point(358, 12);
             this.panel2.Name = "panel2";
-            this.panel2.Size = new System.Drawing.Size(339, 145);
+            this.panel2.Size = new System.Drawing.Size(339, 117);
             this.panel2.TabIndex = 56;
-            // 
-            // txtTestPort
-            // 
-            this.txtTestPort.Location = new System.Drawing.Point(255, 9);
-            this.txtTestPort.Name = "txtTestPort";
-            this.txtTestPort.Size = new System.Drawing.Size(83, 20);
-            this.txtTestPort.TabIndex = 62;
-            this.txtTestPort.TextChanged += new System.EventHandler(this.TxtTesPort_TextChanged);
-            // 
-            // cbChannel3
-            // 
-            this.cbChannel3.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawVariable;
-            this.cbChannel3.Font = new System.Drawing.Font("Times New Roman", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.cbChannel3.FormattingEnabled = true;
-            this.cbChannel3.Location = new System.Drawing.Point(6, 106);
-            this.cbChannel3.Name = "cbChannel3";
-            this.cbChannel3.Size = new System.Drawing.Size(100, 24);
-            this.cbChannel3.TabIndex = 65;
-            this.cbChannel3.SelectedIndexChanged += new System.EventHandler(this.cbChannel3_SelectedIndexChanged);
             // 
             // cbChannel2
             // 
@@ -726,14 +696,6 @@
             this.cbChannel2.Size = new System.Drawing.Size(100, 24);
             this.cbChannel2.TabIndex = 66;
             this.cbChannel2.SelectedIndexChanged += new System.EventHandler(this.CbChannel2_SelectedIndexChanged);
-            // 
-            // txtTestIp
-            // 
-            this.txtTestIp.Location = new System.Drawing.Point(149, 7);
-            this.txtTestIp.Name = "txtTestIp";
-            this.txtTestIp.Size = new System.Drawing.Size(100, 20);
-            this.txtTestIp.TabIndex = 60;
-            this.txtTestIp.TextChanged += new System.EventHandler(this.TxtTestIp_TextChanged);
             // 
             // cbChannel1
             // 
@@ -785,15 +747,6 @@
             this.txtPort2.TabIndex = 62;
             this.txtPort2.TextChanged += new System.EventHandler(this.TxtPort2_TextChanged);
             // 
-            // txtPort3
-            // 
-            this.txtPort3.Font = new System.Drawing.Font("Times New Roman", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.txtPort3.Location = new System.Drawing.Point(238, 106);
-            this.txtPort3.Name = "txtPort3";
-            this.txtPort3.Size = new System.Drawing.Size(100, 23);
-            this.txtPort3.TabIndex = 61;
-            this.txtPort3.TextChanged += new System.EventHandler(this.TxtPort3_TextChanged);
-            // 
             // txtIp1
             // 
             this.txtIp1.Font = new System.Drawing.Font("Times New Roman", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
@@ -812,15 +765,6 @@
             this.txtIp2.TabIndex = 59;
             this.txtIp2.TextChanged += new System.EventHandler(this.TxtIp2_TextChanged);
             // 
-            // txtIp3
-            // 
-            this.txtIp3.Font = new System.Drawing.Font("Times New Roman", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.txtIp3.Location = new System.Drawing.Point(121, 106);
-            this.txtIp3.Name = "txtIp3";
-            this.txtIp3.Size = new System.Drawing.Size(100, 23);
-            this.txtIp3.TabIndex = 58;
-            this.txtIp3.TextChanged += new System.EventHandler(this.TxtIp3_TextChanged);
-            // 
             // panel3
             // 
             this.panel3.Controls.Add(this.label1);
@@ -838,7 +782,6 @@
             // 
             // panel4
             // 
-            this.panel4.Controls.Add(this.txtTestNA);
             this.panel4.Controls.Add(this.cbType4);
             this.panel4.Controls.Add(this.txtCounterNa4);
             this.panel4.Controls.Add(this.cbType3);
@@ -854,14 +797,6 @@
             this.panel4.Name = "panel4";
             this.panel4.Size = new System.Drawing.Size(331, 196);
             this.panel4.TabIndex = 58;
-            // 
-            // txtTestNA
-            // 
-            this.txtTestNA.Location = new System.Drawing.Point(209, 164);
-            this.txtTestNA.Name = "txtTestNA";
-            this.txtTestNA.Size = new System.Drawing.Size(100, 20);
-            this.txtTestNA.TabIndex = 61;
-            this.txtTestNA.TextChanged += new System.EventHandler(this.TxtTestNA_TextChanged);
             // 
             // cbType4
             // 
@@ -1277,7 +1212,7 @@
             this.sendConfig.TabIndex = 60;
             this.sendConfig.Text = "Отправить конфиг";
             this.sendConfig.UseVisualStyleBackColor = false;
-            this.sendConfig.Click += new System.EventHandler(this.sendConfig_Click);
+            this.sendConfig.Click += new System.EventHandler(this.SendConfig_Click);
             // 
             // btnCurrent
             // 
@@ -1288,7 +1223,7 @@
             this.btnCurrent.TabIndex = 61;
             this.btnCurrent.Text = "Current";
             this.btnCurrent.UseVisualStyleBackColor = false;
-            this.btnCurrent.Click += new System.EventHandler(this.btnCurrent_Click);
+            this.btnCurrent.Click += new System.EventHandler(this.BtnCurrent_Click);
             // 
             // panel6
             // 
@@ -1398,17 +1333,14 @@
         private System.Windows.Forms.Label label23;
         private System.Windows.Forms.Panel panel1;
         private System.Windows.Forms.Panel panel2;
-        private System.Windows.Forms.ComboBox cbChannel3;
         private System.Windows.Forms.ComboBox cbChannel2;
         private System.Windows.Forms.ComboBox cbChannel1;
         private System.Windows.Forms.Label label25;
         private System.Windows.Forms.Label label24;
         public System.Windows.Forms.TextBox txtPort1;
         public System.Windows.Forms.TextBox txtPort2;
-        public System.Windows.Forms.TextBox txtPort3;
         public System.Windows.Forms.TextBox txtIp1;
         public System.Windows.Forms.TextBox txtIp2;
-        public System.Windows.Forms.TextBox txtIp3;
         private System.Windows.Forms.Panel panel3;
         private System.Windows.Forms.Panel panel4;
         private System.Windows.Forms.ComboBox cbType4;
@@ -1452,9 +1384,6 @@
         private System.Windows.Forms.Label label26;
         private System.Windows.Forms.Label label44;
         public System.Windows.Forms.TextBox txtNameModem;
-        private System.Windows.Forms.TextBox txtTestPort;
-        private System.Windows.Forms.TextBox txtTestIp;
-        private System.Windows.Forms.TextBox txtTestNA;
         private System.Windows.Forms.ToolTip toolTipInput;
         private System.Windows.Forms.Button sendConfig;
         private System.Windows.Forms.Button btnCurrent;

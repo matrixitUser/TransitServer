@@ -46,7 +46,7 @@ namespace TransitServer
                 SQLiteCommand m_sqlCmd4 = new SQLiteCommand(m_dbConn);
 
                 m_sqlCmd1.CommandText = "CREATE TABLE IF NOT EXISTS dbEvents (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, date TEXT, message TEXT, quite TEXT, imei TEXT)";
-                m_sqlCmd2.CommandText = "CREATE TABLE IF NOT EXISTS modems (id INTEGER PRIMARY KEY AUTOINCREMENT, imei TEXT, port TEXT, name TEXT, lastConnection TEXT, activeConnection INTEGER, groups TEXT DEFAULT '0', config TEXT)";
+                m_sqlCmd2.CommandText = "CREATE TABLE IF NOT EXISTS modems (id INTEGER PRIMARY KEY AUTOINCREMENT, imei TEXT, port TEXT, name TEXT, lastConnection TEXT, activeConnection INTEGER, groups TEXT DEFAULT '0', config VARCHAR(255))";
                 m_sqlCmd3.CommandText = "CREATE TABLE IF NOT EXISTS nodesTree (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, parent TEXT, senderMail TEXT, recieverMail TEXT, nameSenderMail TEXT, subjectMail TEXT, smtpClient TEXT, smtpPort TEXT, senderPassword TEXT)";
                 m_sqlCmd4.CommandText = "CREATE TABLE IF NOT EXISTS dbMails (id INTEGER PRIMARY KEY AUTOINCREMENT, imei TEXT, groups TEXT, senderMail TEXT, recieverMail TEXT, nameSenderMail TEXT, subjectMail TEXT, smtpClient TEXT, smtpPort TEXT, senderPassword TEXT)";
 
@@ -552,6 +552,27 @@ namespace TransitServer
             }
             return lastConnection;
         }
+        public string GetConfigFromSql(string imei)
+        {
+            string strConfig = string.Empty;
+            using (SQLiteConnection Connect = new SQLiteConnection("Data Source=" + dbFileName + ";Version=3;"))
+            {
+                Connect.Open();
+                SQLiteCommand Command = new SQLiteCommand
+                {
+                    Connection = Connect,
+                    CommandText = @"SELECT * FROM [modems] WHERE [imei]=@imei"
+                };
+                Command.Parameters.AddWithValue("@imei", imei);
+                SQLiteDataReader sqlReader = Command.ExecuteReader();
+                while (sqlReader.Read())
+                {
+                    strConfig = (string)sqlReader["config"];
+                }
+                Connect.Close();
+            }
+            return strConfig;
+        }
         #endregion
 
         #region dbEvents
@@ -572,10 +593,10 @@ namespace TransitServer
                 while (sqlReader.Read()) // считываем и вносим в лист все параметры
                 {
                     dynamic record = new ExpandoObject();
-                    record.name = (string)sqlReader["name"];
-                    record.date = (string)sqlReader["date"];
-                    record.message = (string)sqlReader["message"];
-                    record.imei = (string)sqlReader["imei"];
+                    record.name = sqlReader["name"];
+                    record.date = sqlReader["date"];
+                    record.message = sqlReader["message"];
+                    record.imei = sqlReader["imei"];
                     records.Add(record);
                 }
                 Connect.Close();
@@ -598,11 +619,11 @@ namespace TransitServer
                 while (sqlReader.Read()) // считываем и вносим в лист все параметры
                 {
                     dynamic record = new ExpandoObject();
-                    record.name = (string)sqlReader["name"];
-                    record.date = (string)sqlReader["date"];
-                    record.message = (string)sqlReader["message"];
+                    record.name = sqlReader["name"];
+                    record.date = sqlReader["date"];
+                    record.message = sqlReader["message"];
                     record.quite = sqlReader["quite"];
-                    record.imei = (string)sqlReader["imei"];
+                    record.imei = sqlReader["imei"];
                     records.Add(record);
                 }
                 Connect.Close();
