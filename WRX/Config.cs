@@ -131,6 +131,6 @@ namespace TransitServer
     public struct tsApnName
     {
         [MarshalAs(UnmanagedType.ByValArray, SizeConst = 32)]
-        public byte[] APN; // 24
+        public byte[] APN;
     }
 }

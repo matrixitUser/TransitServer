@@ -15,27 +15,10 @@ namespace TransitServer
     {
         public string idModem;
         public tsConfig config;
+        public tsConfig configForSave;
         public FormRedactorModems()
         {
             InitializeComponent();
-        }
-
-        private void BtnExit_Click(object sender, EventArgs e)
-        {
-            ViewModems(SQLite.Instance.GetModems());
-            Close();
-        }
-
-        private void BtnDeleteModem_Click(object sender, EventArgs e)
-        {
-            DialogFormOk dialogFormOk = new DialogFormOk();
-            if(dialogFormOk.ShowDialog() == DialogResult.OK)
-            {
-                SQLite.Instance.DeleteModems(idModem);
-                ViewModems(SQLite.Instance.GetModems());
-                Close();
-                MessageBox.Show("Объект удален!");
-            }
         }
 
         const string MODEMSCOLID = "id";
@@ -45,6 +28,9 @@ namespace TransitServer
         const string MODEMSCOLLASTCONNECTION = "lastConnection";
         const string MODEMSCOLLACTIVECONNECTION = "activeConnection";
         public string oldNameModem;
+
+        #region ViewModems
+
         public void ViewModems(List<dynamic> records)
         {
             Form1 form1 = this.Owner as Form1;
@@ -66,14 +52,9 @@ namespace TransitServer
                 else form1.dgvModems.Rows[form1.dgvModems.RowCount - 1].Cells[MODEMSCOLLACTIVECONNECTION].Value = Properties.Resources.cross;
             }
         }
+        #endregion
 
-        private void BtnSaveChanges_Click(object sender, EventArgs e)
-        {
-            SQLite.Instance.UpdateNameModemsbyImei(txtImei.Text, txtNameModem.Text);
-            MessageBox.Show("Изменения сохранены!");
-            //MessageBox.Show("Кнопка в разработке!");
-        }
-
+        #region FormLoad and help funccion
         private void FormRedactorModems_Load(object sender, EventArgs e)
         {
             toolTipInput.AutoPopDelay = 5000;
@@ -93,30 +74,34 @@ namespace TransitServer
             toolTipInput.SetToolTip(txtCounterNa4, textNetworkAdressToolTip);
 
             string strConfigTmp = SQLite.Instance.GetConfigFromSql(txtImei.Text);
-            string[] strConfig = strConfigTmp.Split('-');
-            List<byte> listConfig = new List<byte>();
-            for(int i = 0; i < strConfig.Length; i++)
+            tsConfig tmpConfig = new tsConfig();
+            if (strConfigTmp != string.Empty)
             {
-                try
+                string[] strConfig = strConfigTmp.Split('-');
+                List<byte> listConfig = new List<byte>();
+                for (int i = 0; i < strConfig.Length; i++)
                 {
-                    listConfig.Add(Convert.ToByte(strConfig[i], 16));
+                    try
+                    {
+                        listConfig.Add(Convert.ToByte(strConfig[i], 16));
+                    }
+                    catch
+                    {
+                        MessageBox.Show($"Ошибка в индексе: {i}");
+                    }
                 }
-                catch
-                {
-                    MessageBox.Show($"Ошибка в индексе: {i}");
-                }
+                byte[] byteConfig = listConfig.ToArray();
+
+                Form1 form1 = new Form1();
+                tmpConfig = form1.setBytes(byteConfig);   
             }
-            byte[] byteConfig = listConfig.ToArray();
-
-            Form1 form1 = new Form1();
-            tsConfig tmpConfig = form1.setBytes(byteConfig);
             config = tmpConfig;
-            //cbChannel1.DropDownStyle = ComboBoxStyle.DropDownList;
-            //cbChannel2.DropDownStyle = ComboBoxStyle.DropDownList;
-            object[] dropList = new object[] { "server", "listener", "not use" };
-            cbChannel1.Items.AddRange(new object[] { "server", "listener", "not use" });
-            cbChannel2.Items.AddRange(new object[] { "server", "listener", "not use" });
-
+            configForSave = tmpConfig;
+            cbChannel1.DropDownStyle = ComboBoxStyle.DropDownList;
+            cbChannel2.DropDownStyle = ComboBoxStyle.DropDownList;
+            string[] dropList = new string[] { "listener", "client", "not use" };
+            cbChannel2.Items.AddRange(dropList);
+            cbChannel1.Items.AddRange(dropList);
 
             if (tmpConfig.u8server != null)
             {
@@ -133,21 +118,40 @@ namespace TransitServer
                 {
                     txtIp2.Text = Encoding.UTF8.GetString(tmpConfig.u8client).Split(':')[0];
                     txtPort2.Text = Encoding.UTF8.GetString(tmpConfig.u8client).Split(':')[1];
-                    cbChannel2.SelectedItem = dropList[1].ToString();
+                    cbChannel2.SelectedItem = "client";
                 }
             }
 
+            txtTypeModem.Text = SwitchModemType((Int32)tmpConfig.u8ModemType).ToString();
+
+            //object[] dropListcbType = new object[] { 0,1,2,3,4 };
+            object[] dropListcbType = new object[] { CounterType.NotCounter, CounterType.MERCURY230, CounterType.MERCURY206, CounterType.ENERGOMERA_CE303 };
+            cbType1.Items.AddRange(dropListcbType);
+            cbType2.Items.AddRange(dropListcbType);
+            cbType3.Items.AddRange(dropListcbType);
+            cbType4.Items.AddRange(dropListcbType);
             cbType1.DropDownStyle = ComboBoxStyle.DropDownList;
             cbType2.DropDownStyle = ComboBoxStyle.DropDownList;
             cbType3.DropDownStyle = ComboBoxStyle.DropDownList;
             cbType4.DropDownStyle = ComboBoxStyle.DropDownList;
+            if(tmpConfig.u8CounterType != null)
+            {
+                cbType1.SelectedItem = SwitchCounterType((Int32)tmpConfig.u8CounterType[0]);
+                cbType2.SelectedItem = SwitchCounterType((Int32)tmpConfig.u8CounterType[1]);
+                cbType3.SelectedItem = SwitchCounterType((Int32)tmpConfig.u8CounterType[2]);
+                cbType4.SelectedItem = SwitchCounterType((Int32)tmpConfig.u8CounterType[3]);
+            }
 
             if (tmpConfig.u32CounterNA != null)
             {
-                txtCounterNa1.Text = tmpConfig.u32CounterNA[0].ToString();
-                txtCounterNa2.Text = tmpConfig.u32CounterNA[1].ToString();
-                txtCounterNa3.Text = tmpConfig.u32CounterNA[2].ToString();
-                txtCounterNa4.Text = tmpConfig.u32CounterNA[3].ToString();
+                if (tmpConfig.u32CounterNA[0] == 4294967295) txtCounterNa1.Text = "not use";
+                else txtCounterNa1.Text = tmpConfig.u32CounterNA[0].ToString();
+                if (tmpConfig.u32CounterNA[1] == 4294967295) txtCounterNa2.Text = "not use";
+                else txtCounterNa2.Text = tmpConfig.u32CounterNA[1].ToString();
+                if (tmpConfig.u32CounterNA[2] == 4294967295) txtCounterNa3.Text = "not use";
+                else txtCounterNa3.Text = tmpConfig.u32CounterNA[2].ToString();
+                if (tmpConfig.u32CounterNA[3] == 4294967295) txtCounterNa4.Text = "not use";
+                else txtCounterNa4.Text = tmpConfig.u32CounterNA[3].ToString();
             }
             else
             {
@@ -193,6 +197,42 @@ namespace TransitServer
             }
             btnSaveChanges.Enabled = false;
         }
+        enum ModemType
+        {
+            CINTERION_BG52 = 1
+        }
+        enum CounterType
+        {
+            NotCounter = 0,
+            MERCURY230 = 1,
+            MERCURY206 = 2,
+            ENERGOMERA_CE303 = 3
+        }
+        private CounterType SwitchCounterType(int counetrType)
+        {
+            switch (counetrType)
+            {
+                case 1:
+                    return CounterType.MERCURY230;
+                case 2:
+                    return CounterType.MERCURY206;
+                case 3:
+                    return CounterType.ENERGOMERA_CE303;
+                default:
+                    return CounterType.NotCounter;
+            }
+        }
+        private ModemType SwitchModemType(int counetrType)
+        {
+            switch (counetrType)
+            {
+                case 1:
+                    return ModemType.CINTERION_BG52;
+                default:
+                    return ModemType.CINTERION_BG52;
+            }
+        }
+        #endregion
 
         #region ComboBoxIndexChanged
         private void CbChannel1_SelectedIndexChanged(object sender, EventArgs e)
@@ -205,21 +245,21 @@ namespace TransitServer
         }
         private void ComboBoxIndexChanged(ComboBox comboBox, TextBox txtIP, TextBox txtPort)
         {
-            if (comboBox.SelectedItem.ToString() == "server")
-            {
-                txtIP.Enabled = true;
-                //txtIP.Text = Encoding.UTF8.GetString(config.profile[0].ip_port).Split(':')[0];
-                txtPort.Enabled = true;
-                //txtPort.Text = Encoding.UTF8.GetString(config.profile[0].ip_port).Split(':')[1];
-                txtIP.BackColor = Color.White;
-                txtPort.BackColor = Color.White;
-            }
             if (comboBox.SelectedItem.ToString() == "listener")
             {
                 txtIP.Enabled = true;
-                //txtIP.Text = Encoding.UTF8.GetString(config.profile[0].ip_port).Split(':')[0];
+                txtIP.Text = Encoding.UTF8.GetString(config.u8server).Split(':')[0];
                 txtPort.Enabled = true;
-               // txtPort.Text = Encoding.UTF8.GetString(config.profile[0].ip_port).Split(':')[1];
+                txtPort.Text = Encoding.UTF8.GetString(config.u8server).Split(':')[1];
+                txtIP.BackColor = Color.White;
+                txtPort.BackColor = Color.White;
+            }
+            if (comboBox.SelectedItem.ToString() == "client")
+            {
+                txtIP.Enabled = true;
+                txtIP.Text = Encoding.UTF8.GetString(config.u8client).Split(':')[0];
+                txtPort.Enabled = true;
+                txtPort.Text = Encoding.UTF8.GetString(config.u8client).Split(':')[1];
                 txtIP.BackColor = Color.White;
                 txtPort.BackColor = Color.White;
             }
@@ -251,7 +291,7 @@ namespace TransitServer
         }
         private void TextBoxPortChanged(TextBox textBox, Button buttonSave, string oldName)
         {
-            Regex regex = new Regex(@"^\d{5}$");
+            Regex regex = new Regex(@"^\d+$");
             if (regex.IsMatch(textBox.Text))
             {
                 textBox.BackColor = Color.White;
@@ -266,7 +306,7 @@ namespace TransitServer
         private void TextBoxCounterNaChanged(TextBox textBox, Button buttonSave, string oldName)
         {
             Regex regex = new Regex(@"^\d+$");
-            if (regex.IsMatch(textBox.Text))
+            if (regex.IsMatch(textBox.Text) || textBox.Text == "not use")
             {
                 textBox.BackColor = Color.White;
                 buttonSave.Enabled = true;
@@ -280,7 +320,7 @@ namespace TransitServer
         private void TextBoxIpChanged(TextBox textBox, Button buttonSave, string oldName)
         {
             Regex regex = new Regex(@"^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}$");
-            if (regex.IsMatch(textBox.Text))
+            if (regex.IsMatch(textBox.Text) || textBox.Text == "listener")
             {
                 textBox.BackColor = Color.White;
                 buttonSave.Enabled = true;
@@ -347,6 +387,25 @@ namespace TransitServer
         }
         #endregion
 
+        #region ButtonsWork
+        private void BtnExit_Click(object sender, EventArgs e)
+        {
+            ViewModems(SQLite.Instance.GetModems());
+            Close();
+        }
+
+        private void BtnDeleteModem_Click(object sender, EventArgs e)
+        {
+            DialogFormOk dialogFormOk = new DialogFormOk();
+            if (dialogFormOk.ShowDialog() == DialogResult.OK)
+            {
+                SQLite.Instance.DeleteModems(idModem);
+                ViewModems(SQLite.Instance.GetModems());
+                Close();
+                MessageBox.Show("Объект удален!");
+            }
+        }
+
         private void Button2_Click(object sender, EventArgs e)
         {
             Form1 form1 = this.Owner as Form1;
@@ -363,6 +422,62 @@ namespace TransitServer
         {
             Form1 form1 = this.Owner as Form1;
             form1.sendConfigForCurrent();
+        }
+        #endregion
+
+        private void BtnSaveChanges_Click(object sender, EventArgs e)
+        {
+            tsConfig tsConfig = config;
+
+            configForSave.apnName[0].APN = Encoding.ASCII.GetBytes(txtApn1.Text);
+            configForSave.apnName[1].APN = Encoding.ASCII.GetBytes(txtApn2.Text);
+
+            string server = txtIp1.Text + ":" + txtPort1.Text;
+            configForSave.u8server = AdditionStr(server);
+
+            string client = txtIp2.Text + ":" + txtPort2.Text;
+            configForSave.u8client = AdditionStr(client);
+
+            configForSave.sUart[0].u32BaudRate = UInt32.Parse(cbBaudRate1.Text);
+            configForSave.sUart[1].u32BaudRate = UInt32.Parse(cbBaudRate2.Text);
+            configForSave.sUart[2].u32BaudRate = UInt32.Parse(cbBaudRate3.Text);
+
+            configForSave.PeriodEvent = ushort.Parse(txtPeriodEvent.Text);
+
+            configForSave.u8ModemType = (int)ModemType.CINTERION_BG52;
+
+            configForSave.u32CounterNA[0] = (txtCounterNa1.Text == "not use") ? UInt32.Parse("4294967295") : UInt32.Parse(txtCounterNa1.Text);
+            configForSave.u32CounterNA[1] = (txtCounterNa2.Text == "not use") ? UInt32.Parse("4294967295") : UInt32.Parse(txtCounterNa2.Text);
+            configForSave.u32CounterNA[2] = (txtCounterNa3.Text == "not use") ? UInt32.Parse("4294967295") : UInt32.Parse(txtCounterNa3.Text);
+            configForSave.u32CounterNA[3] = (txtCounterNa4.Text == "not use") ? UInt32.Parse("4294967295") : UInt32.Parse(txtCounterNa4.Text);
+
+            SQLite.Instance.UpdateNameModemsbyImei(txtImei.Text, txtNameModem.Text);
+            MessageBox.Show("Изменения сохранены!");
+        }
+
+        private byte[] AdditionStr(string inputStr)
+        {
+            List<byte> bytes = new List<byte>();
+            bytes.AddRange(Encoding.ASCII.GetBytes(inputStr));
+            while (bytes.Count < 32)
+            {
+                bytes.Add(0);
+            }
+            return bytes.ToArray();
+        }
+        private byte switchCounterType(string inputStr)
+        {
+            switch (inputStr)
+            {
+                case "MERCURY230":
+                    return (int)CounterType.MERCURY230;
+                case "MERCURY206":
+                    return (int)CounterType.MERCURY206;
+                case "ENERGOMERA_CE303":
+                    return (int)CounterType.ENERGOMERA_CE303;
+                default:
+                    return 0;
+            }
         }
     }
 }

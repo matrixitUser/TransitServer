@@ -567,7 +567,7 @@ namespace TransitServer
                 SQLiteDataReader sqlReader = Command.ExecuteReader();
                 while (sqlReader.Read())
                 {
-                    strConfig = (string)sqlReader["config"];
+                    strConfig = sqlReader["config"].ToString();
                 }
                 Connect.Close();
             }
