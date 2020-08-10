@@ -7,7 +7,7 @@ using System.Net.Sockets;
 
 namespace TransitServer
 {
-    class GPRSclient
+    public class GPRSclient
     {
         public TcpClient tcpClient = new TcpClient();
         //public string IMEI { set; get;}

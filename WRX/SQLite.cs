@@ -46,7 +46,7 @@ namespace TransitServer
                 SQLiteCommand m_sqlCmd4 = new SQLiteCommand(m_dbConn);
 
                 m_sqlCmd1.CommandText = "CREATE TABLE IF NOT EXISTS dbEvents (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, date TEXT, message TEXT, quite TEXT, imei TEXT)";
-                m_sqlCmd2.CommandText = "CREATE TABLE IF NOT EXISTS modems (id INTEGER PRIMARY KEY AUTOINCREMENT, imei TEXT, port TEXT, name TEXT, lastConnection TEXT, activeConnection INTEGER, groups TEXT DEFAULT '0', config VARCHAR(255))";
+                m_sqlCmd2.CommandText = "CREATE TABLE IF NOT EXISTS modems (id INTEGER PRIMARY KEY AUTOINCREMENT, imei TEXT, port TEXT, name TEXT, lastConnection TEXT, activeConnection INTEGER, groups TEXT DEFAULT '0', config VARCHAR(255), chipId TEXT, configForSave TEXT)";
                 m_sqlCmd3.CommandText = "CREATE TABLE IF NOT EXISTS nodesTree (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, parent TEXT, senderMail TEXT, recieverMail TEXT, nameSenderMail TEXT, subjectMail TEXT, smtpClient TEXT, smtpPort TEXT, senderPassword TEXT)";
                 m_sqlCmd4.CommandText = "CREATE TABLE IF NOT EXISTS dbMails (id INTEGER PRIMARY KEY AUTOINCREMENT, imei TEXT, groups TEXT, senderMail TEXT, recieverMail TEXT, nameSenderMail TEXT, subjectMail TEXT, smtpClient TEXT, smtpPort TEXT, senderPassword TEXT)";
 
@@ -253,6 +253,32 @@ namespace TransitServer
                 SQLiteCommand Command = new SQLiteCommand(commandText, Connect);
                 Command.Parameters.AddWithValue("@imei", imei);
                 Command.Parameters.AddWithValue("@config", config);
+                Connect.Open();
+                Command.ExecuteNonQuery();
+                Connect.Close();
+            }
+        }
+        public void UpdateConfigForSaveModems(string imei, string configForSave)
+        {
+            using (SQLiteConnection Connect = new SQLiteConnection("Data Source=" + dbFileName + ";Version=3;"))
+            {
+                string commandText = "UPDATE modems SET configForSave = @configForSave WHERE imei = @imei;";
+                SQLiteCommand Command = new SQLiteCommand(commandText, Connect);
+                Command.Parameters.AddWithValue("@imei", imei);
+                Command.Parameters.AddWithValue("@configForSave", configForSave);
+                Connect.Open();
+                Command.ExecuteNonQuery();
+                Connect.Close();
+            }
+        }
+        public void UpdateChipIdModems(string imei, string chipId)
+        {
+            using (SQLiteConnection Connect = new SQLiteConnection("Data Source=" + dbFileName + ";Version=3;"))
+            {
+                string commandText = "UPDATE modems SET chipId = @chipId WHERE imei = @imei;";
+                SQLiteCommand Command = new SQLiteCommand(commandText, Connect);
+                Command.Parameters.AddWithValue("@imei", imei);
+                Command.Parameters.AddWithValue("@chipId", chipId);
                 Connect.Open();
                 Command.ExecuteNonQuery();
                 Connect.Close();
@@ -488,6 +514,27 @@ namespace TransitServer
             }
             return modemsImei;
         }
+        public string GetModemsChipId(string imei)
+        {
+            string chipId = "---";
+            using (SQLiteConnection Connect = new SQLiteConnection("Data Source=" + dbFileName + ";Version=3;"))
+            {
+                Connect.Open();
+                SQLiteCommand Command = new SQLiteCommand
+                {
+                    Connection = Connect,
+                    CommandText = @"SELECT * FROM [modems] WHERE [imei]=@imei"
+                };
+                Command.Parameters.AddWithValue("@imei", imei);
+                SQLiteDataReader sqlReader = Command.ExecuteReader();
+                while (sqlReader.Read())
+                {
+                    chipId = sqlReader["chipId"].ToString();
+                }
+                Connect.Close();
+            }
+            return chipId;
+        }
         public int GetModemsPortByImei(string imei)
         {
             List<dynamic> records = new List<dynamic>();
@@ -568,6 +615,27 @@ namespace TransitServer
                 while (sqlReader.Read())
                 {
                     strConfig = sqlReader["config"].ToString();
+                }
+                Connect.Close();
+            }
+            return strConfig;
+        }
+        public string GetConfigForSaveFromSql(string imei)
+        {
+            string strConfig = string.Empty;
+            using (SQLiteConnection Connect = new SQLiteConnection("Data Source=" + dbFileName + ";Version=3;"))
+            {
+                Connect.Open();
+                SQLiteCommand Command = new SQLiteCommand
+                {
+                    Connection = Connect,
+                    CommandText = @"SELECT * FROM [modems] WHERE [imei]=@imei"
+                };
+                Command.Parameters.AddWithValue("@imei", imei);
+                SQLiteDataReader sqlReader = Command.ExecuteReader();
+                while (sqlReader.Read())
+                {
+                    strConfig = sqlReader["configForSave"].ToString();
                 }
                 Connect.Close();
             }

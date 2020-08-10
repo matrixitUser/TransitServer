@@ -23,14 +23,14 @@ namespace TransitServer
         public bool isCustomGroup = false;
         //int localPort = 10114;
         readonly int localPort = Int32.Parse(ConfigurationManager.AppSettings.Get("port"));
-        List<GPRSclient> gModemClients = new List<GPRSclient>();
+        public List<GPRSclient> gModemClients = new List<GPRSclient>();
         List<AskueServer>gAskueServers = new List<AskueServer>();
         TcpListener transitServer;
         TcpListener gTcpAskueServer;
         ImeiDictinary imeiDictinary = new ImeiDictinary();
         BackgroundWorker worker = new BackgroundWorker();
         SongWMP song;
-        tsConfig gConfig;
+        //tsConfig gConfig;
         bool isArcive = false;
         public Form1()
         {
@@ -159,12 +159,13 @@ namespace TransitServer
                                 if (bytes[0] == 0xFB) //длинный СА
                                 {
                                     byte[] bytesCId = bytes.Skip(1).Take(12).ToArray();
-                                    string strCId = BitConverter.ToString(bytesCId).Replace("-", "");
-                                    ParseAnswerFromModem(bytes.Skip(13).ToArray(), modemClient);
+                                    string strCId = BitConverter.ToString(bytesCId);
+                                    SQLite.Instance.UpdateChipIdModems(modemClient.IMEI, strCId);
+                                    ParseAnswerFromModem(bytes.Skip(13).ToArray(), modemClient, ns);
                                 }
                                 else if (bytes[0] == 0xF3) //считываем конфиг
                                 {
-                                    ParseAnswerFromModem(bytes.Skip(1).ToArray(), modemClient);
+                                    ParseAnswerFromModem(bytes.Skip(1).ToArray(), modemClient, ns);
                                 }
                             }
                             catch(Exception exc)
@@ -207,7 +208,7 @@ namespace TransitServer
             statusString.Invoke(new Action(() => statusString.Items[1].Text = statusStr));
         }
 
-        private void ParseAnswerFromModem(byte[] data, GPRSclient modemClient)
+        private void ParseAnswerFromModem(byte[] data, GPRSclient modemClient, NetworkStream ns)
         {
 
             DateTime dt1970 = new DateTime(1970, 1, 1, 0, 0, 0, 0);
@@ -248,18 +249,28 @@ namespace TransitServer
                     {
                         byte[] config = data.Skip(1).ToArray();
                         tsConfig conf = setBytes(config);
-                        gConfig = conf;
-                        //gConfig.u8ModemType = 5;
+                        //gConfig = conf;
                         string configForSQl = string.Format(string.Join("-", config.Take(config.Length).Select(r => string.Format("{0:X}", r))), config.Length);
                         SQLite.Instance.UpdateConfigModems(modemClient.IMEI, configForSQl);
                         break;
                     }
                 case 0x61: // 97
-                    //byte[] config1 = data.Skip(1).ToArray();
-                    //string configForSQl1 = string.Format(string.Join(" ", config1.Take(config1.Length).Select(r => string.Format("{0:X}", r))), config1.Length);
-                    //byte[] configTmp = getBytes(config);
-                    //string configForSQl = string.Format(string.Join(" ", configTmp.Take(configTmp.Length).Select(r => string.Format("{0:X}", r))), configTmp.Length);
-                    break;
+                    {
+                        if(data[3] == 0x02)
+                        {
+                            //Отправляем запрос на конфиг
+                            List<byte> listGetConfig = new List<byte>() { 0xF3, 0x60, 0x00, 0x00, 0x00 };
+                            listGetConfig.AddRange(CRC.Calc(listGetConfig.ToArray(), new Crc16Modbus()).CrcData);
+                            ns.Write(listGetConfig.ToArray(), 0, listGetConfig.Count);
+                            string tmpStr = string.Format("Отправлено {1} байт-> {0}", string.Join(" ", listGetConfig.ToArray().Take(listGetConfig.Count).Select(r => string.Format("{0:X}", r))), listGetConfig.Count);
+                            Console(tmpStr);
+                        }
+                        else
+                        {
+                            MessageBox.Show("Конфиг не установился!");
+                        }
+                        break;
+                    }
             }
         }
         private void Answer(byte[] msg, int len, IntPtr clientHandle, NetworkStream ns)
@@ -755,19 +766,7 @@ namespace TransitServer
             SendConfig.IsBackground = true;
             SendConfig.Start();
         }
-
-        private void BtSendMail_Click(object sender, EventArgs e)
-        {
-            try
-            {
-                SendEmailAsync("Тестовый объект", DateTime.Now, "Открытие-закрытие шкафа", "852585258525852").GetAwaiter();
-                Console("Письмо отправлено успешно.");
-            }
-            catch (Exception exc)
-            {
-                Console(exc.Message);
-            }
-        }
+        
         #endregion
 
         #region SendMail

@@ -29,7 +29,7 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
             this.updateDgvModems = new System.Windows.Forms.Button();
             this.btn_AddModem = new System.Windows.Forms.Button();
@@ -56,7 +56,6 @@
             this.splitter1 = new System.Windows.Forms.Splitter();
             this.panel6 = new System.Windows.Forms.Panel();
             this.btnClear = new System.Windows.Forms.Button();
-            this.button2 = new System.Windows.Forms.Button();
             this.statusString = new System.Windows.Forms.StatusStrip();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
             this.panel11 = new System.Windows.Forms.Panel();
@@ -77,8 +76,6 @@
             this.activeConnection = new System.Windows.Forms.DataGridViewImageColumn();
             this.btChangePort = new System.Windows.Forms.Button();
             this.dataGridViewImageColumn1 = new System.Windows.Forms.DataGridViewImageColumn();
-            this.button1 = new System.Windows.Forms.Button();
-            this.btSendMail = new System.Windows.Forms.Button();
             this.contextMenuStrip1.SuspendLayout();
             this.panel5.SuspendLayout();
             this.tcDown.SuspendLayout();
@@ -228,9 +225,9 @@
             // 
             // colEventQuite
             // 
-            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            dataGridViewCellStyle2.NullValue = "квитировать";
-            this.colEventQuite.DefaultCellStyle = dataGridViewCellStyle2;
+            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewCellStyle1.NullValue = "квитировать";
+            this.colEventQuite.DefaultCellStyle = dataGridViewCellStyle1;
             this.colEventQuite.FillWeight = 80F;
             this.colEventQuite.Frozen = true;
             this.colEventQuite.HeaderText = "quite";
@@ -337,17 +334,6 @@
             this.btnClear.UseVisualStyleBackColor = true;
             this.btnClear.Click += new System.EventHandler(this.BtnClear_Click);
             // 
-            // button2
-            // 
-            this.button2.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.button2.Location = new System.Drawing.Point(881, 428);
-            this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(118, 70);
-            this.button2.TabIndex = 4;
-            this.button2.Text = "Отправить запрос на авторизацию";
-            this.button2.UseVisualStyleBackColor = true;
-            this.button2.Click += new System.EventHandler(this.BtSendAuth_Click);
-            // 
             // statusString
             // 
             this.statusString.Location = new System.Drawing.Point(0, 706);
@@ -384,7 +370,7 @@
             this.tsmiDelNode,
             this.tsmiCustomGroupSendMail});
             this.contextMenuStrip2.Name = "contextMenuStrip2";
-            this.contextMenuStrip2.Size = new System.Drawing.Size(236, 92);
+            this.contextMenuStrip2.Size = new System.Drawing.Size(236, 70);
             // 
             // добавитьГруппуToolStripMenuItem
             // 
@@ -516,37 +502,12 @@
             this.dataGridViewImageColumn1.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Automatic;
             this.dataGridViewImageColumn1.Width = 20;
             // 
-            // button1
-            // 
-            this.button1.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.button1.Location = new System.Drawing.Point(757, 428);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(118, 70);
-            this.button1.TabIndex = 9;
-            this.button1.Text = "Отправить запрос на конфиг";
-            this.button1.UseVisualStyleBackColor = true;
-            this.button1.Click += new System.EventHandler(this.BtSendConfig_Click);
-            // 
-            // btSendMail
-            // 
-            this.btSendMail.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(255)))), ((int)(((byte)(192)))));
-            this.btSendMail.Location = new System.Drawing.Point(625, 466);
-            this.btSendMail.Name = "btSendMail";
-            this.btSendMail.Size = new System.Drawing.Size(94, 23);
-            this.btSendMail.TabIndex = 10;
-            this.btSendMail.Text = "SendMailTest";
-            this.btSendMail.UseVisualStyleBackColor = false;
-            this.btSendMail.Click += new System.EventHandler(this.BtSendMail_Click);
-            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.Azure;
             this.ClientSize = new System.Drawing.Size(1022, 728);
-            this.Controls.Add(this.btSendMail);
-            this.Controls.Add(this.button1);
-            this.Controls.Add(this.button2);
             this.Controls.Add(this.btChangePort);
             this.Controls.Add(this.dgvModems);
             this.Controls.Add(this.btn_AddModem);
@@ -586,7 +547,6 @@
         private System.Windows.Forms.TabControl tcDown;
         private System.Windows.Forms.TabPage tpConsole;
         private System.Windows.Forms.StatusStrip statusString;
-        private System.Windows.Forms.Button button2;
         private System.Windows.Forms.ToolTip toolTip1;
         private System.Windows.Forms.Button btnClear;
         private System.Windows.Forms.TabPage tpEvent;
@@ -621,8 +581,6 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn name;
         private System.Windows.Forms.DataGridViewTextBoxColumn lastConnection;
         private System.Windows.Forms.DataGridViewImageColumn activeConnection;
-        private System.Windows.Forms.Button button1;
-        private System.Windows.Forms.Button btSendMail;
         private System.Windows.Forms.ToolStripMenuItem tsmiMailSendCustom;
         private System.Windows.Forms.ToolStripMenuItem tsmiCustomGroupSendMail;
         private System.Windows.Forms.DataGridViewTextBoxColumn colEventNameModem;

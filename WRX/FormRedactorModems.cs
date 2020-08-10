@@ -1,12 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
-using System.Drawing.Drawing2D;
 using System.Linq;
-using System.Net.Sockets;
 using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading;
 using System.Windows.Forms;
 
 namespace TransitServer
@@ -28,6 +25,9 @@ namespace TransitServer
         const string MODEMSCOLLASTCONNECTION = "lastConnection";
         const string MODEMSCOLLACTIVECONNECTION = "activeConnection";
         public string oldNameModem;
+        public Dictionary<int, string> modemType = new Dictionary<int, string>();
+        public Dictionary<int, string> counterType = new Dictionary<int, string>();
+
 
         #region ViewModems
 
@@ -57,6 +57,11 @@ namespace TransitServer
         #region FormLoad and help funccion
         private void FormRedactorModems_Load(object sender, EventArgs e)
         {
+            modemType.Add(1, "CINTERION_BG52");
+            counterType.Add(0, "not use");
+            counterType.Add(1, "MERCURY230");
+            counterType.Add(2, "MERCURY206");
+            counterType.Add(3, "ENERGOMERA_CE303");
             toolTipInput.AutoPopDelay = 5000;
             toolTipInput.InitialDelay = 100;
             toolTipInput.ReshowDelay = 500;
@@ -123,9 +128,13 @@ namespace TransitServer
             }
 
             txtTypeModem.Text = SwitchModemType((Int32)tmpConfig.u8ModemType).ToString();
-
-            //object[] dropListcbType = new object[] { 0,1,2,3,4 };
-            object[] dropListcbType = new object[] { CounterType.NotCounter, CounterType.MERCURY230, CounterType.MERCURY206, CounterType.ENERGOMERA_CE303 };
+            
+            List<string> dropListForCb = new List<string>();
+            foreach(var dict in counterType.Values)
+            {
+                dropListForCb.Add(dict);
+            }
+            object[] dropListcbType = dropListForCb.ToArray();
             cbType1.Items.AddRange(dropListcbType);
             cbType2.Items.AddRange(dropListcbType);
             cbType3.Items.AddRange(dropListcbType);
@@ -197,39 +206,37 @@ namespace TransitServer
             }
             btnSaveChanges.Enabled = false;
         }
-        enum ModemType
+        private string SwitchCounterType(int counetrType)
         {
-            CINTERION_BG52 = 1
-        }
-        enum CounterType
-        {
-            NotCounter = 0,
-            MERCURY230 = 1,
-            MERCURY206 = 2,
-            ENERGOMERA_CE303 = 3
-        }
-        private CounterType SwitchCounterType(int counetrType)
-        {
+            string value = string.Empty;
             switch (counetrType)
             {
+                case 0:
+                    counterType.TryGetValue(0, out value);
+                    return value;
                 case 1:
-                    return CounterType.MERCURY230;
+                    counterType.TryGetValue(1, out value);
+                    return value;
                 case 2:
-                    return CounterType.MERCURY206;
+                    counterType.TryGetValue(2, out value);
+                    return value;
                 case 3:
-                    return CounterType.ENERGOMERA_CE303;
+                    counterType.TryGetValue(3, out value);
+                    return value;
                 default:
-                    return CounterType.NotCounter;
+                    return value;
             }
         }
-        private ModemType SwitchModemType(int counetrType)
+        private string SwitchModemType(int counetrType)
         {
+            string value = string.Empty;
             switch (counetrType)
             {
                 case 1:
-                    return ModemType.CINTERION_BG52;
+                    modemType.TryGetValue(1, out value);
+                    return value;
                 default:
-                    return ModemType.CINTERION_BG52;
+                    return value;
             }
         }
         #endregion
@@ -406,22 +413,16 @@ namespace TransitServer
             }
         }
 
-        private void Button2_Click(object sender, EventArgs e)
+        private void BtnToCorrectTime_Click(object sender, EventArgs e)
         {
             Form1 form1 = this.Owner as Form1;
-            form1.send();
+            form1.SendToCorrectTime_Thread(txtImei.Text);
         }
 
-        private void SendConfig_Click(object sender, EventArgs e)
+        private void BtnGetCurrent_Click(object sender, EventArgs e)
         {
             Form1 form1 = this.Owner as Form1;
-            form1.sendConfigForSaveThread();
-        }
-
-        private void BtnCurrent_Click(object sender, EventArgs e)
-        {
-            Form1 form1 = this.Owner as Form1;
-            form1.sendConfigForCurrent();
+            form1.SendConfigForCurrent(txtImei.Text);
         }
         #endregion
 
@@ -429,8 +430,8 @@ namespace TransitServer
         {
             tsConfig tsConfig = config;
 
-            configForSave.apnName[0].APN = Encoding.ASCII.GetBytes(txtApn1.Text);
-            configForSave.apnName[1].APN = Encoding.ASCII.GetBytes(txtApn2.Text);
+            configForSave.apnName[0].APN = AdditionStr(txtApn1.Text);
+            configForSave.apnName[1].APN = AdditionStr(txtApn2.Text);
 
             string server = txtIp1.Text + ":" + txtPort1.Text;
             configForSave.u8server = AdditionStr(server);
@@ -444,13 +445,63 @@ namespace TransitServer
 
             configForSave.PeriodEvent = ushort.Parse(txtPeriodEvent.Text);
 
-            configForSave.u8ModemType = (int)ModemType.CINTERION_BG52;
+            configForSave.u8ModemType = (byte)modemType.First(x => x.Value == txtTypeModem.Text).Key;
+            configForSave.u8CounterType[0] = (byte)counterType.First(x => x.Value == cbType1.Text).Key;
+            configForSave.u8CounterType[1] = (byte)counterType.First(x => x.Value == cbType2.Text).Key;
+            configForSave.u8CounterType[2] = (byte)counterType.First(x => x.Value == cbType3.Text).Key;
+            configForSave.u8CounterType[3] = (byte)counterType.First(x => x.Value == cbType4.Text).Key;
 
             configForSave.u32CounterNA[0] = (txtCounterNa1.Text == "not use") ? UInt32.Parse("4294967295") : UInt32.Parse(txtCounterNa1.Text);
             configForSave.u32CounterNA[1] = (txtCounterNa2.Text == "not use") ? UInt32.Parse("4294967295") : UInt32.Parse(txtCounterNa2.Text);
             configForSave.u32CounterNA[2] = (txtCounterNa3.Text == "not use") ? UInt32.Parse("4294967295") : UInt32.Parse(txtCounterNa3.Text);
             configForSave.u32CounterNA[3] = (txtCounterNa4.Text == "not use") ? UInt32.Parse("4294967295") : UInt32.Parse(txtCounterNa4.Text);
 
+            string strChipId = SQLite.Instance.GetModemsChipId(txtImei.Text);
+            byte[] byteChipId = new byte[] { };
+            if (strChipId != string.Empty)
+            {
+                string[] arrChipId = strChipId.Split('-');
+                
+                List<byte> listChipId = new List<byte>();
+                for (int i = 0; i < arrChipId.Length; i++)
+                {
+                    try
+                    {
+                        listChipId.Add(Convert.ToByte(arrChipId[i], 16));
+                    }
+                    catch
+                    {
+                        MessageBox.Show($"Ошибка в индексе: {i}");
+                    }
+                }
+                byteChipId = listChipId.ToArray();
+            }
+            Form1 form1 = this.Owner as Form1;
+            byte[] bytes = form1.getBytes(configForSave);
+            string configForSaveSQl = string.Format(string.Join("-", bytes.Take(bytes.Length).Select(r => string.Format("{0:X}", r))), bytes.Length);
+            SQLite.Instance.UpdateConfigForSaveModems(txtImei.Text, configForSaveSQl);
+            List<byte> listBytesForSend = new List<byte>();
+            if (strChipId != string.Empty)
+            {
+                listBytesForSend.Add(0xfb);
+                listBytesForSend.AddRange(byteChipId);
+            }
+            else
+            {
+                listBytesForSend.Add(0xf3);
+            }
+            listBytesForSend.Add(0x61);
+            listBytesForSend.AddRange(bytes);
+            listBytesForSend.AddRange(CRC.Calc(listBytesForSend.ToArray(), new Crc16Modbus()).CrcData);
+            foreach (var cl in form1.gModemClients)
+            {
+                if(cl.IMEI == txtImei.Text)
+                {
+                    cl.ns.Write(listBytesForSend.ToArray(), 0, listBytesForSend.Count);     // отправляем конфиг на сохранение
+
+                    form1.Console("Измененный конфиг отправлен на потверждение!");
+                }
+            }
             SQLite.Instance.UpdateNameModemsbyImei(txtImei.Text, txtNameModem.Text);
             MessageBox.Show("Изменения сохранены!");
         }
@@ -465,19 +516,11 @@ namespace TransitServer
             }
             return bytes.ToArray();
         }
-        private byte switchCounterType(string inputStr)
+
+        private void BtnRequestConfig_Click(object sender, EventArgs e)
         {
-            switch (inputStr)
-            {
-                case "MERCURY230":
-                    return (int)CounterType.MERCURY230;
-                case "MERCURY206":
-                    return (int)CounterType.MERCURY206;
-                case "ENERGOMERA_CE303":
-                    return (int)CounterType.ENERGOMERA_CE303;
-                default:
-                    return 0;
-            }
+            Form1 form1 = this.Owner as Form1;
+            //form1.sendConfigForSaveThread();
         }
     }
 }

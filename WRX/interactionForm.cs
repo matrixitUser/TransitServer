@@ -32,72 +32,54 @@ namespace TransitServer
             Console($"Отправлен запрос на конфиг!{listGetConfig[0]}-{listGetConfig[1]}-{listGetConfig[2]}-{listGetConfig[3]}-{listGetConfig[4]}-{listGetConfig[5]}-{listGetConfig[6]}");
             Console(tmpStr);
         }
-        public void send()
+        public void SendToCorrectTime_Thread(string strImei)
         {
-            Thread SendConfig = new Thread(sendCorrectTime);
+            Thread SendConfig = new Thread(SendCorrectTime);
             SendConfig.IsBackground = true;
-            SendConfig.Start();
+            SendConfig.Start(strImei);
         }
-        public void sendConfigForSaveThread()
-        {
-            Thread SendConfig = new Thread(sendConfigForSave);
-            SendConfig.IsBackground = true;
-            SendConfig.Start();
-        }
+        //public void sendConfigForSaveThread()
+        //{
+        //    Thread SendConfig = new Thread(SendConfigForSave);
+        //    SendConfig.IsBackground = true;
+        //    SendConfig.Start();
+        //}
 
-        public void sendConfigForCurrent()
+        public void SendConfigForCurrent(string strImei)
         {
-            Thread SendConfig = new Thread(sendCurrent);
+            Thread SendConfig = new Thread(SendCurrent);
             SendConfig.IsBackground = true;
-            SendConfig.Start();
+            SendConfig.Start(strImei);
         }
-        private void sendCurrent()
+        private void SendCurrent(object imei)
         {
-            //Отправляем запрос на конфиг
+            //Отправляем запрос на Currents
             List<byte> listGetConfig = new List<byte>();
-            listGetConfig.Add(0xf3);
-            listGetConfig.Add(0x5F);
-            listGetConfig.Add(0x00);
-            listGetConfig.Add(0x00);
-            listGetConfig.Add(0x00);
-            listGetConfig.Add(0x00);
+            byte[] tmpBytes = new byte[] { 0xf3, 0x5f, 0x00, 0x00, 0x00, 0x00 };
+            listGetConfig.AddRange(tmpBytes);
             listGetConfig.AddRange(CRC.Calc(listGetConfig.ToArray(), new Crc16Modbus()).CrcData);
 
             foreach (var cl in gModemClients)
             {
-                cl.ns.Write(listGetConfig.ToArray(), 0, listGetConfig.Count);     // отправляем сообщение 
+                if(cl.IMEI == imei.ToString())
+                {
+                    cl.ns.Write(listGetConfig.ToArray(), 0, listGetConfig.Count);     // отправка
+                }
             }
             string tmpStr = string.Format("Отправлено {1} байт-> {0}", string.Join(" ", listGetConfig.ToArray().Take(listGetConfig.Count).Select(r => string.Format("{0:X}", r))), listGetConfig.Count);
             Console(tmpStr);
         }
-        private void sendConfigForSave()
-        {
-            //Отправляем запрос на конфиг
-            List<byte> listGetConfig = new List<byte>();
-            listGetConfig.Add(0xf3);
-            listGetConfig.Add(0x61);
-            gConfig.u8firstServer=0;
-            listGetConfig.AddRange(getBytes(gConfig));
-            listGetConfig.AddRange(CRC.Calc(listGetConfig.ToArray(), new Crc16Modbus()).CrcData);
-
-            foreach (var cl in gModemClients)
-            {
-                cl.ns.Write(listGetConfig.ToArray(), 0, listGetConfig.Count);     // отправляем сообщение 
-            }
-            string tmpStr = string.Format("Отправлено {1} байт-> {0}", string.Join(" ", listGetConfig.ToArray().Take(listGetConfig.Count).Select(r => string.Format("{0:X}", r))), listGetConfig.Count);
-            Console(tmpStr);
-        }
-        public void sendCorrectTime()
+        public void SendCorrectTime(object imei)
         {
             List<byte> newList = new List<byte>();
             List<byte> networkAdress = new List<byte>() { 0xff, 0xff, 0x00, 0x31, 0x36, 0x37, 0x46, 0x46, 0x43, 0x10, 0x36, 0x44 };
-            //List<byte> networkAdress = new List<byte>() { 0xf3 };
             newList.AddRange(Register.MakeCorrectTime(networkAdress));
-            //newList.AddRange(CRC.Calc(networkAdress.ToArray(), new Crc16Modbus()).CrcData);
-            //newList[10] = 0;
             foreach (var cl in gModemClients)
             {
-                cl.ns.Write(newList.ToArray(), 0, newList.Count);   // отправляем сообщение 
+                if(cl.IMEI == imei.ToString())
+                {
+                    cl.ns.Write(newList.ToArray(), 0, newList.Count);   // отправка
+                }
             }
             string tmpStr = string.Format("Отправлено {1} байт-> {0}", string.Join(" ", newList.ToArray().Take(newList.Count).Select(r => string.Format("{0:X}", r))), newList.Count);
             Console(tmpStr);
@@ -105,7 +87,6 @@ namespace TransitServer
         private void StatusString_MouseMove(object sender, MouseEventArgs e)
         {
             var localPosition = this.PointToClient(Cursor.Position);
-            int ow = localPosition.X;
             if (localPosition.X > 0 && localPosition.X < 122)
             {
                 toolTip1.AutoPopDelay = 5000;
