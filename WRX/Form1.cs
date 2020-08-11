@@ -726,12 +726,6 @@ namespace TransitServer
         #endregion
 
         #region ButtonsAndFunccionForm1
-        private void BtSendAuth_Click(object sender, EventArgs e)
-        {
-            Thread SendAuth = new Thread(sendAuth);
-            SendAuth.IsBackground = true;
-            SendAuth.Start();
-        }
         private void BtnClear_Click(object sender, EventArgs e)
         {
             lbConsole.Items.Clear();
@@ -760,13 +754,6 @@ namespace TransitServer
             string textConsole = $"{DateTime.Now}: {str}";
             lbConsole.Invoke(new Action(() => lbConsole.Items.Add(textConsole)));
         }
-        private void BtSendConfig_Click(object sender, EventArgs e)
-        {
-            Thread SendConfig = new Thread(sendConfig);
-            SendConfig.IsBackground = true;
-            SendConfig.Start();
-        }
-        
         #endregion
 
         #region SendMail

@@ -520,7 +520,7 @@ namespace TransitServer
         private void BtnRequestConfig_Click(object sender, EventArgs e)
         {
             Form1 form1 = this.Owner as Form1;
-            //form1.sendConfigForSaveThread();
+            form1.RequestConfigThread(txtImei.Text);
         }
     }
 }

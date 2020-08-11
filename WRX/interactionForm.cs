@@ -18,7 +18,7 @@ namespace TransitServer
             }
             Console("Отдельный запрос на авторизацию отправлен!");
         }
-        private void sendConfig()
+        private void sendConfig(object imei)
         {
             //Отправляем запрос на конфиг
             List<byte> listGetConfig = new List<byte>() { 0xF3, 0x60, 0x00, 0x00, 0x00 };
@@ -26,24 +26,22 @@ namespace TransitServer
             
             foreach (var cl in gModemClients)
             {
-                cl.ns.Write(listGetConfig.ToArray(), 0, listGetConfig.Count);     // отправляем сообщение 
+                if(imei.ToString() == cl.IMEI)
+                {
+                    cl.ns.Write(listGetConfig.ToArray(), 0, listGetConfig.Count);     // отправляем сообщение 
+                }
             }
             string tmpStr = string.Format("Отправлено {1} байт-> {0}", string.Join(" ", listGetConfig.ToArray().Take(listGetConfig.Count).Select(r => string.Format("{0:X}", r))), listGetConfig.Count);
             Console($"Отправлен запрос на конфиг!{listGetConfig[0]}-{listGetConfig[1]}-{listGetConfig[2]}-{listGetConfig[3]}-{listGetConfig[4]}-{listGetConfig[5]}-{listGetConfig[6]}");
             Console(tmpStr);
         }
-        public void SendToCorrectTime_Thread(string strImei)
+        
+        public void RequestConfigThread(object imei)
         {
-            Thread SendConfig = new Thread(SendCorrectTime);
+            Thread SendConfig = new Thread(sendConfig);
             SendConfig.IsBackground = true;
-            SendConfig.Start(strImei);
+            SendConfig.Start(imei);
         }
-        //public void sendConfigForSaveThread()
-        //{
-        //    Thread SendConfig = new Thread(SendConfigForSave);
-        //    SendConfig.IsBackground = true;
-        //    SendConfig.Start();
-        //}
 
         public void SendConfigForCurrent(string strImei)
         {
@@ -68,6 +66,12 @@ namespace TransitServer
             }
             string tmpStr = string.Format("Отправлено {1} байт-> {0}", string.Join(" ", listGetConfig.ToArray().Take(listGetConfig.Count).Select(r => string.Format("{0:X}", r))), listGetConfig.Count);
             Console(tmpStr);
+        }
+        public void SendToCorrectTime_Thread(string strImei)
+        {
+            Thread SendConfig = new Thread(SendCorrectTime);
+            SendConfig.IsBackground = true;
+            SendConfig.Start(strImei);
         }
         public void SendCorrectTime(object imei)
         {
